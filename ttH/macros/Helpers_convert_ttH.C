@@ -1,0 +1,1254 @@
+#include <TFile.h>
+#include <TTree.h>
+#include <TChain.h>
+#include <TString.h>
+#include <TCanvas.h>
+#include <TH1F.h>
+#include <TH2F.h>
+#include <TProfile.h>
+
+#include <iostream>
+#include <TLegend.h>
+#include <TBranch.h>
+#include <TClonesArray.h>
+#include <TChain.h>
+#include <TMath.h>
+#include <TLorentzVector.h>
+#include <TVector3.h>
+
+
+#include <vector>
+#ifdef __MAKECINT__
+#pragma link C++ class vector<double>+;
+#pragma link C++ class vector<vector<int> >+;
+
+#endif
+
+
+using namespace std;
+
+
+bool pT_comparison_pairs(pair<int,TLorentzVector> pair1, pair<int,TLorentzVector> pair2){
+
+  return (pair1.second).Pt()>(pair2.second).Pt();
+
+}
+
+
+bool CSV_comparison_pairs(pair<int,float> pair1, pair<int,float> pair2){
+
+  return pair1.second>pair2.second;
+
+}
+
+
+
+void convert_tree(TString sample){
+
+  TString dir_in;
+  TString dir_out;
+  TString file;    
+
+  if(sample=="ttH"){
+    file="ntuple_ttH_dRveto_gen.root";
+    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/ttH_HToTauTau_pfMET_prod_29_06_2015/";
+    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/";
+  }
+
+  if(sample=="ttZ"){
+    file="ntuple_ttZ_dRveto.root";
+    dir_in="/data_CMS/cms/strebler/ttZ_Samples/";
+    dir_out="/data_CMS/cms/strebler/ttZ_Samples/ntuples_converted/";
+  }
+
+  vector<TString> list;
+  list.push_back(dir_in+"*.root");	
+
+  TChain * tree = new TChain("HTauTauTree/HTauTauTree");
+  int nFiles = list.size();
+
+  for(int i=0;i<nFiles;i++)
+    {
+      tree->Add(list[i]);
+    }
+
+
+  Long64_t nentries = tree->GetEntries();
+
+  TFile* f_new = TFile::Open(dir_out+file);
+  if(f_new!=0){
+    cout<<dir_out+file<<" already exists, please delete it before converting again"<<endl;
+    return;
+  }
+  
+  f_new = TFile::Open(dir_out+file,"RECREATE");
+
+
+  TTree* tree_new=tree->GetTree()->CloneTree(0);
+  //TTree* tree_new=tree->CloneTree(0);
+
+  //New branches
+  //int _EventNumber;
+  //int _RunNumber;
+  //int _lumi;
+  //float _MC_weight;
+
+  int _n_recolep;
+  vector<int> _recolep_ID;
+  vector<int> _recolep_charge;
+  vector<float> _recolep_energy;
+  vector<float> _recolep_px;
+  vector<float> _recolep_py;
+  vector<float> _recolep_pz;
+  vector<float> _recolep_pt;
+  vector<float> _recolep_eta;
+  vector<float> _recolep_phi;
+ 
+  int _n_recotauh;
+  vector<int> _recotauh_charge;
+  vector<int> _recotauh_decayMode;
+  vector<float> _recotauh_energy;
+  vector<float> _recotauh_px;
+  vector<float> _recotauh_py;
+  vector<float> _recotauh_pz;
+  vector<float> _recotauh_pt;
+  vector<float> _recotauh_eta;
+  vector<float> _recotauh_phi;
+
+  int _n_recoPFJet30;
+  vector<float> _recoPFJet30_energy;
+  vector<float> _recoPFJet30_pt;
+  vector<float> _recoPFJet30_px;
+  vector<float> _recoPFJet30_py;
+  vector<float> _recoPFJet30_pz;
+  vector<float> _recoPFJet30_eta;
+  vector<float> _recoPFJet30_phi;
+  vector<float> _recoPFJet30_CSVscore;
+  vector<int> _recoPFJet30_Flavour;
+
+  vector<float> _recoPFJet30_CSVsort_energy;
+  vector<float> _recoPFJet30_CSVsort_pt;
+  vector<float> _recoPFJet30_CSVsort_px;
+  vector<float> _recoPFJet30_CSVsort_py;
+  vector<float> _recoPFJet30_CSVsort_pz;
+  vector<float> _recoPFJet30_CSVsort_eta;
+  vector<float> _recoPFJet30_CSVsort_phi;
+  vector<float> _recoPFJet30_CSVsort_CSVscore;
+  vector<int> _recoPFJet30_CSVsort_Flavour;
+
+
+  int _n_recoPFJet30_btag_medium;  //# jets passing CSVM
+  int _n_recoPFJet30_btag_loose; //# jets passing CSVL
+ 
+  //2 jets with highest CSV score
+  vector<float> _recoPFJet30_btag_energy;
+  vector<float> _recoPFJet30_btag_pt;
+  vector<float> _recoPFJet30_btag_px;
+  vector<float> _recoPFJet30_btag_py;
+  vector<float> _recoPFJet30_btag_pz;
+  vector<float> _recoPFJet30_btag_eta;
+  vector<float> _recoPFJet30_btag_phi;
+  vector<float> _recoPFJet30_btag_CSVscore;
+  vector<int> _recoPFJet30_btag_Flavour; 
+
+  //Other jets
+  int _n_recoPFJet30_untag;
+  vector<float> _recoPFJet30_untag_energy;
+  vector<float> _recoPFJet30_untag_pt;
+  vector<float> _recoPFJet30_untag_px;
+  vector<float> _recoPFJet30_untag_py;
+  vector<float> _recoPFJet30_untag_pz;
+  vector<float> _recoPFJet30_untag_eta;
+  vector<float> _recoPFJet30_untag_phi;
+  vector<float> _recoPFJet30_untag_CSVscore;
+  vector<int> _recoPFJet30_untag_Flavour;
+
+  int _n_pair_Wtag_recoPFJet30_untag;  //# pair of jets passing W-tag in untagged jets
+
+  //2 jets with invariant mass closest to mW
+  float _recoPFJet30_untag_best_mW; //invariant mass of the pair
+  vector<float> _recoPFJet30_untag_Wtag_energy;
+  vector<float> _recoPFJet30_untag_Wtag_pt;
+  vector<float> _recoPFJet30_untag_Wtag_px;
+  vector<float> _recoPFJet30_untag_Wtag_py;
+  vector<float> _recoPFJet30_untag_Wtag_pz;
+  vector<float> _recoPFJet30_untag_Wtag_eta;
+  vector<float> _recoPFJet30_untag_Wtag_phi;
+  vector<float> _recoPFJet30_untag_Wtag_CSVscore;
+  vector<int> _recoPFJet30_untag_Wtag_Flavour; 
+
+  vector<float> _mtop_had_perm;
+  vector<float> _mblep_perm;
+  vector<float> _mleptauh_perm;
+
+  float _PFMET;
+  float _PFMET_phi;
+  float _PFMETx;
+  float _PFMETy;
+
+  float _PFMET_cov00;
+  float _PFMET_cov01;
+  float _PFMET_cov10;
+  float _PFMET_cov11;
+
+
+  //Gen information
+
+  int _n_genlep;
+  vector<int> _genlep_pdg;
+  vector<int> _genlep_charge;
+  vector<float> _genlep_energy;
+  vector<float> _genlep_px;
+  vector<float> _genlep_py;
+  vector<float> _genlep_pz;
+  vector<float> _genlep_pt;
+  vector<float> _genlep_eta;
+  vector<float> _genlep_phi;
+  vector<int> _genlep_TauMothInd; //-1 if not from tau
+  vector<int> _genlep_TopMothInd; //-1 if not from top
+ 
+  int _n_gentauh;
+  vector<int> _gentauh_charge;
+  vector<float> _gentauh_energy;
+  vector<float> _gentauh_px;
+  vector<float> _gentauh_py;
+  vector<float> _gentauh_pz;
+  vector<float> _gentauh_pt;
+  vector<float> _gentauh_eta;
+  vector<float> _gentauh_phi;
+  vector<int> _gentauh_TauMothInd;
+
+  int _n_gentau;
+  vector<int> _gentau_decayMode; //0 muon, 1 electron, 2 had
+  vector<int> _gentau_charge;
+  vector<float> _gentau_energy;
+  vector<float> _gentau_px;
+  vector<float> _gentau_py;
+  vector<float> _gentau_pz;
+  vector<float> _gentau_pt;
+  vector<float> _gentau_eta;
+  vector<float> _gentau_phi;
+  vector<int> _gentau_TopMothInd;
+
+  int _n_genH;
+  vector<float> _genH_decayMode; //0 mu+tauh, 1 e+tauh, 2 tauh+tauh, 3 mu+mu, 4 e+e, 5 e+mu
+  vector<float> _genH_energy;
+  vector<float> _genH_px;
+  vector<float> _genH_py;
+  vector<float> _genH_pz;
+  vector<float> _genH_pt;
+  vector<float> _genH_eta;
+  vector<float> _genH_phi;
+
+  int _n_gentop;
+  vector<int> _gentop_pdg;
+  vector<int> _gentop_decayMode; //0 had, 1 lep
+  vector<float> _gentop_energy;
+  vector<float> _gentop_px;
+  vector<float> _gentop_py;
+  vector<float> _gentop_pz;
+  vector<float> _gentop_pt;
+  vector<float> _gentop_eta;
+  vector<float> _gentop_phi;
+
+  int _n_genb;
+  vector<int> _genb_pdg;
+  vector<float> _genb_energy;
+  vector<float> _genb_px;
+  vector<float> _genb_py;
+  vector<float> _genb_pz;
+  vector<float> _genb_pt;
+  vector<float> _genb_eta;
+  vector<float> _genb_phi;
+  vector<int> _genb_TopMothInd;
+
+  int _n_gennu;
+  vector<int> _gennu_pdg;
+  vector<float> _gennu_energy;
+  vector<float> _gennu_px;
+  vector<float> _gennu_py;
+  vector<float> _gennu_pz;
+  vector<float> _gennu_pt;
+  vector<float> _gennu_eta;
+  vector<float> _gennu_phi;
+  vector<int> _gennu_TauMothInd; //-1 if not from tau
+  vector<int> _gennu_TopMothInd; //-1 if not from top
+  
+  tree_new->Branch("n_recolep",&_n_recolep,"_n_recolep/I");
+  tree_new->Branch("recolep_ID",&_recolep_ID);
+  tree_new->Branch("recolep_charge",&_recolep_charge);
+  tree_new->Branch("recolep_energy",&_recolep_energy);
+  tree_new->Branch("recolep_px",&_recolep_px);
+  tree_new->Branch("recolep_py",&_recolep_py);
+  tree_new->Branch("recolep_pz",&_recolep_pz);
+  tree_new->Branch("recolep_pt",&_recolep_pt);
+  tree_new->Branch("recolep_eta",&_recolep_eta);
+  tree_new->Branch("recolep_phi",&_recolep_phi);
+
+  tree_new->Branch("n_recotauh",&_n_recotauh,"_n_recotauh/I");
+  tree_new->Branch("recotauh_decayMode",&_recotauh_decayMode);
+  tree_new->Branch("recotauh_charge",&_recotauh_charge);
+  tree_new->Branch("recotauh_energy",&_recotauh_energy);
+  tree_new->Branch("recotauh_px",&_recotauh_px);
+  tree_new->Branch("recotauh_py",&_recotauh_py);
+  tree_new->Branch("recotauh_pz",&_recotauh_pz);
+  tree_new->Branch("recotauh_pt",&_recotauh_pt);
+  tree_new->Branch("recotauh_eta",&_recotauh_eta);
+  tree_new->Branch("recotauh_phi",&_recotauh_phi);
+
+  tree_new->Branch("n_recoPFJet30",&_n_recoPFJet30,"_n_recoPFJet30/I");
+  tree_new->Branch("recoPFJet30_energy",&_recoPFJet30_energy);
+  tree_new->Branch("recoPFJet30_pt",&_recoPFJet30_pt);
+  tree_new->Branch("recoPFJet30_px",&_recoPFJet30_px);
+  tree_new->Branch("recoPFJet30_py",&_recoPFJet30_py);
+  tree_new->Branch("recoPFJet30_pz",&_recoPFJet30_pz);
+  tree_new->Branch("recoPFJet30_eta",&_recoPFJet30_eta);
+  tree_new->Branch("recoPFJet30_phi",&_recoPFJet30_phi);
+  tree_new->Branch("recoPFJet30_CSVscore",&_recoPFJet30_CSVscore);
+  tree_new->Branch("recoPFJet30_Flavour",&_recoPFJet30_Flavour);
+
+  tree_new->Branch("recoPFJet30_CSVsort_energy",&_recoPFJet30_CSVsort_energy);
+  tree_new->Branch("recoPFJet30_CSVsort_pt",&_recoPFJet30_CSVsort_pt);
+  tree_new->Branch("recoPFJet30_CSVsort_px",&_recoPFJet30_CSVsort_px);
+  tree_new->Branch("recoPFJet30_CSVsort_py",&_recoPFJet30_CSVsort_py);
+  tree_new->Branch("recoPFJet30_CSVsort_pz",&_recoPFJet30_CSVsort_pz);
+  tree_new->Branch("recoPFJet30_CSVsort_eta",&_recoPFJet30_CSVsort_eta);
+  tree_new->Branch("recoPFJet30_CSVsort_phi",&_recoPFJet30_CSVsort_phi);
+  tree_new->Branch("recoPFJet30_CSVsort_CSVscore",&_recoPFJet30_CSVsort_CSVscore);
+  tree_new->Branch("recoPFJet30_CSVsort_Flavour",&_recoPFJet30_CSVsort_Flavour);
+
+  tree_new->Branch("n_recoPFJet30_btag_medium",&_n_recoPFJet30_btag_medium,"_n_recoPFJet30_btag_medium/I");
+  tree_new->Branch("n_recoPFJet30_btag_loose",&_n_recoPFJet30_btag_loose,"_n_recoPFJet30_btag_loose/I");
+  tree_new->Branch("recoPFJet30_btag_energy",&_recoPFJet30_btag_energy);
+  tree_new->Branch("recoPFJet30_btag_pt",&_recoPFJet30_btag_pt);
+  tree_new->Branch("recoPFJet30_btag_px",&_recoPFJet30_btag_px);
+  tree_new->Branch("recoPFJet30_btag_py",&_recoPFJet30_btag_py);
+  tree_new->Branch("recoPFJet30_btag_pz",&_recoPFJet30_btag_pz);
+  tree_new->Branch("recoPFJet30_btag_eta",&_recoPFJet30_btag_eta);
+  tree_new->Branch("recoPFJet30_btag_phi",&_recoPFJet30_btag_phi);
+  tree_new->Branch("recoPFJet30_btag_CSVscore",&_recoPFJet30_btag_CSVscore);
+  tree_new->Branch("recoPFJet30_btag_Flavour",&_recoPFJet30_btag_Flavour);
+
+  tree_new->Branch("n_recoPFJet30_untag",&_n_recoPFJet30_untag,"_n_recoPFJet30_untag/I");
+  tree_new->Branch("recoPFJet30_untag_energy",&_recoPFJet30_untag_energy);
+  tree_new->Branch("recoPFJet30_untag_pt",&_recoPFJet30_untag_pt);
+  tree_new->Branch("recoPFJet30_untag_px",&_recoPFJet30_untag_px);
+  tree_new->Branch("recoPFJet30_untag_py",&_recoPFJet30_untag_py);
+  tree_new->Branch("recoPFJet30_untag_pz",&_recoPFJet30_untag_pz);
+  tree_new->Branch("recoPFJet30_untag_eta",&_recoPFJet30_untag_eta);
+  tree_new->Branch("recoPFJet30_untag_phi",&_recoPFJet30_untag_phi);
+  tree_new->Branch("recoPFJet30_untag_CSVscore",&_recoPFJet30_untag_CSVscore);
+  tree_new->Branch("recoPFJet30_untag_Flavour",&_recoPFJet30_untag_Flavour);
+
+
+  tree_new->Branch("n_pair_Wtag_recoPFJet30_untag",&_n_pair_Wtag_recoPFJet30_untag,"_n_pair_Wtag_recoPFJet30_untag/I");  
+
+  tree_new->Branch("recoPFJet30_untag_best_mW",&_recoPFJet30_untag_best_mW,"_recoPFJet30_untag_best_mW/F");  
+  tree_new->Branch("recoPFJet30_untag_Wtag_energy",&_recoPFJet30_untag_Wtag_energy);
+  tree_new->Branch("recoPFJet30_untag_Wtag_pt",&_recoPFJet30_untag_Wtag_pt);
+  tree_new->Branch("recoPFJet30_untag_Wtag_px",&_recoPFJet30_untag_Wtag_px);
+  tree_new->Branch("recoPFJet30_untag_Wtag_py",&_recoPFJet30_untag_Wtag_py);
+  tree_new->Branch("recoPFJet30_untag_Wtag_pz",&_recoPFJet30_untag_Wtag_pz);
+  tree_new->Branch("recoPFJet30_untag_Wtag_eta",&_recoPFJet30_untag_Wtag_eta);
+  tree_new->Branch("recoPFJet30_untag_Wtag_phi",&_recoPFJet30_untag_Wtag_phi);
+  tree_new->Branch("recoPFJet30_untag_Wtag_CSVscore",&_recoPFJet30_untag_Wtag_CSVscore);
+  tree_new->Branch("recoPFJet30_untag_Wtag_Flavour",&_recoPFJet30_untag_Wtag_Flavour);
+
+  tree_new->Branch("mtop_had_perm",&_mtop_had_perm);
+  tree_new->Branch("mblep_perm",&_mblep_perm);
+  tree_new->Branch("mleptauh_perm",&_mleptauh_perm);
+
+  tree_new->Branch("PFMETx",&_PFMETx,"_PFMETx/F");
+  tree_new->Branch("PFMETy",&_PFMETy,"_PFMETy/F");
+  tree_new->Branch("PFMET",&_PFMETy,"_PFMET/F");
+  tree_new->Branch("PFMET_phi",&_PFMET_phi,"_PFMET_phi/F");
+
+  tree_new->Branch("PFMET_cov00",&_PFMET_cov00,"_PFMET_cov00/F");
+  tree_new->Branch("PFMET_cov01",&_PFMET_cov01,"_PFMET_cov01/F");
+  tree_new->Branch("PFMET_cov10",&_PFMET_cov10,"_PFMET_cov10/F");
+  tree_new->Branch("PFMET_cov11",&_PFMET_cov11,"_PFMET_cov11/F");
+
+  tree_new->Branch("n_genlep",&_n_genlep,"_n_genlep/I");
+  tree_new->Branch("genlep_pdg",&_genlep_pdg);
+  tree_new->Branch("genlep_charge",&_genlep_charge);
+  tree_new->Branch("genlep_energy",&_genlep_energy);
+  tree_new->Branch("genlep_px",&_genlep_px);
+  tree_new->Branch("genlep_py",&_genlep_py);
+  tree_new->Branch("genlep_pz",&_genlep_pz);
+  tree_new->Branch("genlep_pt",&_genlep_pt);
+  tree_new->Branch("genlep_eta",&_genlep_eta);
+  tree_new->Branch("genlep_phi",&_genlep_phi);
+  tree_new->Branch("genlep_TauMothInd",&_genlep_TauMothInd);
+  tree_new->Branch("genlep_TopMothInd",&_genlep_TopMothInd);
+
+  tree_new->Branch("n_gentauh",&_n_gentauh,"_n_gentauh/I");
+  tree_new->Branch("gentauh_charge",&_gentauh_charge);
+  tree_new->Branch("gentauh_energy",&_gentauh_energy);
+  tree_new->Branch("gentauh_px",&_gentauh_px);
+  tree_new->Branch("gentauh_py",&_gentauh_py);
+  tree_new->Branch("gentauh_pz",&_gentauh_pz);
+  tree_new->Branch("gentauh_pt",&_gentauh_pt);
+  tree_new->Branch("gentauh_eta",&_gentauh_eta);
+  tree_new->Branch("gentauh_phi",&_gentauh_phi);
+  tree_new->Branch("gentauh_TauMothInd",&_gentauh_TauMothInd);
+
+  tree_new->Branch("n_gentau",&_n_gentau,"_n_gentau/I");
+  tree_new->Branch("gentau_decayMode",&_gentau_decayMode);
+  tree_new->Branch("gentau_charge",&_gentau_charge);
+  tree_new->Branch("gentau_energy",&_gentau_energy);
+  tree_new->Branch("gentau_px",&_gentau_px);
+  tree_new->Branch("gentau_py",&_gentau_py);
+  tree_new->Branch("gentau_pz",&_gentau_pz);
+  tree_new->Branch("gentau_pt",&_gentau_pt);
+  tree_new->Branch("gentau_eta",&_gentau_eta);
+  tree_new->Branch("gentau_phi",&_gentau_phi);
+  tree_new->Branch("gentau_TopMothInd",&_gentau_TopMothInd);
+
+  tree_new->Branch("n_genH",&_n_genH,"_n_genH/I");
+  tree_new->Branch("genH_decayMode",&_genH_decayMode);
+  tree_new->Branch("genH_energy",&_genH_energy);
+  tree_new->Branch("genH_px",&_genH_px);
+  tree_new->Branch("genH_py",&_genH_py);
+  tree_new->Branch("genH_pz",&_genH_pz);
+  tree_new->Branch("genH_pt",&_genH_pt);
+  tree_new->Branch("genH_eta",&_genH_eta);
+  tree_new->Branch("genH_phi",&_genH_phi);
+
+  tree_new->Branch("n_gentop",&_n_gentop,"_n_gentop/I");
+  tree_new->Branch("gentop_pdg",&_gentop_pdg);
+  tree_new->Branch("gentop_decayMode",&_gentop_decayMode);
+  tree_new->Branch("gentop_energy",&_gentop_energy);
+  tree_new->Branch("gentop_px",&_gentop_px);
+  tree_new->Branch("gentop_py",&_gentop_py);
+  tree_new->Branch("gentop_pz",&_gentop_pz);
+  tree_new->Branch("gentop_pt",&_gentop_pt);
+  tree_new->Branch("gentop_eta",&_gentop_eta);
+  tree_new->Branch("gentop_phi",&_gentop_phi);
+
+  tree_new->Branch("n_genb",&_n_genb,"_n_genb/I");
+  tree_new->Branch("genb_pdg",&_genb_pdg);
+  tree_new->Branch("genb_energy",&_genb_energy);
+  tree_new->Branch("genb_px",&_genb_px);
+  tree_new->Branch("genb_py",&_genb_py);
+  tree_new->Branch("genb_pz",&_genb_pz);
+  tree_new->Branch("genb_pt",&_genb_pt);
+  tree_new->Branch("genb_eta",&_genb_eta);
+  tree_new->Branch("genb_phi",&_genb_phi);
+  tree_new->Branch("genb_TopMothInd",&_genb_TopMothInd);
+
+  tree_new->Branch("n_gennu",&_n_gennu,"_n_gennu/I");
+  tree_new->Branch("gennu_pdg",&_gennu_pdg);
+  tree_new->Branch("gennu_energy",&_gennu_energy);
+  tree_new->Branch("gennu_px",&_gennu_px);
+  tree_new->Branch("gennu_py",&_gennu_py);
+  tree_new->Branch("gennu_pz",&_gennu_pz);
+  tree_new->Branch("gennu_pt",&_gennu_pt);
+  tree_new->Branch("gennu_eta",&_gennu_eta);
+  tree_new->Branch("gennu_phi",&_gennu_phi);
+  tree_new->Branch("gennu_TauMothInd",&_gennu_TauMothInd);
+  tree_new->Branch("gennu_TopMothInd",&_gennu_TopMothInd);
+
+
+  //Old branches used
+  vector<float> *_jets_e;
+  vector<float> *_jets_px;
+  vector<float> *_jets_py;
+  vector<float> *_jets_pz;
+  vector<int> *_jets_Flavour;
+  vector<float> *_bCSVscore;
+
+  vector<float> *_daughters_e;
+  vector<float> *_daughters_px;
+  vector<float> *_daughters_py;
+  vector<float> *_daughters_pz;
+  vector<int> *_PDGIdDaughters;
+  vector<int> *_decayMode;
+  vector<float> *_combreliso;
+  vector<int> *_daughters_byTightCombinedIsolationDeltaBetaCorr3Hits;
+  vector<int> *_daughters_decayModeFindingOldDMs;
+  vector<int> *_daughters_againstMuonTight3;
+  vector<int> *_daughters_againstElectronMediumMVA5;
+
+  vector<float> *_MET_cov00_vect;
+  vector<float> *_MET_cov01_vect;
+  vector<float> *_MET_cov10_vect;
+  vector<float> *_MET_cov11_vect;
+
+  vector<float> *_genpart_px;
+  vector<float> *_genpart_py;
+  vector<float> *_genpart_pz;
+  vector<float> *_genpart_e;
+  vector<int> *_genpart_pdg;
+  vector<int> *_genpart_HMothInd;
+  vector<int> *_genpart_TopMothInd;
+  vector<int> *_genpart_TauMothInd;
+  vector<int> *_genpart_HZDecayMode;
+  vector<int> *_genpart_TauGenDecayMode;
+
+  tree->SetBranchAddress("jets_px",&_jets_px);
+  tree->SetBranchAddress("jets_py",&_jets_py);
+  tree->SetBranchAddress("jets_pz",&_jets_pz);
+  tree->SetBranchAddress("jets_e",&_jets_e);
+  tree->SetBranchAddress("jets_Flavour",&_jets_Flavour);
+  tree->SetBranchAddress("bCSVscore",&_bCSVscore);
+
+  tree->SetBranchAddress("daughters_px",&_daughters_px);
+  tree->SetBranchAddress("daughters_py",&_daughters_py);
+  tree->SetBranchAddress("daughters_pz",&_daughters_pz);
+  tree->SetBranchAddress("daughters_e",&_daughters_e);
+  tree->SetBranchAddress("PDGIdDaughters",&_PDGIdDaughters);
+  tree->SetBranchAddress("decayMode",&_decayMode);
+  tree->SetBranchAddress("combreliso",&_combreliso);
+  tree->SetBranchAddress("daughters_byTightCombinedIsolationDeltaBetaCorr3Hits",&_daughters_byTightCombinedIsolationDeltaBetaCorr3Hits);
+  tree->SetBranchAddress("daughters_decayModeFindingOldDMs",&_daughters_decayModeFindingOldDMs);
+  tree->SetBranchAddress("daughters_againstMuonTight3",&_daughters_againstMuonTight3);
+  tree->SetBranchAddress("daughters_againstElectronMediumMVA5",&_daughters_againstElectronMediumMVA5);
+
+  tree->SetBranchAddress("met",&_PFMET);
+  tree->SetBranchAddress("metphi",&_PFMET_phi);
+  tree->SetBranchAddress("MET_cov00",&_MET_cov00_vect);
+  tree->SetBranchAddress("MET_cov01",&_MET_cov01_vect);
+  tree->SetBranchAddress("MET_cov10",&_MET_cov10_vect);
+  tree->SetBranchAddress("MET_cov11",&_MET_cov11_vect);
+
+  tree->SetBranchAddress("genpart_px",&_genpart_px);
+  tree->SetBranchAddress("genpart_py",&_genpart_py);
+  tree->SetBranchAddress("genpart_pz",&_genpart_pz);
+  tree->SetBranchAddress("genpart_e",&_genpart_e);
+  tree->SetBranchAddress("genpart_pdg",&_genpart_pdg);
+  tree->SetBranchAddress("genpart_HMothInd",&_genpart_HMothInd);
+  tree->SetBranchAddress("genpart_TopMothInd",&_genpart_TopMothInd);  
+  tree->SetBranchAddress("genpart_TauMothInd",&_genpart_TauMothInd);
+  tree->SetBranchAddress("genpart_HZDecayMode",&_genpart_HZDecayMode);
+  tree->SetBranchAddress("genpart_TauGenDecayMode",&_genpart_TauGenDecayMode);
+  
+
+  cout<<"nentries="<<nentries<<endl;
+
+  //nentries=15;
+  for (int i=0;i<nentries;i++) {
+    
+    if(i%10000==0)
+      cout<<"i="<<i<<endl;
+
+    _n_recolep = 0;
+    _recolep_ID.clear();
+    _recolep_charge.clear();
+    _recolep_energy.clear();
+    _recolep_px.clear();
+    _recolep_py.clear();
+    _recolep_pz.clear();
+    _recolep_pt.clear();
+    _recolep_eta.clear();
+    _recolep_phi.clear();
+ 
+    _n_recotauh = 0;
+    _recotauh_charge.clear();
+    _recotauh_decayMode.clear();
+    _recotauh_energy.clear();
+    _recotauh_px.clear();
+    _recotauh_py.clear();
+    _recotauh_pz.clear();
+    _recotauh_pt.clear();
+    _recotauh_eta.clear();
+    _recotauh_phi.clear();
+
+    _n_recoPFJet30 = 0;
+    _recoPFJet30_energy.clear();
+    _recoPFJet30_pt.clear();
+    _recoPFJet30_px.clear();
+    _recoPFJet30_py.clear();
+    _recoPFJet30_pz.clear();
+    _recoPFJet30_eta.clear();
+    _recoPFJet30_phi.clear();
+    _recoPFJet30_CSVscore.clear();    
+    _recoPFJet30_Flavour.clear(); 
+
+    _recoPFJet30_CSVsort_energy.clear();
+    _recoPFJet30_CSVsort_pt.clear();
+    _recoPFJet30_CSVsort_px.clear();
+    _recoPFJet30_CSVsort_py.clear();
+    _recoPFJet30_CSVsort_pz.clear();
+    _recoPFJet30_CSVsort_eta.clear();
+    _recoPFJet30_CSVsort_phi.clear();
+    _recoPFJet30_CSVsort_CSVscore.clear();    
+    _recoPFJet30_CSVsort_Flavour.clear();    
+
+    _n_recoPFJet30_btag_medium = 0;
+    _n_recoPFJet30_btag_loose = 0;
+    _recoPFJet30_btag_energy.clear();
+    _recoPFJet30_btag_pt.clear();
+    _recoPFJet30_btag_px.clear();
+    _recoPFJet30_btag_py.clear();
+    _recoPFJet30_btag_pz.clear();
+    _recoPFJet30_btag_eta.clear();
+    _recoPFJet30_btag_phi.clear();
+    _recoPFJet30_btag_CSVscore.clear();    
+    _recoPFJet30_btag_Flavour.clear();    
+
+    _n_recoPFJet30_untag = 0;
+    _recoPFJet30_untag_energy.clear();
+    _recoPFJet30_untag_pt.clear();
+    _recoPFJet30_untag_px.clear();
+    _recoPFJet30_untag_py.clear();
+    _recoPFJet30_untag_pz.clear();
+    _recoPFJet30_untag_eta.clear();
+    _recoPFJet30_untag_phi.clear();
+    _recoPFJet30_untag_CSVscore.clear();    
+    _recoPFJet30_untag_Flavour.clear();
+
+    _n_pair_Wtag_recoPFJet30_untag = 0;
+    _recoPFJet30_untag_best_mW = 0;
+    _recoPFJet30_untag_Wtag_energy.clear();
+    _recoPFJet30_untag_Wtag_pt.clear();
+    _recoPFJet30_untag_Wtag_px.clear();
+    _recoPFJet30_untag_Wtag_py.clear();
+    _recoPFJet30_untag_Wtag_pz.clear();
+    _recoPFJet30_untag_Wtag_eta.clear();
+    _recoPFJet30_untag_Wtag_phi.clear();
+    _recoPFJet30_untag_Wtag_CSVscore.clear();    
+    _recoPFJet30_untag_Wtag_Flavour.clear();    
+
+    _mtop_had_perm.clear();
+    _mblep_perm.clear();
+    _mleptauh_perm.clear();
+
+    _PFMETx = 0;
+    _PFMETy = 0;
+    _PFMET = 0;
+    _PFMET_phi = 0;
+
+    _PFMET_cov00 = 0;
+    _PFMET_cov01 = 0;
+    _PFMET_cov10 = 0;
+    _PFMET_cov11 = 0;
+
+    _n_genlep = 0;
+    _genlep_pdg.clear();
+    _genlep_charge.clear();
+    _genlep_energy.clear();
+    _genlep_px.clear();
+    _genlep_py.clear();
+    _genlep_pz.clear();
+    _genlep_pt.clear();
+    _genlep_eta.clear();
+    _genlep_phi.clear();
+    _genlep_TauMothInd.clear();
+    _genlep_TopMothInd.clear();
+
+    _n_gentauh = 0;
+    _gentauh_charge.clear();
+    _gentauh_energy.clear();
+    _gentauh_px.clear();
+    _gentauh_py.clear();
+    _gentauh_pz.clear();
+    _gentauh_pt.clear();
+    _gentauh_eta.clear();
+    _gentauh_phi.clear();
+
+    _n_gentau = 0;
+    _gentau_decayMode.clear();
+    _gentau_charge.clear();
+    _gentau_energy.clear();
+    _gentau_px.clear();
+    _gentau_py.clear();
+    _gentau_pz.clear();
+    _gentau_pt.clear();
+    _gentau_eta.clear();
+    _gentau_phi.clear();
+    _gentau_TopMothInd.clear();
+
+    _n_genH = 0;
+    _genH_decayMode.clear();
+    _genH_energy.clear();
+    _genH_px.clear();
+    _genH_py.clear();
+    _genH_pz.clear();
+    _genH_pt.clear();
+    _genH_eta.clear();
+    _genH_phi.clear();
+
+    _n_gentop = 0;
+    _gentop_pdg.clear();
+    _gentop_decayMode.clear();
+    _gentop_energy.clear();
+    _gentop_px.clear();
+    _gentop_py.clear();
+    _gentop_pz.clear();
+    _gentop_pt.clear();
+    _gentop_eta.clear();
+    _gentop_phi.clear();
+
+    _n_genb = 0;
+    _genb_pdg.clear();
+    _genb_energy.clear();
+    _genb_px.clear();
+    _genb_py.clear();
+    _genb_pz.clear();
+    _genb_pt.clear();
+    _genb_eta.clear();
+    _genb_phi.clear();
+    _genb_TopMothInd.clear();
+
+    _n_gennu = 0;
+    _gennu_pdg.clear();
+    _gennu_energy.clear();
+    _gennu_px.clear();
+    _gennu_py.clear();
+    _gennu_pz.clear();
+    _gennu_pt.clear();
+    _gennu_eta.clear();
+    _gennu_phi.clear();
+    _gennu_TauMothInd.clear();
+    _gennu_TopMothInd.clear();
+
+
+    _jets_e = 0;
+    _jets_px = 0;
+    _jets_py = 0;
+    _jets_pz = 0;
+    _jets_Flavour = 0;
+    _bCSVscore = 0;
+
+    _daughters_e = 0;
+    _daughters_px = 0;
+    _daughters_py = 0;
+    _daughters_pz = 0;
+    _PDGIdDaughters = 0;
+    _decayMode = 0;
+    _combreliso = 0;
+    _daughters_byTightCombinedIsolationDeltaBetaCorr3Hits = 0;
+    _daughters_decayModeFindingOldDMs = 0;
+    _daughters_againstMuonTight3 = 0;
+    _daughters_againstElectronMediumMVA5 = 0;
+
+    _MET_cov00_vect = 0;
+    _MET_cov01_vect = 0;
+    _MET_cov10_vect = 0;
+    _MET_cov11_vect = 0;
+
+    _genpart_px = 0;
+    _genpart_py = 0;
+    _genpart_pz = 0;
+    _genpart_e = 0;
+    _genpart_pdg = 0;
+    _genpart_HMothInd = 0;
+    _genpart_TopMothInd = 0;
+    _genpart_TauMothInd = 0;
+    _genpart_HZDecayMode = 0;
+    _genpart_TauGenDecayMode = 0;
+
+    tree->GetEntry(i);
+
+    
+    ///Leptons + taus   
+    
+    vector< pair<int,TLorentzVector> > reco_leptons;
+    vector< pair<int,TLorentzVector> > reco_taus;
+   	
+    for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
+      int PDGId=(*_PDGIdDaughters)[i_daughter];
+      TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
+      
+      pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
+     
+
+      if( fabs(PDGId)==11 || fabs(PDGId)==13){
+
+	float rel_iso=(*_combreliso)[i_daughter];
+	if(daughter.Pt()>20 && fabs(daughter.Eta())<2.1 &&  rel_iso<0.1)
+	  reco_leptons.push_back(daughter_pair);
+
+      }
+
+      else if( fabs(PDGId)==15 ){
+
+	int iso=(*_daughters_byTightCombinedIsolationDeltaBetaCorr3Hits)[i_daughter];
+	int decayModeFinding=(*_daughters_decayModeFindingOldDMs)[i_daughter];
+	int antiMu=(*_daughters_againstMuonTight3)[i_daughter];
+	int antiE=(*_daughters_againstElectronMediumMVA5)[i_daughter];
+
+	if(daughter.Pt()>30 && fabs(daughter.Eta())<2.1 && iso==1 && decayModeFinding>0.5 && antiMu>0 && antiE>0)
+	  reco_taus.push_back(daughter_pair);
+      }
+
+    }
+
+    sort(reco_leptons.begin(), reco_leptons.end(), pT_comparison_pairs);
+    sort(reco_taus.begin(), reco_taus.end(), pT_comparison_pairs);
+    
+    _n_recolep = reco_leptons.size();
+
+    for(unsigned int i_lepton=0; i_lepton<reco_leptons.size(); i_lepton++){
+      
+      int i_daughter=reco_leptons[i_lepton].first;
+      TLorentzVector lepton=reco_leptons[i_lepton].second;
+
+      _recolep_ID.push_back( (*_PDGIdDaughters)[i_daughter] );
+      _recolep_charge.push_back( (*_PDGIdDaughters)[i_daughter] > 0 ? -1 : 1 );
+      _recolep_energy.push_back( lepton.E() );
+      _recolep_px.push_back( lepton.Px() );
+      _recolep_py.push_back( lepton.Py() );
+      _recolep_pz.push_back( lepton.Pz() );
+      _recolep_pt.push_back( lepton.Pt() );
+      _recolep_eta.push_back( lepton.Eta() );
+      _recolep_phi.push_back( lepton.Phi() );
+
+    }
+
+    _n_recotauh = reco_taus.size();
+
+    for(unsigned int i_tauh=0; i_tauh<reco_taus.size(); i_tauh++){
+      
+      int i_daughter=reco_taus[i_tauh].first;
+      TLorentzVector tauh=reco_taus[i_tauh].second;
+
+      _recotauh_charge.push_back( (*_PDGIdDaughters)[i_daughter] > 0 ? -1 : 1 );
+      _recotauh_decayMode.push_back( (*_decayMode)[i_daughter] );
+      _recotauh_energy.push_back( tauh.E() );
+      _recotauh_px.push_back( tauh.Px() );
+      _recotauh_py.push_back( tauh.Py() );
+      _recotauh_pz.push_back( tauh.Pz() );
+      _recotauh_pt.push_back( tauh.Pt() );
+      _recotauh_eta.push_back( tauh.Eta() );
+      _recotauh_phi.push_back( tauh.Phi() );
+
+    }
+
+    
+    ///Jets
+    
+    vector< pair<int,TLorentzVector> > reco_jets;
+    vector< pair<int,float> > i_jet_CSV_pairs;
+
+    for(unsigned int i_jet=0; i_jet<(*_jets_e).size(); i_jet++){
+
+      TLorentzVector jet ( (*_jets_px)[i_jet] , (*_jets_py)[i_jet] , (*_jets_pz)[i_jet] , (*_jets_e)[i_jet] );
+
+      pair<int,TLorentzVector> jet_pair = make_pair(i_jet,jet);
+      float CSVscore = (*_bCSVscore)[i_jet];
+      pair<int,float> CSV_pair = make_pair(i_jet,CSVscore);
+
+      if(jet.Pt()>30 && fabs(jet.Eta())<2.5){
+
+	bool dR_veto=false;
+
+	for(int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
+
+	  TLorentzVector lep=reco_leptons[i_lep].second;
+	  float dR_lep_jet=lep.DeltaR(jet);
+	  if(dR_lep_jet<0.4){
+	    dR_veto=true;
+	    break;
+	  }
+	
+	}
+
+	for(int i_tauh=0; i_tauh<reco_taus.size(); i_tauh++){
+
+	  TLorentzVector tauh=reco_taus[i_tauh].second;
+	  float dR_tauh_jet=tauh.DeltaR(jet);
+	  if(dR_tauh_jet<0.4){
+	    dR_veto=true;
+	    break;
+	  }
+	
+	}
+
+	if(dR_veto)
+	  continue;
+
+	reco_jets.push_back(jet_pair);
+	i_jet_CSV_pairs.push_back(CSV_pair);
+
+	//Tight CSV WP: CSV>0.941
+	//Medium CSV WP: CSV>0.814
+	//Loose CSV WP: CSV>0.423   
+
+	if(CSVscore>0.423)
+	  _n_recoPFJet30_btag_loose++;
+	if(CSVscore>0.814)
+	  _n_recoPFJet30_btag_medium++;
+
+      }
+
+    }
+
+
+    sort(reco_jets.begin(), reco_jets.end(), pT_comparison_pairs);
+    sort(i_jet_CSV_pairs.begin(), i_jet_CSV_pairs.end(), CSV_comparison_pairs);
+    
+
+    _n_recoPFJet30 = reco_jets.size();
+    
+
+    for(unsigned int i_PFJet30=0; i_PFJet30<reco_jets.size(); i_PFJet30++){
+
+      int i_jet = reco_jets[i_PFJet30].first;
+      TLorentzVector jet =  reco_jets[i_PFJet30].second;
+      
+      _recoPFJet30_energy.push_back( jet.E() );
+      _recoPFJet30_pt.push_back( jet.Pt() );
+      _recoPFJet30_px.push_back( jet.Px() );
+      _recoPFJet30_py.push_back( jet.Py() );
+      _recoPFJet30_pz.push_back( jet.Pz() );
+      _recoPFJet30_eta.push_back( jet.Eta() );
+      _recoPFJet30_phi.push_back( jet.Phi() );
+      _recoPFJet30_CSVscore.push_back(  (*_bCSVscore)[i_jet] );
+      _recoPFJet30_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+
+    }
+
+    for(unsigned int i_PFJet30=0; i_PFJet30<i_jet_CSV_pairs.size(); i_PFJet30++){
+
+      int i_jet = i_jet_CSV_pairs[i_PFJet30].first;
+      float CSVscore= i_jet_CSV_pairs[i_PFJet30].second;
+      
+      TLorentzVector jet  ( (*_jets_px)[i_jet] , (*_jets_py)[i_jet] , (*_jets_pz)[i_jet] , (*_jets_e)[i_jet] );
+      
+      _recoPFJet30_CSVsort_energy.push_back( jet.E() );
+      _recoPFJet30_CSVsort_pt.push_back( jet.Pt() );
+      _recoPFJet30_CSVsort_px.push_back( jet.Px() );
+      _recoPFJet30_CSVsort_py.push_back( jet.Py() );
+      _recoPFJet30_CSVsort_pz.push_back( jet.Pz() );
+      _recoPFJet30_CSVsort_eta.push_back( jet.Eta() );
+      _recoPFJet30_CSVsort_phi.push_back( jet.Phi() );
+      _recoPFJet30_CSVsort_CSVscore.push_back( CSVscore );
+      _recoPFJet30_CSVsort_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+
+      if(i_PFJet30<2){
+	_recoPFJet30_btag_energy.push_back( jet.E() );
+	_recoPFJet30_btag_pt.push_back( jet.Pt() );
+	_recoPFJet30_btag_px.push_back( jet.Px() );
+	_recoPFJet30_btag_py.push_back( jet.Py() );
+	_recoPFJet30_btag_pz.push_back( jet.Pz() );
+	_recoPFJet30_btag_eta.push_back( jet.Eta() );
+	_recoPFJet30_btag_phi.push_back( jet.Phi() );
+	_recoPFJet30_btag_CSVscore.push_back( CSVscore );
+	_recoPFJet30_btag_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+      }
+
+      else{
+	_recoPFJet30_untag_energy.push_back( jet.E() );
+	_recoPFJet30_untag_pt.push_back( jet.Pt() );
+	_recoPFJet30_untag_px.push_back( jet.Px() );
+	_recoPFJet30_untag_py.push_back( jet.Py() );
+	_recoPFJet30_untag_pz.push_back( jet.Pz() );
+	_recoPFJet30_untag_eta.push_back( jet.Eta() );
+	_recoPFJet30_untag_phi.push_back( jet.Phi() );
+	_recoPFJet30_untag_CSVscore.push_back( CSVscore );
+	_recoPFJet30_untag_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+      }
+
+    }
+
+    _n_recoPFJet30_untag=_recoPFJet30_untag_energy.size();
+
+    //W-tag
+    double mW=80.4;
+
+
+    if(_recoPFJet30_untag_energy.size()>1){
+
+      vector<int> index_Wtag;
+      index_Wtag.push_back(0);
+      index_Wtag.push_back(0);
+	    
+      for(unsigned int i_jet1=0; i_jet1<_recoPFJet30_untag_energy.size()-1; i_jet1++){
+	TLorentzVector jet1 ( _recoPFJet30_untag_px[i_jet1], _recoPFJet30_untag_py[i_jet1], _recoPFJet30_untag_pz[i_jet1], _recoPFJet30_untag_energy[i_jet1] );
+	
+	for(unsigned int i_jet2=i_jet1+1; i_jet2<_recoPFJet30_untag_energy.size(); i_jet2++){
+	  
+
+	  TLorentzVector jet2 ( _recoPFJet30_untag_px[i_jet2], _recoPFJet30_untag_py[i_jet2], _recoPFJet30_untag_pz[i_jet2], _recoPFJet30_untag_energy[i_jet2] );
+	  
+	  double mjj = (jet1+jet2).M();
+	  if(mjj>60 && mjj<100)
+	    _n_pair_Wtag_recoPFJet30_untag++;
+
+
+	  if( abs( mjj - mW ) < abs( _recoPFJet30_untag_best_mW - mW ) ){
+	    
+	    _recoPFJet30_untag_best_mW = mjj;
+	    
+	    if(jet1.Pt()>jet2.Pt()){
+	      index_Wtag[0]=i_jet1;
+	      index_Wtag[1]=i_jet2;
+	    }
+	    else{
+	      index_Wtag[0]=i_jet2;
+	      index_Wtag[1]=i_jet1;
+	    }
+
+	  }
+	    
+	  
+	}
+	
+      }
+
+      for(int k=0;k<2;k++){
+
+	int i_jet=index_Wtag[k];
+
+	_recoPFJet30_untag_Wtag_energy.push_back( _recoPFJet30_untag_energy[i_jet] );
+	_recoPFJet30_untag_Wtag_pt.push_back( _recoPFJet30_untag_pt[i_jet] );
+	_recoPFJet30_untag_Wtag_px.push_back( _recoPFJet30_untag_px[i_jet] );
+	_recoPFJet30_untag_Wtag_py.push_back( _recoPFJet30_untag_py[i_jet] );
+	_recoPFJet30_untag_Wtag_pz.push_back( _recoPFJet30_untag_pz[i_jet] );
+	_recoPFJet30_untag_Wtag_eta.push_back( _recoPFJet30_untag_eta[i_jet] );
+	_recoPFJet30_untag_Wtag_phi.push_back( _recoPFJet30_untag_phi[i_jet] );
+	_recoPFJet30_untag_Wtag_CSVscore.push_back( _recoPFJet30_untag_CSVscore[i_jet] );
+	_recoPFJet30_untag_Wtag_Flavour.push_back( _recoPFJet30_untag_Flavour[i_jet] );
+
+      }
+
+    }
+    
+
+    if( _n_recolep==2 && _n_recotauh>=1 && _n_recoPFJet30>=4){
+  
+      for(int perm=0; perm<4; perm++){
+	
+	TLorentzVector Whad_1 ( _recoPFJet30_untag_Wtag_px[0], _recoPFJet30_untag_Wtag_py[0], _recoPFJet30_untag_Wtag_pz[0], _recoPFJet30_untag_Wtag_energy[0] );
+	TLorentzVector Whad_2 ( _recoPFJet30_untag_Wtag_px[1], _recoPFJet30_untag_Wtag_py[1], _recoPFJet30_untag_Wtag_pz[1], _recoPFJet30_untag_Wtag_energy[1] );
+	TLorentzVector tauh ( _recotauh_px[0], _recotauh_py[0], _recotauh_pz[0], _recotauh_energy[0]);
+	
+	TLorentzVector Bjet_1 ( _recoPFJet30_btag_px[0], _recoPFJet30_btag_py[0], _recoPFJet30_btag_pz[0], _recoPFJet30_btag_energy[0] );
+	TLorentzVector Bjet_2 ( _recoPFJet30_btag_px[1], _recoPFJet30_btag_py[1], _recoPFJet30_btag_pz[1], _recoPFJet30_btag_energy[1] );
+	
+	TLorentzVector lep_1 ( _recolep_px[0], _recolep_py[0], _recolep_pz[0], _recolep_energy[0] );
+	TLorentzVector lep_2 ( _recolep_px[1], _recolep_py[1], _recolep_pz[1], _recolep_energy[1] );
+	
+	TLorentzVector bjet_leptop, bjet_hadtop, lep_top, lep_tau;
+	
+	switch(perm){
+	case 0:
+	  lep_top = lep_1;
+	  lep_tau = lep_2;
+	  bjet_leptop = Bjet_1;
+	  bjet_hadtop = Bjet_2;	
+	  break;
+	  
+	case 1:
+	  lep_top = lep_2;
+	  lep_tau = lep_1;
+	  bjet_leptop = Bjet_1;
+	  bjet_hadtop = Bjet_2;
+	  break;
+	  
+	case 2:
+	  lep_top = lep_1;
+	  lep_tau = lep_2;
+	  bjet_leptop = Bjet_2;
+	  bjet_hadtop = Bjet_1;	
+	  break;
+	  
+	case 3:
+	  lep_top = lep_2;
+	  lep_tau = lep_1;
+	  bjet_leptop = Bjet_2;
+	  bjet_hadtop = Bjet_1;	
+	  break;
+	  
+	default:
+	  break;
+	  
+	}
+	
+	_mtop_had_perm.push_back( (Whad_1+Whad_2+bjet_hadtop).M() );
+	_mblep_perm.push_back( (bjet_leptop+lep_top).M() );
+	_mleptauh_perm.push_back( (lep_tau+tauh).M() );
+	
+      }
+
+    }
+
+    ///MET
+
+    TVector3 PFMET_tv3;
+    PFMET_tv3.SetPtEtaPhi(_PFMET,0,_PFMET_phi);
+    _PFMETx = PFMET_tv3.Px();    
+    _PFMETy = PFMET_tv3.Py();
+
+    if( (*_MET_cov00_vect).size() > 0 ){
+
+      _PFMET_cov00 = (*_MET_cov00_vect)[0];
+      _PFMET_cov01 = (*_MET_cov01_vect)[0];
+      _PFMET_cov10 = (*_MET_cov10_vect)[0];
+      _PFMET_cov11 = (*_MET_cov11_vect)[0];
+      
+      for(unsigned int i_MET=0;i_MET<(*_MET_cov00_vect).size();i_MET++){
+	
+	if( (*_MET_cov00_vect)[i_MET]!=_PFMET_cov00 || (*_MET_cov01_vect)[i_MET]!=_PFMET_cov01 || (*_MET_cov10_vect)[i_MET]!=_PFMET_cov10 || (*_MET_cov11_vect)[i_MET]!=_PFMET_cov11 ){
+	  cout<<"Problem with MET"<<endl;
+	  return;
+	}
+
+      }
+      
+    }
+
+
+    // Gen information
+
+    for(unsigned int i_gen=0; i_gen<(*_genpart_e).size(); i_gen++){
+
+
+      TLorentzVector genpart_tlv( (*_genpart_px)[i_gen], (*_genpart_py)[i_gen], (*_genpart_pz)[i_gen], (*_genpart_e)[i_gen]);
+
+      if( abs( (*_genpart_pdg)[i_gen] )==11 || abs( (*_genpart_pdg)[i_gen] )==13){
+
+	_genlep_pdg.push_back( (*_genpart_pdg)[i_gen] );
+	_genlep_charge.push_back( (*_genpart_pdg)[i_gen]>0 ? -1:1 );
+	
+	_genlep_energy.push_back( genpart_tlv.E() );
+	_genlep_px.push_back( genpart_tlv.Px() );
+	_genlep_py.push_back( genpart_tlv.Py() );
+	_genlep_pz.push_back( genpart_tlv.Pz() );
+	_genlep_pt.push_back( genpart_tlv.Pt() );
+	_genlep_eta.push_back( genpart_tlv.Eta() );
+	_genlep_phi.push_back( genpart_tlv.Phi() );
+
+	_genlep_TauMothInd.push_back( (*_genpart_TauMothInd)[i_gen] );
+	_genlep_TopMothInd.push_back( (*_genpart_TopMothInd)[i_gen] );
+
+      }
+
+      else if( abs( (*_genpart_pdg)[i_gen] )==66615){
+
+	_gentauh_charge.push_back( (*_genpart_pdg)[i_gen]>0 ? -1:1 );
+	
+	_gentauh_energy.push_back( genpart_tlv.E() );
+	_gentauh_px.push_back( genpart_tlv.Px() );
+	_gentauh_py.push_back( genpart_tlv.Py() );
+	_gentauh_pz.push_back( genpart_tlv.Pz() );
+	_gentauh_pt.push_back( genpart_tlv.Pt() );
+	_gentauh_eta.push_back( genpart_tlv.Eta() );
+	_gentauh_phi.push_back( genpart_tlv.Phi() );
+
+	_gentauh_TauMothInd.push_back( (*_genpart_TauMothInd)[i_gen] );
+
+      }
+
+      else if( abs( (*_genpart_pdg)[i_gen] )==15){
+
+	_gentau_decayMode.push_back( (*_genpart_TauGenDecayMode)[i_gen] );
+	_gentau_charge.push_back( (*_genpart_pdg)[i_gen]>0 ? -1:1 );
+
+	_gentau_energy.push_back( genpart_tlv.E() );
+	_gentau_px.push_back( genpart_tlv.Px() );
+	_gentau_py.push_back( genpart_tlv.Py() );
+	_gentau_pz.push_back( genpart_tlv.Pz() );
+	_gentau_pt.push_back( genpart_tlv.Pt() );
+	_gentau_eta.push_back( genpart_tlv.Eta() );
+	_gentau_phi.push_back( genpart_tlv.Phi() );
+
+	_gentau_TopMothInd.push_back( (*_genpart_TopMothInd)[i_gen] );
+
+      }
+
+      else if( abs( (*_genpart_pdg)[i_gen] )==25){
+
+	_genH_decayMode.push_back( (*_genpart_HZDecayMode)[i_gen] );
+
+	_genH_energy.push_back( genpart_tlv.E() );
+	_genH_px.push_back( genpart_tlv.Px() );
+	_genH_py.push_back( genpart_tlv.Py() );
+	_genH_pz.push_back( genpart_tlv.Pz() );
+	_genH_pt.push_back( genpart_tlv.Pt() );
+	_genH_eta.push_back( genpart_tlv.Eta() );
+	_genH_phi.push_back( genpart_tlv.Phi() );
+
+      }
+
+      else if( abs( (*_genpart_pdg)[i_gen] )==6){
+
+	_gentop_pdg.push_back( (*_genpart_pdg)[i_gen] );
+	
+
+
+	int decayMode = 0;
+
+	for(int i_gen2=0; i_gen2<(*_genpart_e).size(); i_gen2++){
+	  
+	  if( (*_genpart_TopMothInd)[i_gen2] == i_gen ){
+
+	    if( abs((*_genpart_pdg)[i_gen2])==11 || abs((*_genpart_pdg)[i_gen2])==13){
+	      decayMode = 1; // leptonic decay of the top
+	      break;
+
+	    }
+
+	  }
+	  
+	}
+	
+	_gentop_decayMode.push_back(decayMode);
+
+	_gentop_energy.push_back( genpart_tlv.E() );
+	_gentop_px.push_back( genpart_tlv.Px() );
+	_gentop_py.push_back( genpart_tlv.Py() );
+	_gentop_pz.push_back( genpart_tlv.Pz() );
+	_gentop_pt.push_back( genpart_tlv.Pt() );
+	_gentop_eta.push_back( genpart_tlv.Eta() );
+	_gentop_phi.push_back( genpart_tlv.Phi() );
+
+      }
+
+      else if( abs( (*_genpart_pdg)[i_gen] )==5){
+
+	_genb_pdg.push_back( (*_genpart_pdg)[i_gen] );
+
+	_genb_energy.push_back( genpart_tlv.E() );
+	_genb_px.push_back( genpart_tlv.Px() );
+	_genb_py.push_back( genpart_tlv.Py() );
+	_genb_pz.push_back( genpart_tlv.Pz() );
+	_genb_pt.push_back( genpart_tlv.Pt() );
+	_genb_eta.push_back( genpart_tlv.Eta() );
+	_genb_phi.push_back( genpart_tlv.Phi() );
+
+	_genb_TopMothInd.push_back( (*_genpart_TopMothInd)[i_gen] );
+
+
+      }
+
+      else if( abs( (*_genpart_pdg)[i_gen] )==12 || abs( (*_genpart_pdg)[i_gen] )==14 || abs( (*_genpart_pdg)[i_gen] )==16){
+
+	_gennu_pdg.push_back( (*_genpart_pdg)[i_gen] );
+
+	_gennu_energy.push_back( genpart_tlv.E() );
+	_gennu_px.push_back( genpart_tlv.Px() );
+	_gennu_py.push_back( genpart_tlv.Py() );
+	_gennu_pz.push_back( genpart_tlv.Pz() );
+	_gennu_pt.push_back( genpart_tlv.Pt() );
+	_gennu_eta.push_back( genpart_tlv.Eta() );
+	_gennu_phi.push_back( genpart_tlv.Phi() );
+
+	_gennu_TauMothInd.push_back( (*_genpart_TauMothInd)[i_gen] );
+	_gennu_TopMothInd.push_back( (*_genpart_TopMothInd)[i_gen] );
+
+      }
+
+
+    }
+
+    _n_genlep = _genlep_energy.size();
+    _n_gentauh = _gentauh_energy.size();
+    _n_gentau = _gentau_energy.size();
+    _n_genH = _genH_energy.size();
+    _n_gentop = _gentop_energy.size();
+    _n_genb = _genb_energy.size();
+    _n_gennu = _gennu_energy.size();
+
+    tree_new->Fill();
+
+  }
+
+  tree_new->Write();
+  f_new->Close();
+
+
+  return;
+
+}
