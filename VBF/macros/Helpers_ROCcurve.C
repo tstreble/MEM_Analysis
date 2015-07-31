@@ -30,8 +30,10 @@ TGraphErrors* get_ROC_LR(TString file_sig, TString file_bkg, TString tree_name, 
   int n=0;
   double step=25./nbin;
 
-  int binup_sig=h_sig->FindBin(27);
-  int binup_bkg=h_bkg->FindBin(27);
+  //int binup_sig=h_sig->FindBin(27);
+  //int binup_bkg=h_bkg->FindBin(27);
+  int binup_sig=h_sig->FindBin(25);
+  int binup_bkg=h_bkg->FindBin(25);
 
   for(int i=0;i<nbin;i++){
     double x=i*step;
@@ -44,28 +46,6 @@ TGraphErrors* get_ROC_LR(TString file_sig, TString file_bkg, TString tree_name, 
     double sigeff=n_sig_acc/N_sig;
     double bkgfake=n_bkg_acc/N_bkg;
 
-    /*if(i<3){
-      cout<<""<<endl;
-      cout<<"i="<<i<<endl;
-      cout<<"x="<<x<<endl;
-      cout<<"LR>"<<1-exp(-x)<<endl;
-      cout<<"n_sig_acc="<<n_sig_acc<<endl;
-      cout<<"n_bkg_acc="<<n_bkg_acc<<endl;
-      cout<<"sigeff="<<sigeff<<endl;
-      cout<<"bkgfake="<<bkgfake<<endl;
-    }
-
-
-    if(abs(sigeff-0.2)<0.001){
-      cout<<"n_sig_acc="<<n_sig_acc<<endl;
-      cout<<"n_bkg_acc="<<n_bkg_acc<<endl;
-      cout<<"x="<<x<<endl;
-      cout<<"sigeff="<<sigeff<<endl;
-      cout<<"bkgfake="<<bkgfake<<endl;
-
-      }*/
-
- 
 
     double ex=sqrt(sigeff*(1-sigeff)/N_sig);
     double ey=sqrt(bkgfake*(1-bkgfake)/N_bkg);
@@ -1799,6 +1779,370 @@ TGraphErrors* get_ROC_2D_LR_Mjj_unbiased(TString file_sig, TString file_bkg, TSt
       npoints++;
 
     }
+  }
+
+  return ROC;
+
+
+}
+
+
+
+TGraphErrors* get_ROC_LR_perm0(TString file_sig, TString file_bkg, TString tree_name,  TString cut_num_sig, TString cut_denom_sig, TString cut_num_bkg, TString cut_denom_bkg, int nbin=100, bool mistag_rate=true, float k=0.00026, TString weight_sig="1", TString weight_bkg="1"){
+
+
+  TH1F* h_sig=single_plot(file_sig,tree_name,Form("-log(1-IntegralVBF_perm[0]/(IntegralVBF_perm[0]+%f*IntegralDY_perm[0]))*(IntegralDY_perm[0]>0)+26*(IntegralDY_perm[0]==0&&IntegralVBF_perm[0]>0)-(IntegralDY_perm[0]==0&&IntegralVBF_perm[0]==0)",k),weight_sig+"*("+cut_num_sig+")",nbin,0,27);
+  TH1F* h_bkg=single_plot(file_bkg,tree_name,Form("-log(1-IntegralVBF_perm[0]/(IntegralVBF_perm[0]+%f*IntegralDY_perm[0]))*(IntegralDY_perm[0]>0)+26*(IntegralDY_perm[0]==0&&IntegralVBF_perm[0]>0)-(IntegralDY_perm[0]==0&&IntegralVBF_perm[0]==0)",k),weight_bkg+"*("+cut_num_bkg+")",nbin,0,27);
+
+  TH1F* h_sig_denom=single_plot(file_sig,tree_name,"1",weight_sig+"*("+cut_denom_sig+")",nbin,0,27);
+  TH1F* h_bkg_denom=single_plot(file_bkg,tree_name,"1",weight_bkg+"*("+cut_denom_bkg+")",nbin,0,27);
+
+
+  double N_sig=h_sig_denom->Integral();
+  cout<<"N_sig="<<N_sig<<endl;
+  double N_bkg=h_bkg_denom->Integral();
+  cout<<"N_bkg="<<N_bkg<<endl;
+
+
+
+  TGraphErrors* ROC=new TGraphErrors();
+  int n=0;
+  double step=25./nbin;
+
+  //int binup_sig=h_sig->FindBin(27);
+  //int binup_bkg=h_bkg->FindBin(27);
+  int binup_sig=h_sig->FindBin(25);
+  int binup_bkg=h_bkg->FindBin(25);
+
+  for(int i=0;i<nbin;i++){
+    double x=i*step;
+    int binlow_sig=h_sig->FindBin(x);
+    int binlow_bkg=h_bkg->FindBin(x);
+
+    double n_sig_acc=h_sig->Integral(binlow_sig,binup_sig);
+    double n_bkg_acc=h_bkg->Integral(binlow_bkg,binup_bkg);
+
+    double sigeff=n_sig_acc/N_sig;
+    double bkgfake=n_bkg_acc/N_bkg;
+
+
+    double ex=sqrt(sigeff*(1-sigeff)/N_sig);
+    double ey=sqrt(bkgfake*(1-bkgfake)/N_bkg);
+
+    if(mistag_rate)
+      ROC->SetPoint(n,sigeff,bkgfake);
+    else
+      ROC->SetPoint(n,sigeff,1-bkgfake);
+      
+
+    //ROC->SetPointError(n,ex,ey);
+    n++;
+
+  }
+
+  return ROC;
+
+
+}
+
+
+
+
+
+
+TGraphErrors* get_ROC_LR_perm1(TString file_sig, TString file_bkg, TString tree_name,  TString cut_num_sig, TString cut_denom_sig, TString cut_num_bkg, TString cut_denom_bkg, int nbin=100, bool mistag_rate=true, float k=0.00026, TString weight_sig="1", TString weight_bkg="1"){
+
+
+  TH1F* h_sig=single_plot(file_sig,tree_name,Form("-log(1-IntegralVBF_perm[1]/(IntegralVBF_perm[1]+%f*IntegralDY_perm[1]))*(IntegralDY_perm[1]>0)+26*(IntegralDY_perm[1]==0&&IntegralVBF_perm[1]>0)-(IntegralDY_perm[1]==0&&IntegralVBF_perm[1]==0)",k),weight_sig+"*("+cut_num_sig+")",nbin,0,27);
+  TH1F* h_bkg=single_plot(file_bkg,tree_name,Form("-log(1-IntegralVBF_perm[1]/(IntegralVBF_perm[1]+%f*IntegralDY_perm[1]))*(IntegralDY_perm[1]>0)+26*(IntegralDY_perm[1]==0&&IntegralVBF_perm[1]>0)-(IntegralDY_perm[1]==0&&IntegralVBF_perm[1]==0)",k),weight_bkg+"*("+cut_num_bkg+")",nbin,0,27);
+
+  TH1F* h_sig_denom=single_plot(file_sig,tree_name,"1",weight_sig+"*("+cut_denom_sig+")",nbin,0,27);
+  TH1F* h_bkg_denom=single_plot(file_bkg,tree_name,"1",weight_bkg+"*("+cut_denom_bkg+")",nbin,0,27);
+
+
+  double N_sig=h_sig_denom->Integral();
+  cout<<"N_sig="<<N_sig<<endl;
+  double N_bkg=h_bkg_denom->Integral();
+  cout<<"N_bkg="<<N_bkg<<endl;
+
+
+
+  TGraphErrors* ROC=new TGraphErrors();
+  int n=0;
+  double step=25./nbin;
+
+  //int binup_sig=h_sig->FindBin(27);
+  //int binup_bkg=h_bkg->FindBin(27);
+  int binup_sig=h_sig->FindBin(25);
+  int binup_bkg=h_bkg->FindBin(25);
+
+  for(int i=0;i<nbin;i++){
+    double x=i*step;
+    int binlow_sig=h_sig->FindBin(x);
+    int binlow_bkg=h_bkg->FindBin(x);
+
+    double n_sig_acc=h_sig->Integral(binlow_sig,binup_sig);
+    double n_bkg_acc=h_bkg->Integral(binlow_bkg,binup_bkg);
+
+    double sigeff=n_sig_acc/N_sig;
+    double bkgfake=n_bkg_acc/N_bkg;
+
+
+    double ex=sqrt(sigeff*(1-sigeff)/N_sig);
+    double ey=sqrt(bkgfake*(1-bkgfake)/N_bkg);
+
+    if(mistag_rate)
+      ROC->SetPoint(n,sigeff,bkgfake);
+    else
+      ROC->SetPoint(n,sigeff,1-bkgfake);
+      
+
+    //ROC->SetPointError(n,ex,ey);
+    n++;
+
+  }
+
+  return ROC;
+
+
+}
+
+
+
+
+TGraphErrors* get_ROC_LR_perm_maxLR(TString file_sig, TString file_bkg, TString tree_name,  TString cut_num_sig, TString cut_denom_sig, TString cut_num_bkg, TString cut_denom_bkg, int nbin=100, bool mistag_rate=true, float k=0.00026, TString weight_sig="1", TString weight_bkg="1"){
+
+
+  TH1F* h_sig=single_plot(file_sig,tree_name,Form("-log(1-Max$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm)))*(Max$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm))<1)+26*(Max$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm))==1)-(IntegralDY_perm[0]==0&&IntegralVBF_perm[0]==0)",k,k,k),weight_sig+"*("+cut_num_sig+")",nbin,0,27);
+  TH1F* h_bkg=single_plot(file_bkg,tree_name,Form("-log(1-Max$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm)))*(Max$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm))<1)+26*(Max$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm))==1)-(IntegralDY_perm[0]==0&&IntegralVBF_perm[0]==0)",k,k,k),weight_bkg+"*("+cut_num_bkg+")",nbin,0,27);
+
+  TH1F* h_sig_denom=single_plot(file_sig,tree_name,"1",weight_sig+"*("+cut_denom_sig+")",nbin,0,27);
+  TH1F* h_bkg_denom=single_plot(file_bkg,tree_name,"1",weight_bkg+"*("+cut_denom_bkg+")",nbin,0,27);
+
+
+  double N_sig=h_sig_denom->Integral();
+  cout<<"N_sig="<<N_sig<<endl;
+  double N_bkg=h_bkg_denom->Integral();
+  cout<<"N_bkg="<<N_bkg<<endl;
+
+
+
+  TGraphErrors* ROC=new TGraphErrors();
+  int n=0;
+  double step=25./nbin;
+
+  //int binup_sig=h_sig->FindBin(27);
+  //int binup_bkg=h_bkg->FindBin(27);
+  int binup_sig=h_sig->FindBin(25);
+  int binup_bkg=h_bkg->FindBin(25);
+
+  for(int i=0;i<nbin;i++){
+    double x=i*step;
+    int binlow_sig=h_sig->FindBin(x);
+    int binlow_bkg=h_bkg->FindBin(x);
+
+    double n_sig_acc=h_sig->Integral(binlow_sig,binup_sig);
+    double n_bkg_acc=h_bkg->Integral(binlow_bkg,binup_bkg);
+
+    double sigeff=n_sig_acc/N_sig;
+    double bkgfake=n_bkg_acc/N_bkg;
+
+
+    double ex=sqrt(sigeff*(1-sigeff)/N_sig);
+    double ey=sqrt(bkgfake*(1-bkgfake)/N_bkg);
+
+    if(mistag_rate)
+      ROC->SetPoint(n,sigeff,bkgfake);
+    else
+      ROC->SetPoint(n,sigeff,1-bkgfake);
+      
+
+    //ROC->SetPointError(n,ex,ey);
+    n++;
+
+  }
+
+  return ROC;
+
+
+}
+
+
+
+
+
+TGraphErrors* get_ROC_LR_perm_minLR(TString file_sig, TString file_bkg, TString tree_name,  TString cut_num_sig, TString cut_denom_sig, TString cut_num_bkg, TString cut_denom_bkg, int nbin=100, bool mistag_rate=true, float k=0.00026, TString weight_sig="1", TString weight_bkg="1"){
+
+
+  TH1F* h_sig=single_plot(file_sig,tree_name,Form("-log(1-Min$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm)))*(Min$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm))<1)+26*(Min$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm))==1)-(IntegralDY_perm[0]==0&&IntegralVBF_perm[0]==0)",k,k,k),weight_sig+"*("+cut_num_sig+")",nbin,0,27);
+  TH1F* h_bkg=single_plot(file_bkg,tree_name,Form("-log(1-Min$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm)))*(Min$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm))<1)+26*(Min$(IntegralVBF_perm/(IntegralVBF_perm+%f*IntegralDY_perm))==1)-(IntegralDY_perm[0]==0&&IntegralVBF_perm[0]==0)",k,k,k),weight_bkg+"*("+cut_num_bkg+")",nbin,0,27);
+
+  TH1F* h_sig_denom=single_plot(file_sig,tree_name,"1",weight_sig+"*("+cut_denom_sig+")",nbin,0,27);
+  TH1F* h_bkg_denom=single_plot(file_bkg,tree_name,"1",weight_bkg+"*("+cut_denom_bkg+")",nbin,0,27);
+
+
+  double N_sig=h_sig_denom->Integral();
+  cout<<"N_sig="<<N_sig<<endl;
+  double N_bkg=h_bkg_denom->Integral();
+  cout<<"N_bkg="<<N_bkg<<endl;
+
+
+
+  TGraphErrors* ROC=new TGraphErrors();
+  int n=0;
+  double step=25./nbin;
+
+  //int binup_sig=h_sig->FindBin(27);
+  //int binup_bkg=h_bkg->FindBin(27);
+  int binup_sig=h_sig->FindBin(25);
+  int binup_bkg=h_bkg->FindBin(25);
+
+  for(int i=0;i<nbin;i++){
+    double x=i*step;
+    int binlow_sig=h_sig->FindBin(x);
+    int binlow_bkg=h_bkg->FindBin(x);
+
+    double n_sig_acc=h_sig->Integral(binlow_sig,binup_sig);
+    double n_bkg_acc=h_bkg->Integral(binlow_bkg,binup_bkg);
+
+    double sigeff=n_sig_acc/N_sig;
+    double bkgfake=n_bkg_acc/N_bkg;
+
+
+    double ex=sqrt(sigeff*(1-sigeff)/N_sig);
+    double ey=sqrt(bkgfake*(1-bkgfake)/N_bkg);
+
+    if(mistag_rate)
+      ROC->SetPoint(n,sigeff,bkgfake);
+    else
+      ROC->SetPoint(n,sigeff,1-bkgfake);
+      
+
+    //ROC->SetPointError(n,ex,ey);
+    n++;
+
+  }
+
+  return ROC;
+
+
+}
+
+
+
+
+
+
+TGraphErrors* get_ROC_LR_perm_forwjets(TString file_sig, TString file_bkg, TString tree_name,  TString cut_num_sig, TString cut_denom_sig, TString cut_num_bkg, TString cut_denom_bkg, int nbin=100, bool mistag_rate=true, float k=0.00026, TString weight_sig="1", TString weight_bkg="1"){
+
+
+  TH1F* h_sig=single_plot(file_sig,tree_name,Form("-log(1-IntegralVBF_perm[perm_forw_jet]/(IntegralVBF_perm[perm_forw_jet]+%f*IntegralDY_perm[perm_forw_jet]))*(IntegralDY_perm[perm_forw_jet]>0)+26*(IntegralDY_perm[perm_forw_jet]==0&&IntegralVBF_perm[perm_forw_jet]>0)-(IntegralDY_perm[perm_forw_jet]==0&&IntegralVBF_perm[perm_forw_jet]==0)",k),weight_sig+"*("+cut_num_sig+")",nbin,0,27);
+  TH1F* h_bkg=single_plot(file_bkg,tree_name,Form("-log(1-IntegralVBF_perm[perm_forw_jet]/(IntegralVBF_perm[perm_forw_jet]+%f*IntegralDY_perm[perm_forw_jet]))*(IntegralDY_perm[perm_forw_jet]>0)+26*(IntegralDY_perm[perm_forw_jet]==0&&IntegralVBF_perm[perm_forw_jet]>0)-(IntegralDY_perm[perm_forw_jet]==0&&IntegralVBF_perm[perm_forw_jet]==0)",k),weight_bkg+"*("+cut_num_bkg+")",nbin,0,27);
+
+  TH1F* h_sig_denom=single_plot(file_sig,tree_name,"1",weight_sig+"*("+cut_denom_sig+")",nbin,0,27);
+  TH1F* h_bkg_denom=single_plot(file_bkg,tree_name,"1",weight_bkg+"*("+cut_denom_bkg+")",nbin,0,27);
+
+
+  double N_sig=h_sig_denom->Integral();
+  cout<<"N_sig="<<N_sig<<endl;
+  double N_bkg=h_bkg_denom->Integral();
+  cout<<"N_bkg="<<N_bkg<<endl;
+
+
+
+  TGraphErrors* ROC=new TGraphErrors();
+  int n=0;
+  double step=25./nbin;
+
+  //int binup_sig=h_sig->FindBin(27);
+  //int binup_bkg=h_bkg->FindBin(27);
+  int binup_sig=h_sig->FindBin(25);
+  int binup_bkg=h_bkg->FindBin(25);
+
+  for(int i=0;i<nbin;i++){
+    double x=i*step;
+    int binlow_sig=h_sig->FindBin(x);
+    int binlow_bkg=h_bkg->FindBin(x);
+
+    double n_sig_acc=h_sig->Integral(binlow_sig,binup_sig);
+    double n_bkg_acc=h_bkg->Integral(binlow_bkg,binup_bkg);
+
+    double sigeff=n_sig_acc/N_sig;
+    double bkgfake=n_bkg_acc/N_bkg;
+
+
+    double ex=sqrt(sigeff*(1-sigeff)/N_sig);
+    double ey=sqrt(bkgfake*(1-bkgfake)/N_bkg);
+
+    if(mistag_rate)
+      ROC->SetPoint(n,sigeff,bkgfake);
+    else
+      ROC->SetPoint(n,sigeff,1-bkgfake);
+      
+
+    //ROC->SetPointError(n,ex,ey);
+    n++;
+
+  }
+
+  return ROC;
+
+
+}
+
+
+
+
+TGraphErrors* get_ROC_LR_perm_VBFvloose(TString file_sig, TString file_bkg, TString tree_name,  TString cut_num_sig, TString cut_denom_sig, TString cut_num_bkg, TString cut_denom_bkg, int nbin=100, bool mistag_rate=true, float k=0.00026, TString weight_sig="1", TString weight_bkg="1"){
+
+
+  TH1F* h_sig=single_plot(file_sig,tree_name,Form("-log(1-IntegralVBF_VBFvloose/(IntegralVBF_VBFvloose+%f*IntegralDY_VBFvloose))*(IntegralDY_VBFvloose>0)+26*(IntegralDY_VBFvloose==0&&IntegralVBF_VBFvloose>0)-(IntegralDY_VBFvloose==0&&IntegralVBF_VBFvloose==0)",k),weight_sig+"*("+cut_num_sig+")",nbin,0,27);
+  TH1F* h_bkg=single_plot(file_bkg,tree_name,Form("-log(1-IntegralVBF_VBFvloose/(IntegralVBF_VBFvloose+%f*IntegralDY_VBFvloose))*(IntegralDY_VBFvloose>0)+26*(IntegralDY_VBFvloose==0&&IntegralVBF_VBFvloose>0)-(IntegralDY_VBFvloose==0&&IntegralVBF_VBFvloose==0)",k),weight_bkg+"*("+cut_num_bkg+")",nbin,0,27);
+
+  TH1F* h_sig_denom=single_plot(file_sig,tree_name,"1",weight_sig+"*("+cut_denom_sig+")",nbin,0,27);
+  TH1F* h_bkg_denom=single_plot(file_bkg,tree_name,"1",weight_bkg+"*("+cut_denom_bkg+")",nbin,0,27);
+
+
+  double N_sig=h_sig_denom->Integral();
+  cout<<"N_sig="<<N_sig<<endl;
+  double N_bkg=h_bkg_denom->Integral();
+  cout<<"N_bkg="<<N_bkg<<endl;
+
+
+
+  TGraphErrors* ROC=new TGraphErrors();
+  int n=0;
+  double step=25./nbin;
+
+  //int binup_sig=h_sig->FindBin(27);
+  //int binup_bkg=h_bkg->FindBin(27);
+  int binup_sig=h_sig->FindBin(25);
+  int binup_bkg=h_bkg->FindBin(25);
+
+  for(int i=0;i<nbin;i++){
+    double x=i*step;
+    int binlow_sig=h_sig->FindBin(x);
+    int binlow_bkg=h_bkg->FindBin(x);
+
+    double n_sig_acc=h_sig->Integral(binlow_sig,binup_sig);
+    double n_bkg_acc=h_bkg->Integral(binlow_bkg,binup_bkg);
+
+    double sigeff=n_sig_acc/N_sig;
+    double bkgfake=n_bkg_acc/N_bkg;
+
+
+    double ex=sqrt(sigeff*(1-sigeff)/N_sig);
+    double ey=sqrt(bkgfake*(1-bkgfake)/N_bkg);
+
+    if(mistag_rate)
+      ROC->SetPoint(n,sigeff,bkgfake);
+    else
+      ROC->SetPoint(n,sigeff,1-bkgfake);
+      
+
+    //ROC->SetPointError(n,ex,ey);
+    n++;
+
   }
 
   return ROC;

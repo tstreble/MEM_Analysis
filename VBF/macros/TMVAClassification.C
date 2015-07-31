@@ -128,8 +128,11 @@ void TMVAClassification_3D( TString filename_sig, TString filename_bkg, TString 
    
    // --- Register the training and test trees
 
-   TTree *signal     = (TTree*)sinput->Get("T");
-   TTree *background = (TTree*)binput->Get("T");
+   //TTree *signal     = (TTree*)sinput->Get("T");
+   //TTree *background = (TTree*)binput->Get("T");
+
+   TTree *signal     = (TTree*)sinput->Get("outTreePtOrd");
+   TTree *background = (TTree*)binput->Get("outTreePtOrd");
 
    Double_t signalWeight     = 1.0;
    Double_t backgroundWeight = 1.0;
@@ -302,8 +305,11 @@ void TMVAClassification_3D( TString filename_sig, TString filename_bkg, TString 
                            "!H:!V:NTrees=1000:MinNodeSize=2.5%:BoostType=Grad:Shrinkage=0.10:UseBaggedBoost:BaggedSampleFraction=0.5:nCuts=20:MaxDepth=2" );
 
    if (Use["BDT"])  // Adaptive Boost
-      factory->BookMethod( TMVA::Types::kBDT, "BDT",
-                           "!H:!V:NTrees=850:MinNodeSize=2.5%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:UseBaggedBoost:BaggedSampleFraction=0.5:SeparationType=GiniIndex:nCuts=20" );
+     factory->BookMethod( TMVA::Types::kBDT, "BDT",
+			  "!H:!V:NTrees=400:nEventsMin=400:MaxDepth=3:BoostType=AdaBoost:SeparationType=GiniIndex:nCuts=20:PruneMethod=NoPruning" );
+   
+   /*factory->BookMethod( TMVA::Types::kBDT, "BDT",
+     "!H:!V:NTrees=850:MinNodeSize=2.5%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:UseBaggedBoost:BaggedSampleFraction=0.5:SeparationType=GiniIndex:nCuts=20" );*/
 
    if (Use["BDTB"]) // Bagging
       factory->BookMethod( TMVA::Types::kBDT, "BDTB",

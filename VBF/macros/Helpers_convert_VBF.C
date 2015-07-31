@@ -653,7 +653,8 @@ void convert_tree_jet_forward(TString sample_in, TString sample_out){
   vector<TString> list;
   list.push_back(sample_in);	
 
-  TChain * tree = new TChain("T");
+  //TChain * tree = new TChain("T");
+  TChain * tree = new TChain("outTreePtOrd");
   int nFiles = list.size();
 
   for(int i=0;i<nFiles;i++)
@@ -677,11 +678,17 @@ void convert_tree_jet_forward(TString sample_in, TString sample_out){
   float _ptAll[20];
   float _etaAll[20];
   float _phiAll[20];
+  vector<float>* _IntegralVBF_perm;
+  vector<float>* _IntegralDY_perm;
+
 
   tree->SetBranchAddress("nJets30",&_nJets30);
   tree->SetBranchAddress("ptAll",_ptAll);
   tree->SetBranchAddress("etaAll",_etaAll);
   tree->SetBranchAddress("phiAll",_phiAll);
+  tree->SetBranchAddress("IntegralVBF_perm",&_IntegralVBF_perm);
+  tree->SetBranchAddress("IntegralDY_perm",&_IntegralDY_perm);
+    
 
   TTree* tree_new=tree->GetTree()->CloneTree(0);
 
@@ -696,7 +703,12 @@ void convert_tree_jet_forward(TString sample_in, TString sample_out){
   float _Dphi_forw_jet;
   float _Mjj_forw_jet;
   int _lead_forw_jet_flag;
-
+  int _perm_forw_jet;
+  int _perm0_VBFvloose;
+  int _perm1_VBFvloose;
+  int _perm2_VBFvloose;
+  float _IntegralVBF_VBFvloose;
+  float _IntegralDY_VBFvloose;
 
   tree_new->Branch("pt1_forw_jet",&_pt1_forw_jet,"pt1_forw_jet/F");
   tree_new->Branch("pt2_forw_jet",&_pt2_forw_jet,"pt2_forw_jet/F");
@@ -707,11 +719,24 @@ void convert_tree_jet_forward(TString sample_in, TString sample_out){
   tree_new->Branch("Deta_forw_jet",&_Deta_forw_jet,"Deta_forw_jet/F");
   tree_new->Branch("Mjj_forw_jet",&_Mjj_forw_jet,"Mjj_forw_jet/F");
   tree_new->Branch("lead_forw_jet_flag",&_lead_forw_jet_flag,"lead_forw_jet_flag/I");
+  tree_new->Branch("perm_forw_jet",&_perm_forw_jet,"perm_forw_jet/I");
+
+  tree_new->Branch("perm0_VBFvloose",&_perm0_VBFvloose,"perm0_VBFvloose/I");
+  tree_new->Branch("perm1_VBFvloose",&_perm1_VBFvloose,"perm1_VBFvloose/I");
+  tree_new->Branch("perm2_VBFvloose",&_perm2_VBFvloose,"perm2_VBFvloose/I");
+  tree_new->Branch("IntegralVBF_VBFvloose",&_IntegralVBF_VBFvloose,"IntegralVBF_VBFvloose/F");
+  tree_new->Branch("IntegralDY_VBFvloose",&_IntegralDY_VBFvloose,"IntegralDY_VBFvloose/F");
+
+  
 
 
 
   //nentries=100;
   for (int i=0;i<nentries;i++) {
+
+    _IntegralVBF_perm = 0;
+    _IntegralDY_perm = 0;
+
 
     _pt1_forw_jet=-9999;
     _pt2_forw_jet=-9999;
@@ -723,6 +748,15 @@ void convert_tree_jet_forward(TString sample_in, TString sample_out){
     _Dphi_forw_jet=-9999;
     _Mjj_forw_jet=-9999;
     _lead_forw_jet_flag=-9999;
+    _perm_forw_jet=-9999;
+
+    _perm0_VBFvloose=0;
+    _perm1_VBFvloose=0;
+    _perm2_VBFvloose=0;
+    
+    _IntegralVBF_VBFvloose=0;
+    _IntegralDY_VBFvloose=0;
+    
 
     if(i%10000==0)
       cout<<"i="<<i<<endl;
@@ -739,7 +773,8 @@ void convert_tree_jet_forward(TString sample_in, TString sample_out){
 
     if(_nJets30>0){
 
-      for(int i_jet=0; i_jet<_nJets30;i_jet++){
+      //for(int i_jet=0; i_jet<_nJets30;i_jet++){
+      for(int i_jet=0; i_jet<min(_nJets30,3);i_jet++){
 		
 	if(_etaAll[i_jet]>eta_max){
 	  eta_max=_etaAll[i_jet];
@@ -764,6 +799,59 @@ void convert_tree_jet_forward(TString sample_in, TString sample_out){
       _Dphi_forw_jet = forw_jet1.DeltaPhi(forw_jet2);
       _Mjj_forw_jet = (forw_jet1+forw_jet2).M();
       _lead_forw_jet_flag = (i_forw_jet1==0 && i_forw_jet2==1) || (i_forw_jet2==0 && i_forw_jet1==1);
+
+
+      if( (i_forw_jet1==0 && i_forw_jet2==1) || (i_forw_jet2==0 && i_forw_jet1==1) )
+	_perm_forw_jet = 0;
+      else if( (i_forw_jet1==0 && i_forw_jet2==2) || (i_forw_jet2==0 && i_forw_jet1==2) )	
+	_perm_forw_jet = 1;
+      else if( (i_forw_jet1==1 && i_forw_jet2==2) || (i_forw_jet2==1 && i_forw_jet1==2) )	
+	_perm_forw_jet = 2;
+	
+
+
+      if((*_IntegralVBF_perm).size()>0 && _nJets30>1){
+
+	TLorentzVector jet0;
+	jet0.SetPtEtaPhiM(_ptAll[0],_etaAll[0],_phiAll[0],0);
+	TLorentzVector jet1;
+	jet1.SetPtEtaPhiM(_ptAll[1],_etaAll[1],_phiAll[1],0);
+	
+	float Mjj0=(jet0+jet1).M();
+	float Deta0=abs(jet0.Eta()-jet1.Eta());
+	if(Mjj0>150 && Deta0>1.5){
+	  _perm0_VBFvloose = 1;
+	  _IntegralVBF_VBFvloose+=(*_IntegralVBF_perm)[0];
+	  _IntegralDY_VBFvloose+=(*_IntegralDY_perm)[0];
+	}
+
+	
+	if(_nJets30>2){
+
+	  TLorentzVector jet2;
+	  jet2.SetPtEtaPhiM(_ptAll[2],_etaAll[2],_phiAll[2],0);
+
+	  float Mjj1=(jet0+jet2).M();
+	  float Deta1=abs(jet0.Eta()-jet2.Eta());
+	  if(Mjj1>150 && Deta1>1.5){
+	    _perm1_VBFvloose = 1;
+	    _IntegralVBF_VBFvloose+=(*_IntegralVBF_perm)[1];
+	    _IntegralDY_VBFvloose+=(*_IntegralDY_perm)[1];
+	  }
+
+
+	  float Mjj2=(jet1+jet2).M();
+	  float Deta2=abs(jet1.Eta()-jet2.Eta());
+	  if(Mjj2>150 && Deta2>1.5){
+	    _perm2_VBFvloose = 1;
+	    _IntegralVBF_VBFvloose+=(*_IntegralVBF_perm)[2];
+	    _IntegralDY_VBFvloose+=(*_IntegralDY_perm)[2];
+	  }
+      
+
+	}
+      
+      }
 
     }     
 

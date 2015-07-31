@@ -35,12 +35,7 @@ TH1F* single_plot(TString file, TString tree_name, TString var, TString cut, int
   TH1F* g=new TH1F("g","g",nbin,min,max);
   g->Sumw2();
 
-  //tree->Draw(var+">>g","puWeight*HLTweightTau*HLTweightMu*SFMu*weightDecayMode*HLTBugWeightTau*sampleWeight*weightHepNupDY*("+cut+")","goff");
   tree->Draw(var+">>g",cut,"goff");
-
-  //TH1F* g=(TH1F*) ((TH1F*)gDirectory->Get("h"))->Clone();
-  //g=(TH1F*) ((TH1F*)gDirectory->Get("h"))->Clone();
-
 
   return g;
 }
@@ -61,7 +56,6 @@ TH2F* single_plot2D(TString file, TString tree_name, TString var1, TString var2,
   g->Sumw2();
 
   tree->Draw(var2+":"+var1+">>g",cut,"goff");
-  //tree->Draw(var2+":"+var1+">>g","puWeight*HLTweightTau*HLTweightMu*SFMu*weightDecayMode*HLTBugWeightTau*sampleWeight*weightHepNupDY*("+cut+")","goff");
   return g;
 }
 
