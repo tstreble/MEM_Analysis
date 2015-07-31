@@ -28,16 +28,16 @@ float binning(TH1F* h){
 
 TH1F* single_plot(TString file, TString tree_name, TString var, TString cut, int nbin, float min, float max){
 
-
   TChain * tree = new TChain(tree_name);
   tree->Add(file);
 
-  tree->Draw(var+Form(">>h(%i,%f,%f)",nbin,min,max),cut,"goff");
-  //TH1F* g=(TH1F*)gDirectory->Get("h");
-  TH1F* g=(TH1F*) ((TH1F*)gDirectory->Get("h"))->Clone();
+  TH1F* g=new TH1F("g","g",nbin,min,max);
+  g->Sumw2();
 
+  tree->Draw(var+">>g",cut,"goff");
 
   return g;
+
 }
 
 
