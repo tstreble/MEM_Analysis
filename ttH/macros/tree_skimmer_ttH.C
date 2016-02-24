@@ -33,12 +33,12 @@ using namespace std;
 
 void skim_tree(TString sample){
 
-  TString file_in="ntuple_ttH_dRveto_gen.root";    
-  TString file_out="ntuple_ttH_dRveto_gen_skimmed.root";    
+  TString file_in="ntuple_ttH_dRveto_gen_iso70.root";    
+  TString file_out="ntuple_ttH_dRveto_gen_iso70_skimmed.root";    
   TString dir;
 
   if(sample=="ttH"){
-    dir="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/ttH_HToTauTau_pfMET_prod_07072015/";
+    dir="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_12_2015/";
   }
 
 
@@ -506,6 +506,7 @@ void skim_tree(TString sample){
   vector<float> _recoPFJet30_untag_Wtag_dR_genq1;
   vector<float> _recoPFJet30_untag_Wtag_dR_genq2;
   int _perm_match;
+  int _perm_gen_match;
 
   tree_new->Branch("gentl_pdg",&_gentl_pdg,"gentl_pdg/I");
   tree_new->Branch("gentl_e",&_gentl_e,"gentl_e/F");
@@ -699,6 +700,7 @@ void skim_tree(TString sample){
   tree_new->Branch("recoPFJet30_untag_Wtag_dR_genq1",&_recoPFJet30_untag_Wtag_dR_genq1);
   tree_new->Branch("recoPFJet30_untag_Wtag_dR_genq2",&_recoPFJet30_untag_Wtag_dR_genq2);
   tree_new->Branch("perm_match",&_perm_match,"perm_match/I");
+  tree_new->Branch("perm_gen_match",&_perm_gen_match,"perm_gen_match/I");
 
 
   cout<<"nentries="<<nentries<<endl;
@@ -904,6 +906,7 @@ void skim_tree(TString sample){
     _recoPFJet30_untag_Wtag_dR_genq1.clear();
     _recoPFJet30_untag_Wtag_dR_genq2.clear();
     _perm_match = -1;
+    _perm_gen_match = -1;
 
 
     _genlep_pdg = 0;
@@ -1499,6 +1502,22 @@ void skim_tree(TString sample){
 
       }
 	  
+    }
+
+
+    //Gen permutation matching
+    if(_genbl_pt>_genbh_pt){
+      if(_genlt_pt>_genltau_pt)
+	_perm_gen_match = 0;
+      else
+	_perm_gen_match = 1;
+    }
+
+    else{
+      if(_genlt_pt>_genltau_pt)
+	_perm_gen_match = 2;
+      else
+	_perm_gen_match = 3;
     }
 
 

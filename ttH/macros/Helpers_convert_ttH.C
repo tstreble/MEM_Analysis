@@ -16,6 +16,9 @@
 #include <TLorentzVector.h>
 #include <TVector3.h>
 
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
+#include "TMVA/MethodCuts.h"
 
 #include <vector>
 #ifdef __MAKECINT__
@@ -42,29 +45,215 @@ bool CSV_comparison_pairs(pair<int,float> pair1, pair<int,float> pair2){
 }
 
 
+pair<int,float> find_i_dRmin_closest(TLorentzVector obj1_tlv,
+				     vector<float> obj2_px, vector<float> obj2_py, vector<float> obj2_pz, vector<float> obj2_e){
 
-void convert_tree(TString sample){
+  int imin = -1;
+  float dRmin = 100000;
+   
+  for(unsigned int i_obj2=0; i_obj2<obj2_e.size(); i_obj2++){
+
+    TLorentzVector obj2_tlv( obj2_px[i_obj2], obj2_py[i_obj2], obj2_pz[i_obj2], obj2_e[i_obj2]);	
+    float dR = obj1_tlv.DeltaR(obj2_tlv);
+    if(dR<dRmin){
+      dRmin=dR;
+      imin=i_obj2;
+    } 
+	
+  }
+
+  pair<int,float> p=make_pair(imin,dRmin);
+
+  return p;
+
+}
+
+
+
+float lepMVA_pt;
+float lepMVA_eta;
+float lepMVA_miniRelIsoCharged;
+float lepMVA_miniRelIsoNeutral;
+float lepMVA_jetPtRatio;
+float lepMVA_jetPtRelv2;
+float lepMVA_jetBTagCSV;
+float lepMVA_sip3d;
+float lepMVA_dxy;
+float lepMVA_dz;
+float lepMVA_mvaId;
+float lepMVA_jetNDauChargedMVASel;
+
+
+
+TMVA::Reader* BookLeptonMVAReaderMoriond16(std::string basePath, std::string weightFileName, std::string type)
+{
+   TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+
+   reader->AddVariable("LepGood_pt",                                  &lepMVA_pt);
+   reader->AddVariable("LepGood_eta",                                 &lepMVA_eta);
+   reader->AddVariable("LepGood_jetNDauChargedMVASel",                &lepMVA_jetNDauChargedMVASel);
+   reader->AddVariable("LepGood_miniRelIsoCharged",                   &lepMVA_miniRelIsoCharged);
+   reader->AddVariable("LepGood_miniRelIsoNeutral",                   &lepMVA_miniRelIsoNeutral);
+   reader->AddVariable("LepGood_jetPtRelv2",                          &lepMVA_jetPtRelv2);
+   reader->AddVariable("min(LepGood_jetPtRatiov2,1.5)",               &lepMVA_jetPtRatio);
+   reader->AddVariable("max(LepGood_jetBTagCSV,0)",                   &lepMVA_jetBTagCSV);
+   reader->AddVariable("LepGood_sip3d",                               &lepMVA_sip3d);
+   reader->AddVariable("log(abs(LepGood_dxy))",                       &lepMVA_dxy);
+   reader->AddVariable("log(abs(LepGood_dz))",                        &lepMVA_dz);
+   if( type == "ele" ) reader->AddVariable("LepGood_mvaIdSpring15",   &lepMVA_mvaId);
+   else reader->AddVariable("LepGood_segmentCompatibility",           &lepMVA_mvaId);
+
+   reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
+
+   return reader;
+}
+
+
+
+void convert_tree(TString sample, int iso_tau=70,
+		  TString iso_type="",
+		  int split=0, int i_split=0){
 
   TString dir_in;
   TString dir_out;
   TString file;    
 
+  vector<TString> list;
+
+
   if(sample=="ttH"){
-    file="ntuple_ttH_dRveto_gen.root";
-    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/ttH_HToTauTau_pfMET_prod_07072015/";
-    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/ttH_HToTauTau_pfMET_prod_07072015/";
+    file="ntuple_ttH_dRveto_gen";
+    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis.root");
+  }
+
+  else if(sample=="ttH_ext1"){
+    file="ntuple_ttH_ext1_dRveto_gen";
+    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_ext1.root");
+  }
+
+  else if(sample=="ttH_ext2"){
+    file="ntuple_ttH_ext2_dRveto_gen";
+    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_ext2.root");
+  }
+
+  else if(sample=="ttH_ext3"){
+    file="ntuple_ttH_ext3_dRveto_gen";
+    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_ext3.root");
+  }
+
+  else if(sample=="ttW"){
+    file="ntuple_ttW_dRveto_gen";
+    dir_in="/data_CMS/cms/strebler/ttW_Samples/Htautau_framework_files/MiniAODv2_prod_12_2015/";
+    dir_out="/data_CMS/cms/strebler/ttW_Samples/ntuples_converted/MiniAODv2_prod_12_2015/";
+    list.push_back(dir_in+"HTauTauAnalysis.root");
   }
 
   if(sample=="ttZ"){
-    file="ntuple_ttZ_dRveto.root";
-    dir_in="/data_CMS/cms/strebler/ttZ_Samples/";
-    dir_out="/data_CMS/cms/strebler/ttZ_Samples/ntuples_converted/";
+    file="ntuple_ttZ_dRveto_gen";
+    dir_in="/data_CMS/cms/strebler/ttZ_Samples/Htautau_framework_files/MiniAODv2_prod_12_2015/";
+    dir_out="/data_CMS/cms/strebler/ttZ_Samples/ntuples_converted/MiniAODv2_prod_12_2015/";
+    list.push_back(dir_in+"HTauTauAnalysis.root");
   }
 
-  vector<TString> list;
-  list.push_back(dir_in+"*.root");
-  //for(int i=1;i<3;i++)
-  //  list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+
+  else if(sample=="TTJets_1"){
+    file="ntuple_TTJets_dRveto_gen_1";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_1.root");
+  }
+
+  else if(sample=="TTJets_1"){
+    file="ntuple_TTJets_dRveto_gen_1";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_1.root");
+  }
+
+  else if(sample=="TTJets_2"){
+    file="ntuple_TTJets_dRveto_gen_2";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_2.root");
+  }
+
+  else if(sample=="TTJets_3"){
+    file="ntuple_TTJets_dRveto_gen_3";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_3.root");
+  }
+
+  else if(sample=="TTJets_4"){
+    file="ntuple_TTJets_dRveto_gen_4";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_4.root");
+  }
+
+  else if(sample=="TTJets_5"){
+    file="ntuple_TTJets_dRveto_gen_5";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_5.root");
+  }
+
+
+  else if(sample=="TTJets_6"){
+    file="ntuple_TTJets_dRveto_gen_6";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_6.root");
+  }
+
+  else if(sample=="TTJets_7"){
+    file="ntuple_TTJets_dRveto_gen_7";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_7.root");
+  }
+
+  else if(sample=="TTJets_8"){
+    file="ntuple_TTJets_dRveto_gen_8";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_8.root");
+  }
+
+  else if(sample=="TTJets_9"){
+    file="ntuple_TTJets_dRveto_gen_9";
+    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_02_2016/";
+    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_02_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_hadd_9.root");
+  }
+
+
+  if(sample=="sync"){
+    file="syncNtuple_ttH";
+    dir_in="/home/llr/cms/strebler/CMSSW_7_6_3/src/LLRHiggsTauTau/NtupleProducer/test/";
+    dir_out="/home/llr/cms/strebler/CMSSW_7_6_3/src/LLRHiggsTauTau/NtupleProducer/test/";
+    list.push_back(dir_in+"HTauTauAnalysis.root");
+  }
+
+  if(split>0)
+    file+=Form("_%i",i_split);
+
+  if(iso_type=="")
+    file+=Form("_iso%i",iso_tau);
+  else
+    file+="_"+iso_type;
+  
+  file+=".root";
+
+  
 
   TChain * tree = new TChain("HTauTauTree/HTauTauTree");
   int nFiles = list.size();
@@ -73,6 +262,7 @@ void convert_tree(TString sample){
     {
       tree->Add(list[i]);
     }
+
 
 
   Long64_t nentries = tree->GetEntries();
@@ -84,7 +274,6 @@ void convert_tree(TString sample){
   }
   
   f_new = TFile::Open(dir_out+file,"RECREATE");
-
 
   TTree* tree_new=tree->GetTree()->CloneTree(0);
   //TTree* tree_new=tree->CloneTree(0);
@@ -98,6 +287,11 @@ void convert_tree(TString sample){
   vector<float> _daughters_pt;
   vector<float> _daughters_eta;
   vector<float> _daughters_phi;
+  vector<float> _daughters_dR_closest_jet;
+
+  vector<float> _jets_pt;
+  vector<float> _jets_eta;
+  vector<float> _jets_phi;
 
   int _n_recolep;
   vector<int> _recolep_ID;
@@ -109,6 +303,56 @@ void convert_tree(TString sample){
   vector<float> _recolep_pt;
   vector<float> _recolep_eta;
   vector<float> _recolep_phi;
+  vector<float> _recolep_leptonMVA;
+  vector<int> _recolep_TopMothInd;
+  vector<int> _recolep_HMothInd;
+
+
+  int _n_recomu;
+  vector<int> _recomu_ID;
+  vector<int> _recomu_charge;
+  vector<float> _recomu_e;
+  vector<float> _recomu_px;
+  vector<float> _recomu_py;
+  vector<float> _recomu_pz;
+  vector<float> _recomu_pt;
+  vector<float> _recomu_eta;
+  vector<float> _recomu_phi;
+  vector<float> _recomu_dxy;
+  vector<float> _recomu_dz;
+  vector<int>   _recomu_jetNDauChargedMVASel;
+  vector<float> _recomu_miniRelIso;
+  vector<float> _recomu_miniIsoCharged;
+  vector<float> _recomu_miniIsoNeutral;
+  vector<float> _recomu_sip3D;
+  vector<float> _recomu_jetPtRel;
+  vector<float> _recomu_jetCSV;
+  vector<float> _recomu_jetPtRatio;
+  vector<float> _recomu_lepMVA_mvaId;
+  vector<float> _recomu_leptonMVA;
+
+  int _n_recoele;
+  vector<int> _recoele_ID;
+  vector<int> _recoele_charge;
+  vector<float> _recoele_e;
+  vector<float> _recoele_px;
+  vector<float> _recoele_py;
+  vector<float> _recoele_pz;
+  vector<float> _recoele_pt;
+  vector<float> _recoele_eta;
+  vector<float> _recoele_phi;
+  vector<float> _recoele_dxy;
+  vector<float> _recoele_dz;
+  vector<int>   _recoele_jetNDauChargedMVASel;
+  vector<float> _recoele_miniRelIso;
+  vector<float> _recoele_miniIsoCharged;
+  vector<float> _recoele_miniIsoNeutral;
+  vector<float> _recoele_sip3D;
+  vector<float> _recoele_jetPtRel;
+  vector<float> _recoele_jetCSV;
+  vector<float> _recoele_jetPtRatio;
+  vector<float> _recoele_lepMVA_mvaId;
+  vector<float> _recoele_leptonMVA;
  
   int _n_recotauh;
   vector<int> _recotauh_charge;
@@ -120,68 +364,105 @@ void convert_tree(TString sample){
   vector<float> _recotauh_pt;
   vector<float> _recotauh_eta;
   vector<float> _recotauh_phi;
+  vector<float> _recotauh_dxy;
+  vector<float> _recotauh_dz;
+  vector<float> _recotauh_iso;
+  
+  vector<int> _recotauh_decayModeFindingOldDMs;
+  vector<int> _recotauh_decayModeFindingNewDMs;
+  vector<int> _recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits;
+  vector<int> _recotauh_byMediumCombinedIsolationDeltaBetaCorr3Hits;
+  vector<int> _recotauh_byTightCombinedIsolationDeltaBetaCorr3Hits;
+  vector<int> _recotauh_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03;
+  vector<int> _recotauh_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03;
+  vector<int> _recotauh_byTightCombinedIsolationDeltaBetaCorr3HitsdR03;
+  vector<int> _recotauh_byLooseIsolationMVArun2v1DBdR03oldDMwLT;
+  vector<int> _recotauh_byMediumIsolationMVArun2v1DBdR03oldDMwLT;
+  vector<int> _recotauh_byTightIsolationMVArun2v1DBdR03oldDMwLT;
+  vector<int> _recotauh_byVTightIsolationMVArun2v1DBdR03oldDMwLT;
+  vector<int> _recotauh_againstMuonLoose3;
+  vector<int> _recotauh_againstMuonTight3;
+  vector<int> _recotauh_againstElectronVLooseMVA6;
+  vector<int> _recotauh_againstElectronLooseMVA6;
+  vector<int> _recotauh_againstElectronMediumMVA6;
+  vector<int> _recotauh_againstElectronTightMVA6;
+  vector<int> _recotauh_againstElectronVTightMVA6;
 
-  int _n_recoPFJet30;
-  vector<float> _recoPFJet30_e;
-  vector<float> _recoPFJet30_pt;
-  vector<float> _recoPFJet30_px;
-  vector<float> _recoPFJet30_py;
-  vector<float> _recoPFJet30_pz;
-  vector<float> _recoPFJet30_eta;
-  vector<float> _recoPFJet30_phi;
-  vector<float> _recoPFJet30_CSVscore;
-  vector<int> _recoPFJet30_Flavour;
+  vector<int> _recotauh_i_closest_genpart;
+  vector<float> _recotauh_dR_closest_genpart;
 
-  vector<float> _recoPFJet30_CSVsort_e;
-  vector<float> _recoPFJet30_CSVsort_pt;
-  vector<float> _recoPFJet30_CSVsort_px;
-  vector<float> _recoPFJet30_CSVsort_py;
-  vector<float> _recoPFJet30_CSVsort_pz;
-  vector<float> _recoPFJet30_CSVsort_eta;
-  vector<float> _recoPFJet30_CSVsort_phi;
-  vector<float> _recoPFJet30_CSVsort_CSVscore;
-  vector<int> _recoPFJet30_CSVsort_Flavour;
+  int _n_recoPFJet;
+  vector<float> _recoPFJet_e;
+  vector<float> _recoPFJet_pt;
+  vector<float> _recoPFJet_px;
+  vector<float> _recoPFJet_py;
+  vector<float> _recoPFJet_pz;
+  vector<float> _recoPFJet_eta;
+  vector<float> _recoPFJet_phi;
+  vector<float> _recoPFJet_CSVscore;
+  vector<int> _recoPFJet_Flavour;
+  vector<int> _recoPFJet_i_closest_genpart;
+  vector<float> _recoPFJet_dR_closest_genpart;
+  vector<int> _recoPFJet_i_2nd_closest_genpart;
+  vector<float> _recoPFJet_dR_2nd_closest_genpart;
+  vector<int> _recoPFJet_i_closest_lep;
+  vector<float> _recoPFJet_dR_closest_lep;
+  vector<int> _recoPFJet_i_closest_tau;
+  vector<float> _recoPFJet_dR_closest_tau;
 
+  vector<float> _recoPFJet_CSVsort_e;
+  vector<float> _recoPFJet_CSVsort_pt;
+  vector<float> _recoPFJet_CSVsort_px;
+  vector<float> _recoPFJet_CSVsort_py;
+  vector<float> _recoPFJet_CSVsort_pz;
+  vector<float> _recoPFJet_CSVsort_eta;
+  vector<float> _recoPFJet_CSVsort_phi;
+  vector<float> _recoPFJet_CSVsort_CSVscore;
+  vector<int> _recoPFJet_CSVsort_Flavour;
+  vector<int> _recoPFJet_CSVsort_i_closest_genb;
+  vector<float> _recoPFJet_CSVsort_dR_closest_genb;
+  vector<int> _recoPFJet_CSVsort_i_closest_gentauh;
+  vector<float> _recoPFJet_CSVsort_dR_closest_gentauh;
 
-  int _n_recoPFJet30_btag_medium;  //# jets passing CSVM
-  int _n_recoPFJet30_btag_loose; //# jets passing CSVL
+  int _n_recoPFJet_btag_medium;  //# jets passing CSVM
+  int _n_recoPFJet_btag_loose; //# jets passing CSVL
  
   //2 jets with highest CSV score
-  vector<float> _recoPFJet30_btag_e;
-  vector<float> _recoPFJet30_btag_pt;
-  vector<float> _recoPFJet30_btag_px;
-  vector<float> _recoPFJet30_btag_py;
-  vector<float> _recoPFJet30_btag_pz;
-  vector<float> _recoPFJet30_btag_eta;
-  vector<float> _recoPFJet30_btag_phi;
-  vector<float> _recoPFJet30_btag_CSVscore;
-  vector<int> _recoPFJet30_btag_Flavour; 
+  vector<float> _recoPFJet_btag_e;
+  vector<float> _recoPFJet_btag_pt;
+  vector<float> _recoPFJet_btag_px;
+  vector<float> _recoPFJet_btag_py;
+  vector<float> _recoPFJet_btag_pz;
+  vector<float> _recoPFJet_btag_eta;
+  vector<float> _recoPFJet_btag_phi;
+  vector<float> _recoPFJet_btag_CSVscore;
+  vector<int> _recoPFJet_btag_Flavour; 
 
   //Other jets
-  int _n_recoPFJet30_untag;
-  vector<float> _recoPFJet30_untag_e;
-  vector<float> _recoPFJet30_untag_pt;
-  vector<float> _recoPFJet30_untag_px;
-  vector<float> _recoPFJet30_untag_py;
-  vector<float> _recoPFJet30_untag_pz;
-  vector<float> _recoPFJet30_untag_eta;
-  vector<float> _recoPFJet30_untag_phi;
-  vector<float> _recoPFJet30_untag_CSVscore;
-  vector<int> _recoPFJet30_untag_Flavour;
+  int _n_recoPFJet_untag;
+  vector<float> _recoPFJet_untag_e;
+  vector<float> _recoPFJet_untag_pt;
+  vector<float> _recoPFJet_untag_px;
+  vector<float> _recoPFJet_untag_py;
+  vector<float> _recoPFJet_untag_pz;
+  vector<float> _recoPFJet_untag_eta;
+  vector<float> _recoPFJet_untag_phi;
+  vector<float> _recoPFJet_untag_CSVscore;
+  vector<int> _recoPFJet_untag_Flavour;
 
-  int _n_pair_Wtag_recoPFJet30_untag;  //# pair of jets passing W-tag in untagged jets
+  int _n_pair_Wtag_recoPFJet_untag;  //# pair of jets passing W-tag in untagged jets
 
   //2 jets with invariant mass closest to mW
-  float _recoPFJet30_untag_best_mW; //invariant mass of the pair
-  vector<float> _recoPFJet30_untag_Wtag_e;
-  vector<float> _recoPFJet30_untag_Wtag_pt;
-  vector<float> _recoPFJet30_untag_Wtag_px;
-  vector<float> _recoPFJet30_untag_Wtag_py;
-  vector<float> _recoPFJet30_untag_Wtag_pz;
-  vector<float> _recoPFJet30_untag_Wtag_eta;
-  vector<float> _recoPFJet30_untag_Wtag_phi;
-  vector<float> _recoPFJet30_untag_Wtag_CSVscore;
-  vector<int> _recoPFJet30_untag_Wtag_Flavour; 
+  float _recoPFJet_untag_best_mW; //invariant mass of the pair
+  vector<float> _recoPFJet_untag_Wtag_e;
+  vector<float> _recoPFJet_untag_Wtag_pt;
+  vector<float> _recoPFJet_untag_Wtag_px;
+  vector<float> _recoPFJet_untag_Wtag_py;
+  vector<float> _recoPFJet_untag_Wtag_pz;
+  vector<float> _recoPFJet_untag_Wtag_eta;
+  vector<float> _recoPFJet_untag_Wtag_phi;
+  vector<float> _recoPFJet_untag_Wtag_CSVscore;
+  vector<int> _recoPFJet_untag_Wtag_Flavour; 
 
   vector<float> _mtop_had_perm;
   vector<float> _mblep_perm;
@@ -199,6 +480,11 @@ void convert_tree(TString sample){
 
 
   //Gen information
+  vector<float> _genpart_pt;
+  vector<float> _genpart_eta;
+  vector<float> _genpart_phi;
+  vector<int> _genpart_i_closest_daughter;
+  vector<float> _genpart_dR_closest_daughter;
 
   int _n_genlep;
   int _n_genlep10;
@@ -344,6 +630,11 @@ void convert_tree(TString sample){
   tree_new->Branch("daughters_pt",&_daughters_pt);
   tree_new->Branch("daughters_eta",&_daughters_eta);
   tree_new->Branch("daughters_phi",&_daughters_phi);
+  tree_new->Branch("daughters_dR_closest_jet",&_daughters_dR_closest_jet);
+
+  tree_new->Branch("jets_pt",&_jets_pt);
+  tree_new->Branch("jets_eta",&_jets_eta);
+  tree_new->Branch("jets_phi",&_jets_phi);
 
   tree_new->Branch("n_recolep",&_n_recolep,"n_recolep/I");
   tree_new->Branch("recolep_ID",&_recolep_ID);
@@ -355,6 +646,57 @@ void convert_tree(TString sample){
   tree_new->Branch("recolep_pt",&_recolep_pt);
   tree_new->Branch("recolep_eta",&_recolep_eta);
   tree_new->Branch("recolep_phi",&_recolep_phi);
+  tree_new->Branch("recolep_leptonMVA",&_recolep_leptonMVA);
+  tree_new->Branch("recolep_TopMothInd",&_recolep_TopMothInd);
+  tree_new->Branch("recolep_HMothInd",&_recolep_HMothInd);
+
+
+  tree_new->Branch("n_recomu",&_n_recomu,"n_recomu/I");
+  tree_new->Branch("recomu_ID",&_recomu_ID);
+  tree_new->Branch("recomu_charge",&_recomu_charge);
+  tree_new->Branch("recomu_e",&_recomu_e);
+  tree_new->Branch("recomu_px",&_recomu_px);
+  tree_new->Branch("recomu_py",&_recomu_py);
+  tree_new->Branch("recomu_pz",&_recomu_pz);
+  tree_new->Branch("recomu_pt",&_recomu_pt);
+  tree_new->Branch("recomu_eta",&_recomu_eta);
+  tree_new->Branch("recomu_phi",&_recomu_phi);
+  tree_new->Branch("recomu_dxy",&_recomu_dxy);
+  tree_new->Branch("recomu_dz",&_recomu_dz);
+  tree_new->Branch("recomu_jetNDauChargedMVASel",&_recomu_jetNDauChargedMVASel);
+  tree_new->Branch("recomu_miniRelIso",&_recomu_miniRelIso);
+  tree_new->Branch("recomu_miniIsoCharged",&_recomu_miniIsoCharged);
+  tree_new->Branch("recomu_miniIsoNeutral",&_recomu_miniIsoNeutral);
+  tree_new->Branch("recomu_sip3D",&_recomu_sip3D);
+  tree_new->Branch("recomu_jetPtRel",&_recomu_jetPtRel);
+  tree_new->Branch("recomu_jetCSV",&_recomu_jetCSV);
+  tree_new->Branch("recomu_jetPtRatio",&_recomu_jetPtRatio);
+  tree_new->Branch("recomu_lepMVA_mvaId",&_recomu_lepMVA_mvaId);
+  tree_new->Branch("recomu_leptonMVA",&_recomu_leptonMVA);
+
+
+  tree_new->Branch("n_recoele",&_n_recoele,"n_recoele/I");
+  tree_new->Branch("recoele_ID",&_recoele_ID);
+  tree_new->Branch("recoele_charge",&_recoele_charge);
+  tree_new->Branch("recoele_e",&_recoele_e);
+  tree_new->Branch("recoele_px",&_recoele_px);
+  tree_new->Branch("recoele_py",&_recoele_py);
+  tree_new->Branch("recoele_pz",&_recoele_pz);
+  tree_new->Branch("recoele_pt",&_recoele_pt);
+  tree_new->Branch("recoele_eta",&_recoele_eta);
+  tree_new->Branch("recoele_phi",&_recoele_phi);
+  tree_new->Branch("recoele_dxy",&_recoele_dxy);
+  tree_new->Branch("recoele_dz",&_recoele_dz);
+  tree_new->Branch("recoele_jetNDauChargedMVASel",&_recoele_jetNDauChargedMVASel);
+  tree_new->Branch("recoele_miniRelIso",&_recoele_miniRelIso);
+  tree_new->Branch("recoele_miniIsoCharged",&_recoele_miniIsoCharged);
+  tree_new->Branch("recoele_miniIsoNeutral",&_recoele_miniIsoNeutral);
+  tree_new->Branch("recoele_sip3D",&_recoele_sip3D);
+  tree_new->Branch("recoele_jetPtRel",&_recoele_jetPtRel);
+  tree_new->Branch("recoele_jetCSV",&_recoele_jetCSV);
+  tree_new->Branch("recoele_jetPtRatio",&_recoele_jetPtRatio);
+  tree_new->Branch("recoele_lepMVA_mvaId",&_recoele_lepMVA_mvaId);
+  tree_new->Branch("recoele_leptonMVA",&_recoele_leptonMVA);
 
   tree_new->Branch("n_recotauh",&_n_recotauh,"n_recotauh/I");
   tree_new->Branch("recotauh_decayMode",&_recotauh_decayMode);
@@ -366,64 +708,102 @@ void convert_tree(TString sample){
   tree_new->Branch("recotauh_pt",&_recotauh_pt);
   tree_new->Branch("recotauh_eta",&_recotauh_eta);
   tree_new->Branch("recotauh_phi",&_recotauh_phi);
+  tree_new->Branch("recotauh_dxy",&_recotauh_dxy);
+  tree_new->Branch("recotauh_dz",&_recotauh_dz);
+  tree_new->Branch("recotauh_iso",&_recotauh_iso);
 
-  tree_new->Branch("n_recoPFJet30",&_n_recoPFJet30,"n_recoPFJet30/I");
-  tree_new->Branch("recoPFJet30_e",&_recoPFJet30_e);
-  tree_new->Branch("recoPFJet30_pt",&_recoPFJet30_pt);
-  tree_new->Branch("recoPFJet30_px",&_recoPFJet30_px);
-  tree_new->Branch("recoPFJet30_py",&_recoPFJet30_py);
-  tree_new->Branch("recoPFJet30_pz",&_recoPFJet30_pz);
-  tree_new->Branch("recoPFJet30_eta",&_recoPFJet30_eta);
-  tree_new->Branch("recoPFJet30_phi",&_recoPFJet30_phi);
-  tree_new->Branch("recoPFJet30_CSVscore",&_recoPFJet30_CSVscore);
-  tree_new->Branch("recoPFJet30_Flavour",&_recoPFJet30_Flavour);
+  tree_new->Branch("recotauh_decayModeFindingOldDMs",&_recotauh_decayModeFindingOldDMs);
+  tree_new->Branch("recotauh_decayModeFindingNewDMs",&_recotauh_decayModeFindingNewDMs);
+  tree_new->Branch("recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits",&_recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits);
+  tree_new->Branch("recotauh_byMediumCombinedIsolationDeltaBetaCorr3Hits",&_recotauh_byMediumCombinedIsolationDeltaBetaCorr3Hits);
+  tree_new->Branch("recotauh_byTightCombinedIsolationDeltaBetaCorr3Hits",&_recotauh_byTightCombinedIsolationDeltaBetaCorr3Hits);
+  tree_new->Branch("recotauh_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03",&_recotauh_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03);
+  tree_new->Branch("recotauh_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03",&_recotauh_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03);
+  tree_new->Branch("recotauh_byTightCombinedIsolationDeltaBetaCorr3HitsdR03",&_recotauh_byTightCombinedIsolationDeltaBetaCorr3HitsdR03);
+  tree_new->Branch("recotauh_byLooseIsolationMVArun2v1DBdR03oldDMwLT",&_recotauh_byLooseIsolationMVArun2v1DBdR03oldDMwLT);
+  tree_new->Branch("recotauh_byMediumIsolationMVArun2v1DBdR03oldDMwLT",&_recotauh_byMediumIsolationMVArun2v1DBdR03oldDMwLT);
+  tree_new->Branch("recotauh_byTightIsolationMVArun2v1DBdR03oldDMwLT",&_recotauh_byTightIsolationMVArun2v1DBdR03oldDMwLT);
+  tree_new->Branch("recotauh_byVTightIsolationMVArun2v1DBdR03oldDMwLT",&_recotauh_byVTightIsolationMVArun2v1DBdR03oldDMwLT);
+  tree_new->Branch("recotauh_againstMuonLoose3",&_recotauh_againstMuonLoose3);
+  tree_new->Branch("recotauh_againstMuonTight3",&_recotauh_againstMuonTight3);
+  tree_new->Branch("recotauh_againstElectronVLooseMVA6",&_recotauh_againstElectronVLooseMVA6);
+  tree_new->Branch("recotauh_againstElectronLooseMVA6",&_recotauh_againstElectronLooseMVA6);
+  tree_new->Branch("recotauh_againstElectronMediumMVA6",&_recotauh_againstElectronMediumMVA6);
+  tree_new->Branch("recotauh_againstElectronTightMVA6",&_recotauh_againstElectronTightMVA6);
+  tree_new->Branch("recotauh_againstElectronVTightMVA6",&_recotauh_againstElectronVTightMVA6);
 
-  tree_new->Branch("recoPFJet30_CSVsort_e",&_recoPFJet30_CSVsort_e);
-  tree_new->Branch("recoPFJet30_CSVsort_pt",&_recoPFJet30_CSVsort_pt);
-  tree_new->Branch("recoPFJet30_CSVsort_px",&_recoPFJet30_CSVsort_px);
-  tree_new->Branch("recoPFJet30_CSVsort_py",&_recoPFJet30_CSVsort_py);
-  tree_new->Branch("recoPFJet30_CSVsort_pz",&_recoPFJet30_CSVsort_pz);
-  tree_new->Branch("recoPFJet30_CSVsort_eta",&_recoPFJet30_CSVsort_eta);
-  tree_new->Branch("recoPFJet30_CSVsort_phi",&_recoPFJet30_CSVsort_phi);
-  tree_new->Branch("recoPFJet30_CSVsort_CSVscore",&_recoPFJet30_CSVsort_CSVscore);
-  tree_new->Branch("recoPFJet30_CSVsort_Flavour",&_recoPFJet30_CSVsort_Flavour);
+  tree_new->Branch("recotauh_i_closest_genpart",&_recotauh_i_closest_genpart);
+  tree_new->Branch("recotauh_dR_closest_genpart",&_recotauh_dR_closest_genpart);
 
-  tree_new->Branch("n_recoPFJet30_btag_medium",&_n_recoPFJet30_btag_medium,"n_recoPFJet30_btag_medium/I");
-  tree_new->Branch("n_recoPFJet30_btag_loose",&_n_recoPFJet30_btag_loose,"n_recoPFJet30_btag_loose/I");
-  tree_new->Branch("recoPFJet30_btag_e",&_recoPFJet30_btag_e);
-  tree_new->Branch("recoPFJet30_btag_pt",&_recoPFJet30_btag_pt);
-  tree_new->Branch("recoPFJet30_btag_px",&_recoPFJet30_btag_px);
-  tree_new->Branch("recoPFJet30_btag_py",&_recoPFJet30_btag_py);
-  tree_new->Branch("recoPFJet30_btag_pz",&_recoPFJet30_btag_pz);
-  tree_new->Branch("recoPFJet30_btag_eta",&_recoPFJet30_btag_eta);
-  tree_new->Branch("recoPFJet30_btag_phi",&_recoPFJet30_btag_phi);
-  tree_new->Branch("recoPFJet30_btag_CSVscore",&_recoPFJet30_btag_CSVscore);
-  tree_new->Branch("recoPFJet30_btag_Flavour",&_recoPFJet30_btag_Flavour);
+  tree_new->Branch("n_recoPFJet",&_n_recoPFJet,"n_recoPFJet/I");
+  tree_new->Branch("recoPFJet_e",&_recoPFJet_e);
+  tree_new->Branch("recoPFJet_pt",&_recoPFJet_pt);
+  tree_new->Branch("recoPFJet_px",&_recoPFJet_px);
+  tree_new->Branch("recoPFJet_py",&_recoPFJet_py);
+  tree_new->Branch("recoPFJet_pz",&_recoPFJet_pz);
+  tree_new->Branch("recoPFJet_eta",&_recoPFJet_eta);
+  tree_new->Branch("recoPFJet_phi",&_recoPFJet_phi);
+  tree_new->Branch("recoPFJet_CSVscore",&_recoPFJet_CSVscore);
+  tree_new->Branch("recoPFJet_Flavour",&_recoPFJet_Flavour);
+  tree_new->Branch("recoPFJet_i_closest_genpart",&_recoPFJet_i_closest_genpart);
+  tree_new->Branch("recoPFJet_dR_closest_genpart",&_recoPFJet_dR_closest_genpart);
+  tree_new->Branch("recoPFJet_i_2nd_closest_genpart",&_recoPFJet_i_2nd_closest_genpart);
+  tree_new->Branch("recoPFJet_dR_2nd_closest_genpart",&_recoPFJet_dR_2nd_closest_genpart);
+  tree_new->Branch("recoPFJet_i_closest_lep",&_recoPFJet_i_closest_lep);
+  tree_new->Branch("recoPFJet_dR_closest_lep",&_recoPFJet_dR_closest_lep);
+  tree_new->Branch("recoPFJet_i_closest_tau",&_recoPFJet_i_closest_tau);
+  tree_new->Branch("recoPFJet_dR_closest_tau",&_recoPFJet_dR_closest_tau);
+			     
+  tree_new->Branch("recoPFJet_CSVsort_e",&_recoPFJet_CSVsort_e);
+  tree_new->Branch("recoPFJet_CSVsort_pt",&_recoPFJet_CSVsort_pt);
+  tree_new->Branch("recoPFJet_CSVsort_px",&_recoPFJet_CSVsort_px);
+  tree_new->Branch("recoPFJet_CSVsort_py",&_recoPFJet_CSVsort_py);
+  tree_new->Branch("recoPFJet_CSVsort_pz",&_recoPFJet_CSVsort_pz);
+  tree_new->Branch("recoPFJet_CSVsort_eta",&_recoPFJet_CSVsort_eta);
+  tree_new->Branch("recoPFJet_CSVsort_phi",&_recoPFJet_CSVsort_phi);
+  tree_new->Branch("recoPFJet_CSVsort_CSVscore",&_recoPFJet_CSVsort_CSVscore);
+  tree_new->Branch("recoPFJet_CSVsort_Flavour",&_recoPFJet_CSVsort_Flavour);
+  tree_new->Branch("recoPFJet_CSVsort_i_closest_genb",&_recoPFJet_CSVsort_i_closest_genb);
+  tree_new->Branch("recoPFJet_CSVsort_dR_closest_genb",&_recoPFJet_CSVsort_dR_closest_genb);
+  tree_new->Branch("recoPFJet_CSVsort_i_closest_gentauh",&_recoPFJet_CSVsort_i_closest_gentauh);
+  tree_new->Branch("recoPFJet_CSVsort_dR_closest_gentauh",&_recoPFJet_CSVsort_dR_closest_gentauh);
 
-  tree_new->Branch("n_recoPFJet30_untag",&_n_recoPFJet30_untag,"n_recoPFJet30_untag/I");
-  tree_new->Branch("recoPFJet30_untag_e",&_recoPFJet30_untag_e);
-  tree_new->Branch("recoPFJet30_untag_pt",&_recoPFJet30_untag_pt);
-  tree_new->Branch("recoPFJet30_untag_px",&_recoPFJet30_untag_px);
-  tree_new->Branch("recoPFJet30_untag_py",&_recoPFJet30_untag_py);
-  tree_new->Branch("recoPFJet30_untag_pz",&_recoPFJet30_untag_pz);
-  tree_new->Branch("recoPFJet30_untag_eta",&_recoPFJet30_untag_eta);
-  tree_new->Branch("recoPFJet30_untag_phi",&_recoPFJet30_untag_phi);
-  tree_new->Branch("recoPFJet30_untag_CSVscore",&_recoPFJet30_untag_CSVscore);
-  tree_new->Branch("recoPFJet30_untag_Flavour",&_recoPFJet30_untag_Flavour);
+  tree_new->Branch("n_recoPFJet_btag_medium",&_n_recoPFJet_btag_medium,"n_recoPFJet_btag_medium/I");
+  tree_new->Branch("n_recoPFJet_btag_loose",&_n_recoPFJet_btag_loose,"n_recoPFJet_btag_loose/I");
+  tree_new->Branch("recoPFJet_btag_e",&_recoPFJet_btag_e);
+  tree_new->Branch("recoPFJet_btag_pt",&_recoPFJet_btag_pt);
+  tree_new->Branch("recoPFJet_btag_px",&_recoPFJet_btag_px);
+  tree_new->Branch("recoPFJet_btag_py",&_recoPFJet_btag_py);
+  tree_new->Branch("recoPFJet_btag_pz",&_recoPFJet_btag_pz);
+  tree_new->Branch("recoPFJet_btag_eta",&_recoPFJet_btag_eta);
+  tree_new->Branch("recoPFJet_btag_phi",&_recoPFJet_btag_phi);
+  tree_new->Branch("recoPFJet_btag_CSVscore",&_recoPFJet_btag_CSVscore);
+  tree_new->Branch("recoPFJet_btag_Flavour",&_recoPFJet_btag_Flavour);
+
+  tree_new->Branch("n_recoPFJet_untag",&_n_recoPFJet_untag,"n_recoPFJet_untag/I");
+  tree_new->Branch("recoPFJet_untag_e",&_recoPFJet_untag_e);
+  tree_new->Branch("recoPFJet_untag_pt",&_recoPFJet_untag_pt);
+  tree_new->Branch("recoPFJet_untag_px",&_recoPFJet_untag_px);
+  tree_new->Branch("recoPFJet_untag_py",&_recoPFJet_untag_py);
+  tree_new->Branch("recoPFJet_untag_pz",&_recoPFJet_untag_pz);
+  tree_new->Branch("recoPFJet_untag_eta",&_recoPFJet_untag_eta);
+  tree_new->Branch("recoPFJet_untag_phi",&_recoPFJet_untag_phi);
+  tree_new->Branch("recoPFJet_untag_CSVscore",&_recoPFJet_untag_CSVscore);
+  tree_new->Branch("recoPFJet_untag_Flavour",&_recoPFJet_untag_Flavour);
 
 
-  tree_new->Branch("n_pair_Wtag_recoPFJet30_untag",&_n_pair_Wtag_recoPFJet30_untag,"n_pair_Wtag_recoPFJet30_untag/I");  
+  tree_new->Branch("n_pair_Wtag_recoPFJet_untag",&_n_pair_Wtag_recoPFJet_untag,"n_pair_Wtag_recoPFJet_untag/I");  
 
-  tree_new->Branch("recoPFJet30_untag_best_mW",&_recoPFJet30_untag_best_mW,"recoPFJet30_untag_best_mW/F");  
-  tree_new->Branch("recoPFJet30_untag_Wtag_e",&_recoPFJet30_untag_Wtag_e);
-  tree_new->Branch("recoPFJet30_untag_Wtag_pt",&_recoPFJet30_untag_Wtag_pt);
-  tree_new->Branch("recoPFJet30_untag_Wtag_px",&_recoPFJet30_untag_Wtag_px);
-  tree_new->Branch("recoPFJet30_untag_Wtag_py",&_recoPFJet30_untag_Wtag_py);
-  tree_new->Branch("recoPFJet30_untag_Wtag_pz",&_recoPFJet30_untag_Wtag_pz);
-  tree_new->Branch("recoPFJet30_untag_Wtag_eta",&_recoPFJet30_untag_Wtag_eta);
-  tree_new->Branch("recoPFJet30_untag_Wtag_phi",&_recoPFJet30_untag_Wtag_phi);
-  tree_new->Branch("recoPFJet30_untag_Wtag_CSVscore",&_recoPFJet30_untag_Wtag_CSVscore);
-  tree_new->Branch("recoPFJet30_untag_Wtag_Flavour",&_recoPFJet30_untag_Wtag_Flavour);
+  tree_new->Branch("recoPFJet_untag_best_mW",&_recoPFJet_untag_best_mW,"recoPFJet_untag_best_mW/F");  
+  tree_new->Branch("recoPFJet_untag_Wtag_e",&_recoPFJet_untag_Wtag_e);
+  tree_new->Branch("recoPFJet_untag_Wtag_pt",&_recoPFJet_untag_Wtag_pt);
+  tree_new->Branch("recoPFJet_untag_Wtag_px",&_recoPFJet_untag_Wtag_px);
+  tree_new->Branch("recoPFJet_untag_Wtag_py",&_recoPFJet_untag_Wtag_py);
+  tree_new->Branch("recoPFJet_untag_Wtag_pz",&_recoPFJet_untag_Wtag_pz);
+  tree_new->Branch("recoPFJet_untag_Wtag_eta",&_recoPFJet_untag_Wtag_eta);
+  tree_new->Branch("recoPFJet_untag_Wtag_phi",&_recoPFJet_untag_Wtag_phi);
+  tree_new->Branch("recoPFJet_untag_Wtag_CSVscore",&_recoPFJet_untag_Wtag_CSVscore);
+  tree_new->Branch("recoPFJet_untag_Wtag_Flavour",&_recoPFJet_untag_Wtag_Flavour);
 
   tree_new->Branch("mtop_had_perm",&_mtop_had_perm);
   tree_new->Branch("mblep_perm",&_mblep_perm);
@@ -438,6 +818,12 @@ void convert_tree(TString sample){
   tree_new->Branch("PFMET_cov01",&_PFMET_cov01,"PFMET_cov01/F");
   tree_new->Branch("PFMET_cov10",&_PFMET_cov10,"PFMET_cov10/F");
   tree_new->Branch("PFMET_cov11",&_PFMET_cov11,"PFMET_cov11/F");
+
+  tree_new->Branch("genpart_pt",&_genpart_pt);
+  tree_new->Branch("genpart_eta",&_genpart_eta);
+  tree_new->Branch("genpart_phi",&_genpart_phi);
+  tree_new->Branch("genpart_i_closest_daughter",&_genpart_i_closest_daughter);
+  tree_new->Branch("genpart_dR_closest_daughter",&_genpart_dR_closest_daughter);
 
   tree_new->Branch("n_genlep",&_n_genlep,"n_genlep/I");
   tree_new->Branch("n_genlep10",&_n_genlep10,"n_genlep10/I");
@@ -585,7 +971,18 @@ void convert_tree(TString sample){
   vector<float> *_jets_py;
   vector<float> *_jets_pz;
   vector<int> *_jets_Flavour;
+  vector<float> *_jets_PUJetID;
+  vector<int> *_PFjetID;
   vector<float> *_bCSVscore;
+
+  vector<float> *_dxy;
+  vector<float> *_dz;
+  vector<float> *_dxy_innerTrack;
+  vector<float> *_dz_innerTrack;
+  vector<float> *_SIP;
+  vector<int> *_daughters_muonID;
+  vector<int> *_daughters_eleMissingHits;
+  vector<bool> *_daughters_passConversionVeto;
 
   vector<float> *_daughters_e;
   vector<float> *_daughters_px;
@@ -596,9 +993,20 @@ void convert_tree(TString sample){
   vector<float> *_combreliso;
   vector<float> *_daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits;
   vector<int> *_daughters_decayModeFindingOldDMs;
-  vector<int> *_daughters_againstMuonTight3;
-  vector<int> *_daughters_againstElectronVLooseMVA5;
+  vector<int> *_daughters_decayModeFindingNewDMs;
+  //vector<int> *_daughters_againstMuonTight3;
+  //vector<int> *_daughters_againstElectronVLooseMVA5;
+  vector<Long64_t> *_tauID;
 
+  vector<int> *_daughters_jetNDauChargedMVASel;
+  vector<float> *_daughters_miniRelIsoCharged;
+  vector<float> *_daughters_miniRelIsoNeutral;
+  vector<float> *_daughters_jetPtRel;
+  vector<float> *_daughters_jetPtRatio;
+  vector<float> *_daughters_jetBTagCSV;
+  vector<float> *_daughters_lepMVA_mvaId;
+
+  
   vector<float> *_METx_vect;
   vector<float> *_METy_vect;
 
@@ -628,7 +1036,18 @@ void convert_tree(TString sample){
   tree->SetBranchAddress("jets_pz",&_jets_pz);
   tree->SetBranchAddress("jets_e",&_jets_e);
   tree->SetBranchAddress("jets_Flavour",&_jets_Flavour);
+  tree->SetBranchAddress("jets_PUJetID",&_jets_PUJetID);
+  tree->SetBranchAddress("PFjetID",&_PFjetID);
   tree->SetBranchAddress("bCSVscore",&_bCSVscore);
+
+  tree->SetBranchAddress("dxy",&_dxy);
+  tree->SetBranchAddress("dz",&_dz);
+  tree->SetBranchAddress("dxy_innerTrack",&_dxy_innerTrack);
+  tree->SetBranchAddress("dz_innerTrack",&_dz_innerTrack);
+  tree->SetBranchAddress("SIP",&_SIP);
+  tree->SetBranchAddress("daughters_muonID",&_daughters_muonID);
+  tree->SetBranchAddress("daughters_eleMissingHits",&_daughters_eleMissingHits);
+  tree->SetBranchAddress("daughters_passConversionVeto",&_daughters_passConversionVeto);
 
   tree->SetBranchAddress("daughters_px",&_daughters_px);
   tree->SetBranchAddress("daughters_py",&_daughters_py);
@@ -639,8 +1058,18 @@ void convert_tree(TString sample){
   tree->SetBranchAddress("combreliso",&_combreliso);
   tree->SetBranchAddress("daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits",&_daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits);
   tree->SetBranchAddress("daughters_decayModeFindingOldDMs",&_daughters_decayModeFindingOldDMs);
-  tree->SetBranchAddress("daughters_againstMuonTight3",&_daughters_againstMuonTight3);
-  tree->SetBranchAddress("daughters_againstElectronVLooseMVA5",&_daughters_againstElectronVLooseMVA5);
+  tree->SetBranchAddress("daughters_decayModeFindingNewDMs",&_daughters_decayModeFindingNewDMs);
+  //tree->SetBranchAddress("daughters_againstMuonTight3",&_daughters_againstMuonTight3);
+  //tree->SetBranchAddress("daughters_againstElectronVLooseMVA5",&_daughters_againstElectronVLooseMVA5);
+  tree->SetBranchAddress("tauID",&_tauID);
+
+  tree->SetBranchAddress("daughters_jetNDauChargedMVASel",&_daughters_jetNDauChargedMVASel);
+  tree->SetBranchAddress("daughters_miniRelIsoCharged",&_daughters_miniRelIsoCharged);
+  tree->SetBranchAddress("daughters_miniRelIsoNeutral",&_daughters_miniRelIsoNeutral);
+  tree->SetBranchAddress("daughters_jetPtRel",&_daughters_jetPtRel);
+  tree->SetBranchAddress("daughters_jetPtRatio",&_daughters_jetPtRatio);
+  tree->SetBranchAddress("daughters_jetBTagCSV",&_daughters_jetBTagCSV);
+  tree->SetBranchAddress("daughters_lepMVA_mvaId",&_daughters_lepMVA_mvaId);
 
   tree->SetBranchAddress("METx",&_METx_vect);
   tree->SetBranchAddress("METy",&_METy_vect);
@@ -666,10 +1095,23 @@ void convert_tree(TString sample){
   tree->SetBranchAddress("genpart_flags",&_genpart_flags);
   
 
-  cout<<"nentries="<<nentries<<endl;
+
+  TMVA::Reader* mu_reader = BookLeptonMVAReaderMoriond16("lepMVA_weights", "/mu_BDTG.weights.xml", "mu");
+  TMVA::Reader* ele_reader = BookLeptonMVAReaderMoriond16("lepMVA_weights", "/el_BDTG.weights.xml", "ele");
+
+
 
   //nentries=15;
-  for (int i=0;i<nentries;i++) {
+  int skip_entries = 0;
+
+  if(split>0){
+    nentries/=split;
+    skip_entries=(i_split-1)*nentries;    
+  }
+
+  cout<<"nentries="<<nentries<<endl;
+
+  for (int i=skip_entries;i<skip_entries+nentries;i++) {
     
     if(i%10000==0)
       cout<<"i="<<i<<endl;
@@ -677,6 +1119,11 @@ void convert_tree(TString sample){
     _daughters_pt.clear();
     _daughters_eta.clear();
     _daughters_phi.clear();
+    _daughters_dR_closest_jet.clear();
+
+    _jets_pt.clear();
+    _jets_eta.clear();
+    _jets_phi.clear();
 
     _n_recolep = 0;
     _recolep_ID.clear();
@@ -688,6 +1135,57 @@ void convert_tree(TString sample){
     _recolep_pt.clear();
     _recolep_eta.clear();
     _recolep_phi.clear();
+    _recolep_leptonMVA.clear();
+    _recolep_TopMothInd.clear();
+    _recolep_HMothInd.clear();
+
+
+    _n_recomu = 0;
+    _recomu_ID.clear();
+    _recomu_charge.clear();
+    _recomu_e.clear();
+    _recomu_px.clear();
+    _recomu_py.clear();
+    _recomu_pz.clear();
+    _recomu_pt.clear();
+    _recomu_eta.clear();
+    _recomu_phi.clear();
+    _recomu_dxy.clear();
+    _recomu_dz.clear();
+    _recomu_jetNDauChargedMVASel.clear();
+    _recomu_miniRelIso.clear();
+    _recomu_miniIsoCharged.clear();
+    _recomu_miniIsoNeutral.clear();
+    _recomu_sip3D.clear();
+    _recomu_jetPtRel.clear();
+    _recomu_jetCSV.clear();
+    _recomu_jetPtRatio.clear();
+    _recomu_lepMVA_mvaId.clear();
+    _recomu_leptonMVA.clear();
+
+
+    _n_recoele = 0;
+    _recoele_ID.clear();
+    _recoele_charge.clear();
+    _recoele_e.clear();
+    _recoele_px.clear();
+    _recoele_py.clear();
+    _recoele_pz.clear();
+    _recoele_pt.clear();
+    _recoele_eta.clear();
+    _recoele_phi.clear();
+    _recoele_dxy.clear();
+    _recoele_dz.clear();
+    _recoele_jetNDauChargedMVASel.clear();
+    _recoele_miniRelIso.clear();
+    _recoele_miniIsoCharged.clear();
+    _recoele_miniIsoNeutral.clear();
+    _recoele_sip3D.clear();
+    _recoele_jetPtRel.clear();
+    _recoele_jetCSV.clear();
+    _recoele_jetPtRatio.clear();
+    _recoele_lepMVA_mvaId.clear();
+    _recoele_leptonMVA.clear();
  
     _n_recotauh = 0;
     _recotauh_charge.clear();
@@ -699,62 +1197,100 @@ void convert_tree(TString sample){
     _recotauh_pt.clear();
     _recotauh_eta.clear();
     _recotauh_phi.clear();
+    _recotauh_dxy.clear();
+    _recotauh_dz.clear();
+    _recotauh_iso.clear();
 
-    _n_recoPFJet30 = 0;
-    _recoPFJet30_e.clear();
-    _recoPFJet30_pt.clear();
-    _recoPFJet30_px.clear();
-    _recoPFJet30_py.clear();
-    _recoPFJet30_pz.clear();
-    _recoPFJet30_eta.clear();
-    _recoPFJet30_phi.clear();
-    _recoPFJet30_CSVscore.clear();    
-    _recoPFJet30_Flavour.clear(); 
+    _recotauh_decayModeFindingOldDMs.clear();
+    _recotauh_decayModeFindingNewDMs.clear();
+    _recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits.clear();
+    _recotauh_byMediumCombinedIsolationDeltaBetaCorr3Hits.clear();
+    _recotauh_byTightCombinedIsolationDeltaBetaCorr3Hits.clear();
+    _recotauh_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
+    _recotauh_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
+    _recotauh_byTightCombinedIsolationDeltaBetaCorr3HitsdR03.clear();
+    _recotauh_byLooseIsolationMVArun2v1DBdR03oldDMwLT.clear();
+    _recotauh_byMediumIsolationMVArun2v1DBdR03oldDMwLT.clear();
+    _recotauh_byTightIsolationMVArun2v1DBdR03oldDMwLT.clear();
+    _recotauh_byVTightIsolationMVArun2v1DBdR03oldDMwLT.clear();
+    _recotauh_againstMuonLoose3.clear();
+    _recotauh_againstMuonTight3.clear();
+    _recotauh_againstElectronVLooseMVA6.clear();
+    _recotauh_againstElectronLooseMVA6.clear();
+    _recotauh_againstElectronMediumMVA6.clear();
+    _recotauh_againstElectronTightMVA6.clear();
+    _recotauh_againstElectronVTightMVA6.clear();
 
-    _recoPFJet30_CSVsort_e.clear();
-    _recoPFJet30_CSVsort_pt.clear();
-    _recoPFJet30_CSVsort_px.clear();
-    _recoPFJet30_CSVsort_py.clear();
-    _recoPFJet30_CSVsort_pz.clear();
-    _recoPFJet30_CSVsort_eta.clear();
-    _recoPFJet30_CSVsort_phi.clear();
-    _recoPFJet30_CSVsort_CSVscore.clear();    
-    _recoPFJet30_CSVsort_Flavour.clear();    
+    _recotauh_i_closest_genpart.clear();
+    _recotauh_dR_closest_genpart.clear();
 
-    _n_recoPFJet30_btag_medium = 0;
-    _n_recoPFJet30_btag_loose = 0;
-    _recoPFJet30_btag_e.clear();
-    _recoPFJet30_btag_pt.clear();
-    _recoPFJet30_btag_px.clear();
-    _recoPFJet30_btag_py.clear();
-    _recoPFJet30_btag_pz.clear();
-    _recoPFJet30_btag_eta.clear();
-    _recoPFJet30_btag_phi.clear();
-    _recoPFJet30_btag_CSVscore.clear();    
-    _recoPFJet30_btag_Flavour.clear();    
+    _n_recoPFJet = 0;
+    _recoPFJet_e.clear();
+    _recoPFJet_pt.clear();
+    _recoPFJet_px.clear();
+    _recoPFJet_py.clear();
+    _recoPFJet_pz.clear();
+    _recoPFJet_eta.clear();
+    _recoPFJet_phi.clear();
+    _recoPFJet_CSVscore.clear();    
+    _recoPFJet_Flavour.clear(); 
+    _recoPFJet_i_closest_genpart.clear();
+    _recoPFJet_dR_closest_genpart.clear();
+    _recoPFJet_i_2nd_closest_genpart.clear();
+    _recoPFJet_dR_2nd_closest_genpart.clear();
+    _recoPFJet_i_closest_lep.clear();
+    _recoPFJet_dR_closest_lep.clear();
+    _recoPFJet_i_closest_tau.clear();
+    _recoPFJet_dR_closest_tau.clear();
 
-    _n_recoPFJet30_untag = 0;
-    _recoPFJet30_untag_e.clear();
-    _recoPFJet30_untag_pt.clear();
-    _recoPFJet30_untag_px.clear();
-    _recoPFJet30_untag_py.clear();
-    _recoPFJet30_untag_pz.clear();
-    _recoPFJet30_untag_eta.clear();
-    _recoPFJet30_untag_phi.clear();
-    _recoPFJet30_untag_CSVscore.clear();    
-    _recoPFJet30_untag_Flavour.clear();
+    _recoPFJet_CSVsort_e.clear();
+    _recoPFJet_CSVsort_pt.clear();
+    _recoPFJet_CSVsort_px.clear();
+    _recoPFJet_CSVsort_py.clear();
+    _recoPFJet_CSVsort_pz.clear();
+    _recoPFJet_CSVsort_eta.clear();
+    _recoPFJet_CSVsort_phi.clear();
+    _recoPFJet_CSVsort_CSVscore.clear();    
+    _recoPFJet_CSVsort_Flavour.clear();   
+    _recoPFJet_CSVsort_i_closest_genb.clear();
+    _recoPFJet_CSVsort_dR_closest_genb.clear(); 
+    _recoPFJet_CSVsort_i_closest_gentauh.clear();
+    _recoPFJet_CSVsort_dR_closest_gentauh.clear(); 
 
-    _n_pair_Wtag_recoPFJet30_untag = 0;
-    _recoPFJet30_untag_best_mW = 0;
-    _recoPFJet30_untag_Wtag_e.clear();
-    _recoPFJet30_untag_Wtag_pt.clear();
-    _recoPFJet30_untag_Wtag_px.clear();
-    _recoPFJet30_untag_Wtag_py.clear();
-    _recoPFJet30_untag_Wtag_pz.clear();
-    _recoPFJet30_untag_Wtag_eta.clear();
-    _recoPFJet30_untag_Wtag_phi.clear();
-    _recoPFJet30_untag_Wtag_CSVscore.clear();    
-    _recoPFJet30_untag_Wtag_Flavour.clear();    
+    _n_recoPFJet_btag_medium = 0;
+    _n_recoPFJet_btag_loose = 0;
+    _recoPFJet_btag_e.clear();
+    _recoPFJet_btag_pt.clear();
+    _recoPFJet_btag_px.clear();
+    _recoPFJet_btag_py.clear();
+    _recoPFJet_btag_pz.clear();
+    _recoPFJet_btag_eta.clear();
+    _recoPFJet_btag_phi.clear();
+    _recoPFJet_btag_CSVscore.clear();    
+    _recoPFJet_btag_Flavour.clear();    
+
+    _n_recoPFJet_untag = 0;
+    _recoPFJet_untag_e.clear();
+    _recoPFJet_untag_pt.clear();
+    _recoPFJet_untag_px.clear();
+    _recoPFJet_untag_py.clear();
+    _recoPFJet_untag_pz.clear();
+    _recoPFJet_untag_eta.clear();
+    _recoPFJet_untag_phi.clear();
+    _recoPFJet_untag_CSVscore.clear();    
+    _recoPFJet_untag_Flavour.clear();
+
+    _n_pair_Wtag_recoPFJet_untag = 0;
+    _recoPFJet_untag_best_mW = 0;
+    _recoPFJet_untag_Wtag_e.clear();
+    _recoPFJet_untag_Wtag_pt.clear();
+    _recoPFJet_untag_Wtag_px.clear();
+    _recoPFJet_untag_Wtag_py.clear();
+    _recoPFJet_untag_Wtag_pz.clear();
+    _recoPFJet_untag_Wtag_eta.clear();
+    _recoPFJet_untag_Wtag_phi.clear();
+    _recoPFJet_untag_Wtag_CSVscore.clear();    
+    _recoPFJet_untag_Wtag_Flavour.clear();    
 
     _mtop_had_perm.clear();
     _mblep_perm.clear();
@@ -769,6 +1305,12 @@ void convert_tree(TString sample){
     _PFMET_cov01 = 0;
     _PFMET_cov10 = 0;
     _PFMET_cov11 = 0;
+
+    _genpart_pt.clear();
+    _genpart_eta.clear();
+    _genpart_phi.clear();
+    _genpart_i_closest_daughter.clear();
+    _genpart_dR_closest_daughter.clear();
 
     _n_genlep = 0;
     _n_genlep10 = 0;
@@ -915,7 +1457,18 @@ void convert_tree(TString sample){
     _jets_py = 0;
     _jets_pz = 0;
     _jets_Flavour = 0;
+    _jets_PUJetID = 0;
+    _PFjetID = 0;
     _bCSVscore = 0;
+
+    _dxy = 0;
+    _dz = 0;
+    _dxy_innerTrack = 0;
+    _dz_innerTrack = 0;
+    _SIP = 0;
+    _daughters_muonID = 0;
+    _daughters_eleMissingHits = 0;
+    _daughters_passConversionVeto = 0;
 
     _daughters_e = 0;
     _daughters_px = 0;
@@ -926,8 +1479,18 @@ void convert_tree(TString sample){
     _combreliso = 0;
     _daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits = 0;
     _daughters_decayModeFindingOldDMs = 0;
-    _daughters_againstMuonTight3 = 0;
-    _daughters_againstElectronVLooseMVA5 = 0;
+    _daughters_decayModeFindingNewDMs = 0;
+    //_daughters_againstMuonTight3 = 0;
+    //_daughters_againstElectronVLooseMVA5 = 0;
+    _tauID = 0;
+
+    _daughters_jetNDauChargedMVASel = 0;
+    _daughters_miniRelIsoCharged = 0;
+    _daughters_miniRelIsoNeutral = 0;
+    _daughters_jetPtRel = 0;
+    _daughters_jetPtRatio = 0;
+    _daughters_jetBTagCSV = 0;
+    _daughters_lepMVA_mvaId = 0;
 
     _METx_vect = 0;
     _METy_vect = 0;
@@ -958,6 +1521,9 @@ void convert_tree(TString sample){
     ///Leptons   
     
     vector< pair<int,TLorentzVector> > reco_leptons;
+    vector< pair<int,TLorentzVector> > reco_mus;
+    vector< pair<int,TLorentzVector> > reco_eles;
+
    	
     for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
       int PDGId=(*_PDGIdDaughters)[i_daughter];
@@ -970,17 +1536,97 @@ void convert_tree(TString sample){
       _daughters_phi.push_back(daughter.Phi());      
 
 
-      if( fabs(PDGId)==11 || fabs(PDGId)==13){
+      float dR_min=-1;
+      for(unsigned int i_jet=0; i_jet<(*_jets_e).size(); i_jet++){
+	TLorentzVector jet( (*_jets_px)[i_jet] , (*_jets_py)[i_jet] , (*_jets_pz)[i_jet] , (*_jets_e)[i_jet] );
+	float dR = jet.DeltaR(daughter);
+	if(dR_min<0 || dR<dR_min)
+	  dR_min = dR;
+      }
+      _daughters_dR_closest_jet.push_back(dR_min);
 
-	float rel_iso=(*_combreliso)[i_daughter];
-	if(daughter.Pt()>20 && fabs(daughter.Eta())<2.1 &&  rel_iso<0.1)
+      
+      if( fabs(PDGId)==13 ){
+
+	float dxy = (*_dxy_innerTrack)[i_daughter];
+	float dz = (*_dz_innerTrack)[i_daughter];
+	float miniRelIsoCharged = (*_daughters_miniRelIsoCharged)[i_daughter];
+	float miniRelIsoNeutral = (*_daughters_miniRelIsoNeutral)[i_daughter];
+	float miniRelIso = miniRelIsoCharged + miniRelIsoNeutral;
+	float sip = (*_SIP)[i_daughter];
+	bool looseID = (*_daughters_muonID)[i_daughter] & 1;
+
+	if(daughter.Pt()>5 && fabs(daughter.Eta())<2.4 && fabs(dxy)<=0.05 && fabs(dz)<0.1 && miniRelIso<0.4 && sip < 8 && looseID){
+	  reco_mus.push_back(daughter_pair);
 	  reco_leptons.push_back(daughter_pair);
+	}
+      }
+
+      
+
+    }
+
+
+
+
+    for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
+      int PDGId=(*_PDGIdDaughters)[i_daughter];
+      TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
+      
+      pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
+
+      if( fabs(PDGId)==11 ){
+
+	float dxy = (*_dxy)[i_daughter];
+	float dz = (*_dz)[i_daughter];
+	float miniRelIsoCharged = (*_daughters_miniRelIsoCharged)[i_daughter];
+	float miniRelIsoNeutral = (*_daughters_miniRelIsoNeutral)[i_daughter];
+	float miniRelIso = miniRelIsoCharged + miniRelIsoNeutral;
+	float sip = (*_SIP)[i_daughter];
+	
+	float eleMVAnt = (*_daughters_lepMVA_mvaId)[i_daughter];
+	bool VLooseIdEmuWP = false;
+	if(fabs(daughter.Eta())<0.8)
+	  VLooseIdEmuWP = (eleMVAnt>-0.7);
+	else if(fabs(daughter.Eta())<1.479)
+	  VLooseIdEmuWP = (eleMVAnt>-0.83);
+	else
+	  VLooseIdEmuWP = (eleMVAnt>-0.92);
+	
+	int eleMissingHits = (*_daughters_eleMissingHits)[i_daughter];
+	bool passConversionVeto = (*_daughters_passConversionVeto)[i_daughter];
+	
+	if(daughter.Pt()>7 && fabs(daughter.Eta())<2.5 && fabs(dxy)<=0.05 && fabs(dz)<0.1 && miniRelIso<0.4 && sip < 8 && VLooseIdEmuWP && eleMissingHits<=1 && passConversionVeto){
+
+	  bool dR_veto=false;
+	
+	  for(unsigned int i_mu=0; i_mu<reco_mus.size(); i_mu++){
+
+	    TLorentzVector mu=reco_mus[i_mu].second;
+	    float dR_ele_mu=mu.DeltaR(daughter);
+	    if(dR_ele_mu<0.05){
+	      dR_veto=true;
+	      break;
+	    }
+	  }
+
+	  if(dR_veto)
+	    continue;
+
+	  reco_eles.push_back(daughter_pair);
+	  reco_leptons.push_back(daughter_pair);
+
+	
+	}
 
       }
 
     }
 
+
     sort(reco_leptons.begin(), reco_leptons.end(), pT_comparison_pairs);
+    sort(reco_mus.begin(), reco_mus.end(), pT_comparison_pairs);
+    sort(reco_eles.begin(), reco_eles.end(), pT_comparison_pairs);
        
     _n_recolep = reco_leptons.size();
 
@@ -998,6 +1644,150 @@ void convert_tree(TString sample){
       _recolep_pt.push_back( lepton.Pt() );
       _recolep_eta.push_back( lepton.Eta() );
       _recolep_phi.push_back( lepton.Phi() );
+      
+      lepMVA_pt = _recolep_pt[i_lepton];
+      lepMVA_eta = _recolep_eta[i_lepton];
+      lepMVA_jetNDauChargedMVASel = (*_daughters_jetNDauChargedMVASel)[i_daughter];
+      lepMVA_miniRelIsoCharged = (*_daughters_miniRelIsoCharged)[i_daughter];
+      lepMVA_miniRelIsoNeutral = (*_daughters_miniRelIsoNeutral)[i_daughter];
+      lepMVA_jetPtRelv2 =  (*_daughters_jetPtRel)[i_daughter]; 
+      lepMVA_jetPtRatio = std::min((*_daughters_jetPtRatio)[i_daughter],float(1.5));      
+      lepMVA_jetBTagCSV = std::max((*_daughters_jetBTagCSV)[i_daughter],float(0.));
+      lepMVA_sip3d = (*_SIP)[i_daughter];
+      
+      if(fabs(_recolep_ID[i_lepton])==13){
+	lepMVA_dxy = log(fabs( (*_dxy_innerTrack)[i_daughter] ));
+	lepMVA_dz = log(fabs( (*_dz_innerTrack)[i_daughter] ));
+      }
+      else if(fabs(_recolep_ID[i_lepton])==11){
+	lepMVA_dxy = log(fabs( (*_dxy)[i_daughter] ));
+	lepMVA_dz = log(fabs( (*_dz)[i_daughter] ));
+      }
+
+      lepMVA_mvaId = (*_daughters_lepMVA_mvaId)[i_daughter];
+
+      if(fabs(_recolep_ID[i_lepton])==13)
+	_recolep_leptonMVA.push_back( mu_reader->EvaluateMVA("BDTG method") );
+      else if(fabs(_recolep_ID[i_lepton])==11)
+	_recolep_leptonMVA.push_back( ele_reader->EvaluateMVA("BDTG method") );
+
+      
+    }
+
+
+    _n_recomu = reco_mus.size();
+
+    for(unsigned int i_mu=0; i_mu<reco_mus.size(); i_mu++){
+      
+      int i_daughter=reco_mus[i_mu].first;
+      TLorentzVector muon=reco_mus[i_mu].second;
+
+      _recomu_ID.push_back( (*_PDGIdDaughters)[i_daughter] );
+      _recomu_charge.push_back( (*_PDGIdDaughters)[i_daughter] > 0 ? -1 : 1 );
+      _recomu_e.push_back( muon.E() );
+      _recomu_px.push_back( muon.Px() );
+      _recomu_py.push_back( muon.Py() );
+      _recomu_pz.push_back( muon.Pz() );
+      _recomu_pt.push_back( muon.Pt() );
+      _recomu_eta.push_back( muon.Eta() );
+      _recomu_phi.push_back( muon.Phi() );
+
+      _recomu_dxy.push_back( (*_dxy_innerTrack)[i_daughter] );
+      _recomu_dz.push_back( (*_dz_innerTrack)[i_daughter] );
+      _recomu_jetNDauChargedMVASel.push_back( (*_daughters_jetNDauChargedMVASel)[i_daughter] );
+      _recomu_miniRelIso.push_back( (*_daughters_miniRelIsoCharged)[i_daughter] + (*_daughters_miniRelIsoNeutral)[i_daughter] );
+      _recomu_miniIsoCharged.push_back( muon.Pt()*(*_daughters_miniRelIsoCharged)[i_daughter] );
+      _recomu_miniIsoNeutral.push_back( muon.Pt()*(*_daughters_miniRelIsoNeutral)[i_daughter] );
+      _recomu_sip3D.push_back( (*_SIP)[i_daughter] );
+      
+      if(_daughters_dR_closest_jet[i_daughter]<0.4){      
+	_recomu_jetPtRel.push_back( (*_daughters_jetPtRel)[i_daughter] );
+	_recomu_jetCSV.push_back( (*_daughters_jetBTagCSV)[i_daughter] );
+	_recomu_jetPtRatio.push_back( (*_daughters_jetPtRatio)[i_daughter] );
+      }
+      else{
+	_recomu_jetPtRel.push_back( 0. );
+	_recomu_jetCSV.push_back( 0. );
+	_recomu_jetPtRatio.push_back( 1. );
+      }
+
+      _recomu_lepMVA_mvaId.push_back( (*_daughters_lepMVA_mvaId)[i_daughter] );
+
+      
+
+      lepMVA_pt = _recomu_pt[i_mu];
+      lepMVA_eta = _recomu_eta[i_mu];
+      lepMVA_jetNDauChargedMVASel = _recomu_jetNDauChargedMVASel[i_mu];
+      lepMVA_miniRelIsoCharged = _recomu_miniIsoCharged[i_mu]/lepMVA_pt;
+      lepMVA_miniRelIsoNeutral = _recomu_miniIsoNeutral[i_mu]/lepMVA_pt;
+      lepMVA_jetPtRelv2 = _recomu_jetPtRel[i_mu]; 
+      lepMVA_jetPtRatio = std::min(_recomu_jetPtRatio[i_mu],float(1.5));      
+      lepMVA_jetBTagCSV = std::max(_recomu_jetCSV[i_mu],float(0.));
+      lepMVA_sip3d = _recomu_sip3D[i_mu];
+      lepMVA_dxy = log(fabs(_recomu_dxy[i_mu]));
+      lepMVA_dz = log(fabs(_recomu_dz[i_mu]));
+      lepMVA_mvaId = _recomu_lepMVA_mvaId[i_mu];
+
+      _recomu_leptonMVA.push_back( mu_reader->EvaluateMVA("BDTG method") );
+
+    }
+
+
+
+    _n_recoele = reco_eles.size();
+
+    for(unsigned int i_ele=0; i_ele<reco_eles.size(); i_ele++){
+      
+      int i_daughter=reco_eles[i_ele].first;
+      TLorentzVector elec=reco_eles[i_ele].second;
+
+      _recoele_ID.push_back( (*_PDGIdDaughters)[i_daughter] );
+      _recoele_charge.push_back( (*_PDGIdDaughters)[i_daughter] > 0 ? -1 : 1 );
+      _recoele_e.push_back( elec.E() );
+      _recoele_px.push_back( elec.Px() );
+      _recoele_py.push_back( elec.Py() );
+      _recoele_pz.push_back( elec.Pz() );
+      _recoele_pt.push_back( elec.Pt() );
+      _recoele_eta.push_back( elec.Eta() );
+      _recoele_phi.push_back( elec.Phi() );
+	  
+      _recoele_dxy.push_back( (*_dxy)[i_daughter] );
+      _recoele_dz.push_back( (*_dz)[i_daughter] );
+      _recoele_jetNDauChargedMVASel.push_back( (*_daughters_jetNDauChargedMVASel)[i_daughter] );
+      _recoele_miniRelIso.push_back( (*_daughters_miniRelIsoCharged)[i_daughter] + (*_daughters_miniRelIsoNeutral)[i_daughter] );
+      _recoele_miniIsoCharged.push_back( elec.Pt()*(*_daughters_miniRelIsoCharged)[i_daughter] );
+      _recoele_miniIsoNeutral.push_back( elec.Pt()*(*_daughters_miniRelIsoNeutral)[i_daughter] );
+      _recoele_sip3D.push_back( (*_SIP)[i_daughter] );
+
+      if(_daughters_dR_closest_jet[i_daughter]<0.4){      
+	_recoele_jetPtRel.push_back( (*_daughters_jetPtRel)[i_daughter] );
+	_recoele_jetCSV.push_back( (*_daughters_jetBTagCSV)[i_daughter] );
+	_recoele_jetPtRatio.push_back( (*_daughters_jetPtRatio)[i_daughter] );
+      }
+      else{
+	_recoele_jetPtRel.push_back( 0. );
+	_recoele_jetCSV.push_back( 0. );
+	_recoele_jetPtRatio.push_back( 1. );
+      }
+
+      _recoele_lepMVA_mvaId.push_back( (*_daughters_lepMVA_mvaId)[i_daughter] );
+
+
+      lepMVA_pt = _recoele_pt[i_ele];
+      lepMVA_eta = _recoele_eta[i_ele];
+      lepMVA_jetNDauChargedMVASel = _recoele_jetNDauChargedMVASel[i_ele];
+      lepMVA_miniRelIsoCharged = _recoele_miniIsoCharged[i_ele]/lepMVA_pt;
+      lepMVA_miniRelIsoNeutral = _recoele_miniIsoNeutral[i_ele]/lepMVA_pt;
+      lepMVA_jetPtRelv2 = _recoele_jetPtRel[i_ele]; 
+      lepMVA_jetPtRatio = std::min(_recoele_jetPtRatio[i_ele],float(1.5));      
+      lepMVA_jetBTagCSV = std::max(_recoele_jetCSV[i_ele],float(0.));
+      lepMVA_sip3d = _recoele_sip3D[i_ele];
+      lepMVA_dxy = log(fabs(_recoele_dxy[i_ele]));
+      lepMVA_dz = log(fabs(_recoele_dz[i_ele]));
+      lepMVA_mvaId = _recoele_lepMVA_mvaId[i_ele];
+
+      _recoele_leptonMVA.push_back( ele_reader->EvaluateMVA("BDTG method") );
+
 
     }
 
@@ -1006,7 +1796,7 @@ void convert_tree(TString sample){
     ///Taus   
     
     vector< pair<int,TLorentzVector> > reco_taus;
-   	
+    
     for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
       int PDGId=(*_PDGIdDaughters)[i_daughter];
       TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
@@ -1014,19 +1804,62 @@ void convert_tree(TString sample){
       pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
      
       float iso=(*_daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits)[i_daughter];
-      int decayModeFinding=(*_daughters_decayModeFindingOldDMs)[i_daughter];
-      int antiMu=(*_daughters_againstMuonTight3)[i_daughter];
-      int antiE=(*_daughters_againstElectronVLooseMVA5)[i_daughter];
+      //int iso=(*_tauID)[i_daughter] & (1<<16); //byLooseCombinedIsolationDeltaBetaCorr3Hits = bit#16
+   
+      int byLooseCombinedIsolationDeltaBetaCorr3Hits = ((*_tauID)[i_daughter]>>3)&1;
+      int byLooseCombinedIsolationDeltaBetaCorr3HitsdR03 = ((*_tauID)[i_daughter]>>21)&1;
+      int byLooseIsolationMVArun2v1DBdR03oldDMwLT = ((*_tauID)[i_daughter]>>24)&1;
 
-      if(fabs(PDGId)==15 && daughter.Pt()>30 && fabs(daughter.Eta())<2.1 && iso<1.5 && decayModeFinding>0.5 && antiMu>0 && antiE>0){
+      int decayModeFinding=(*_daughters_decayModeFindingOldDMs)[i_daughter];
+      //int decayModeFinding=(*_daughters_decayModeFindingNewDMs)[i_daughter];
+      //int antiMu=(*_daughters_againstMuonTight3)[i_daughter];
+      //int antiE=(*_daughters_againstElectronVLooseMVA5)[i_daughter];
+      int antiMu=((*_tauID)[i_daughter]>>6) & 1; //againsMuonLoose3 = bit #7
+      int antiE=((*_tauID)[i_daughter]>>8) & 1; //againsElectronVLooseMVA6 = bit #9
+
+      float dxy = (*_dxy)[i_daughter];
+      float dz = (*_dz)[i_daughter];
+      
+      bool iso_cut = iso<(0.1*iso_tau);
+      if(iso_type=="byLooseCombinedIsolationDeltaBetaCorr3Hits" || sample=="sync")
+	iso_cut = byLooseCombinedIsolationDeltaBetaCorr3Hits;
+      else if(iso_type=="byLooseCombinedIsolationDeltaBetaCorr3HitsdR03")
+	iso_cut = byLooseCombinedIsolationDeltaBetaCorr3HitsdR03;
+      else if(iso_type=="byLooseIsolationMVArun2v1DBdR03oldDMwLT")
+	iso_cut = byLooseIsolationMVArun2v1DBdR03oldDMwLT;
+	  
+      bool sync_cut=fabs(PDGId)==15 && daughter.Pt()>20 && fabs(daughter.Eta())<2.3 && iso_cut && decayModeFinding>0.5 && fabs(dxy)<=1000 && fabs(dz)<=0.2;   
+      bool nomin_cut = fabs(PDGId)==15 && daughter.Pt()>20 && fabs(daughter.Eta())<2.3 && iso_cut && decayModeFinding>0.5 && abs(dxy)<=1000 && abs(dz)<=0.2 && antiMu>0 && antiE>0;     
+      
+      if( (sample=="sync" && sync_cut) || (sample!="sync" && nomin_cut)){	
 	
 	bool dR_veto=false;
 	
-	for(unsigned int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
+	/*for(unsigned int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
 
 	  TLorentzVector lep=reco_leptons[i_lep].second;
 	  float dR_lep_tau=lep.DeltaR(daughter);
-	  if(dR_lep_tau<0.1){
+	  if(dR_lep_tau<0.4){
+	    dR_veto=true;
+	    break;
+	  }
+	  }*/
+
+	for(unsigned int i_lep=0; i_lep<reco_mus.size(); i_lep++){
+	  
+	  TLorentzVector lep=reco_mus[i_lep].second;
+	  float dR_lep_tau=lep.DeltaR(daughter);
+	  if(dR_lep_tau<0.4){
+	    dR_veto=true;
+	    break;
+	  }
+	}
+
+	for(unsigned int i_lep=0; i_lep<reco_eles.size(); i_lep++){
+	  
+	  TLorentzVector lep=reco_eles[i_lep].second;
+	  float dR_lep_tau=lep.DeltaR(daughter);
+	  if(dR_lep_tau<0.4){
 	    dR_veto=true;
 	    break;
 	  }
@@ -1062,8 +1895,39 @@ void convert_tree(TString sample){
       _recotauh_pt.push_back( tauh.Pt() );
       _recotauh_eta.push_back( tauh.Eta() );
       _recotauh_phi.push_back( tauh.Phi() );
+      _recotauh_dxy.push_back( (*_dxy)[i_daughter] );
+      _recotauh_dz.push_back( (*_dz)[i_daughter] );
+      _recotauh_iso.push_back( (*_daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits)[i_daughter] );
 
-    }
+      _recotauh_decayModeFindingOldDMs.push_back( (*_daughters_decayModeFindingOldDMs)[i_daughter] );
+      _recotauh_decayModeFindingNewDMs.push_back( (*_daughters_decayModeFindingNewDMs)[i_daughter] );
+      _recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>3)&1 );
+      _recotauh_byMediumCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>4)&1 );
+      _recotauh_byTightCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>5)&1 );
+      _recotauh_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>21)&1 );
+      _recotauh_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>22)&1 );
+      _recotauh_byTightCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>23)&1 );
+      _recotauh_byLooseIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>24)&1 );
+      _recotauh_byMediumIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>25)&1 );
+      _recotauh_byTightIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>26)&1 );
+      _recotauh_byVTightIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>27)&1 );
+
+      _recotauh_againstMuonLoose3.push_back( ((*_tauID)[i_daughter]>>6)&1 );
+      _recotauh_againstMuonTight3.push_back( ((*_tauID)[i_daughter]>>7)&1 );
+      _recotauh_againstElectronVLooseMVA6.push_back( ((*_tauID)[i_daughter]>>8)&1 );
+      _recotauh_againstElectronLooseMVA6.push_back( ((*_tauID)[i_daughter]>>9)&1 );
+      _recotauh_againstElectronMediumMVA6.push_back( ((*_tauID)[i_daughter]>>10)&1 );
+      _recotauh_againstElectronTightMVA6.push_back( ((*_tauID)[i_daughter]>>11)&1 );
+      _recotauh_againstElectronVTightMVA6.push_back( ((*_tauID)[i_daughter]>>12)&1 );
+
+      pair<int,float> pair = find_i_dRmin_closest( tauh,
+						   (*_genpart_px), (*_genpart_py), (*_genpart_pz), (*_genpart_e) );
+
+      _recotauh_i_closest_genpart.push_back(pair.first);
+      _recotauh_dR_closest_genpart.push_back(pair.second);
+
+
+    }   
 
     
     ///Jets
@@ -1075,15 +1939,23 @@ void convert_tree(TString sample){
 
       TLorentzVector jet ( (*_jets_px)[i_jet] , (*_jets_py)[i_jet] , (*_jets_pz)[i_jet] , (*_jets_e)[i_jet] );
 
+      _jets_pt.push_back(jet.Pt());
+      _jets_eta.push_back(jet.Eta());
+      _jets_phi.push_back(jet.Phi());      
+
       pair<int,TLorentzVector> jet_pair = make_pair(i_jet,jet);
       float CSVscore = (*_bCSVscore)[i_jet];
       pair<int,float> CSV_pair = make_pair(i_jet,CSVscore);
+      float PUJetID = (*_jets_PUJetID)[i_jet];
+      float PFJetID = (*_PFjetID)[i_jet];
 
-      if(jet.Pt()>30 && fabs(jet.Eta())<2.5){
+
+      //if(jet.Pt()>25 && fabs(jet.Eta())<2.4 && PUJetID>-0.63 && PFJetID>1){
+      if(jet.Pt()>25 && fabs(jet.Eta())<2.4 && PFJetID>0){
 
 	bool dR_veto=false;
 
-	for(unsigned int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
+	/*for(unsigned int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
 
 	  TLorentzVector lep=reco_leptons[i_lep].second;
 	  float dR_lep_jet=lep.DeltaR(jet);
@@ -1092,6 +1964,26 @@ void convert_tree(TString sample){
 	    break;
 	  }
 	
+	  }*/
+
+	for(unsigned int i_lep=0; i_lep<reco_mus.size(); i_lep++){
+	  
+	  TLorentzVector lep=reco_mus[i_lep].second;
+	  float dR_lep_tau=lep.DeltaR(jet);
+	  if(dR_lep_tau<0.4){
+	    dR_veto=true;
+	    break;
+	  }
+	}
+
+	for(unsigned int i_lep=0; i_lep<reco_eles.size(); i_lep++){
+	  
+	  TLorentzVector lep=reco_eles[i_lep].second;
+	  float dR_lep_tau=lep.DeltaR(jet);
+	  if(dR_lep_tau<0.4){
+	    dR_veto=true;
+	    break;
+	  }
 	}
 
 	for(unsigned int i_tauh=0; i_tauh<reco_taus.size(); i_tauh++){
@@ -1116,9 +2008,9 @@ void convert_tree(TString sample){
 	//Loose CSV WP: CSV>0.423   
 
 	if(CSVscore>0.423)
-	  _n_recoPFJet30_btag_loose++;
+	  _n_recoPFJet_btag_loose++;
 	if(CSVscore>0.814)
-	  _n_recoPFJet30_btag_medium++;
+	  _n_recoPFJet_btag_medium++;
 
       }
 
@@ -1129,97 +2021,147 @@ void convert_tree(TString sample){
     sort(i_jet_CSV_pairs.begin(), i_jet_CSV_pairs.end(), CSV_comparison_pairs);
     
 
-    _n_recoPFJet30 = reco_jets.size();
+    _n_recoPFJet = reco_jets.size();
     
 
-    for(unsigned int i_PFJet30=0; i_PFJet30<reco_jets.size(); i_PFJet30++){
+    for(unsigned int i_PFJet=0; i_PFJet<reco_jets.size(); i_PFJet++){
 
-      int i_jet = reco_jets[i_PFJet30].first;
-      TLorentzVector jet =  reco_jets[i_PFJet30].second;
+      int i_jet = reco_jets[i_PFJet].first;
+      TLorentzVector jet =  reco_jets[i_PFJet].second;
       
-      _recoPFJet30_e.push_back( jet.E() );
-      _recoPFJet30_pt.push_back( jet.Pt() );
-      _recoPFJet30_px.push_back( jet.Px() );
-      _recoPFJet30_py.push_back( jet.Py() );
-      _recoPFJet30_pz.push_back( jet.Pz() );
-      _recoPFJet30_eta.push_back( jet.Eta() );
-      _recoPFJet30_phi.push_back( jet.Phi() );
-      _recoPFJet30_CSVscore.push_back(  (*_bCSVscore)[i_jet] );
-      _recoPFJet30_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+      _recoPFJet_e.push_back( jet.E() );
+      _recoPFJet_pt.push_back( jet.Pt() );
+      _recoPFJet_px.push_back( jet.Px() );
+      _recoPFJet_py.push_back( jet.Py() );
+      _recoPFJet_pz.push_back( jet.Pz() );
+      _recoPFJet_eta.push_back( jet.Eta() );
+      _recoPFJet_phi.push_back( jet.Phi() );
+      _recoPFJet_CSVscore.push_back(  (*_bCSVscore)[i_jet] );
+      _recoPFJet_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+
+
+      int imin = -1;
+      float dRmin = 100000;
+      int imin_2nd = -1;
+      float dRmin_2nd = 100000;
+      
+      for(unsigned int i_gen=0; i_gen<(*_genpart_e).size(); i_gen++){
+
+	TLorentzVector genpart_tlv( (*_genpart_px)[i_gen], (*_genpart_py)[i_gen], (*_genpart_pz)[i_gen], (*_genpart_e)[i_gen]);	
+	float dR = jet.DeltaR(genpart_tlv);
+
+	if(dR<dRmin_2nd){
+	  if(dR<dRmin){
+	    imin_2nd=imin;
+	    dRmin_2nd=dRmin;
+	    dRmin=dR;
+	    imin=i_gen;
+	  } 
+	  else{
+	    imin_2nd=i_gen;
+	    dRmin_2nd=dR;
+	  }
+	}
+	
+      }
+
+      _recoPFJet_i_closest_genpart.push_back(imin);
+      _recoPFJet_dR_closest_genpart.push_back(dRmin);
+      _recoPFJet_i_2nd_closest_genpart.push_back(imin_2nd);
+      _recoPFJet_dR_2nd_closest_genpart.push_back(dRmin_2nd);
+
+
+      pair<int,float> pair_lep = find_i_dRmin_closest( jet,
+						       _recolep_px, _recolep_py, _recolep_pz, _recolep_e );
+
+      _recoPFJet_i_closest_lep.push_back(pair_lep.first);
+      _recoPFJet_dR_closest_lep.push_back(pair_lep.second);      
+
+
+      pair<int,float> pair_tauh = find_i_dRmin_closest( jet,
+						       _recotauh_px, _recotauh_py, _recotauh_pz, _recotauh_e );
+
+      _recoPFJet_i_closest_tau.push_back(pair_tauh.first);
+      _recoPFJet_dR_closest_tau.push_back(pair_tauh.second);  
+
+
 
     }
 
-    for(unsigned int i_PFJet30=0; i_PFJet30<i_jet_CSV_pairs.size(); i_PFJet30++){
 
-      int i_jet = i_jet_CSV_pairs[i_PFJet30].first;
-      float CSVscore= i_jet_CSV_pairs[i_PFJet30].second;
+
+    for(unsigned int i_PFJet=0; i_PFJet<i_jet_CSV_pairs.size(); i_PFJet++){
+
+      int i_jet = i_jet_CSV_pairs[i_PFJet].first;
+      float CSVscore= i_jet_CSV_pairs[i_PFJet].second;
       
       TLorentzVector jet  ( (*_jets_px)[i_jet] , (*_jets_py)[i_jet] , (*_jets_pz)[i_jet] , (*_jets_e)[i_jet] );
       
-      _recoPFJet30_CSVsort_e.push_back( jet.E() );
-      _recoPFJet30_CSVsort_pt.push_back( jet.Pt() );
-      _recoPFJet30_CSVsort_px.push_back( jet.Px() );
-      _recoPFJet30_CSVsort_py.push_back( jet.Py() );
-      _recoPFJet30_CSVsort_pz.push_back( jet.Pz() );
-      _recoPFJet30_CSVsort_eta.push_back( jet.Eta() );
-      _recoPFJet30_CSVsort_phi.push_back( jet.Phi() );
-      _recoPFJet30_CSVsort_CSVscore.push_back( CSVscore );
-      _recoPFJet30_CSVsort_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+      _recoPFJet_CSVsort_e.push_back( jet.E() );
+      _recoPFJet_CSVsort_pt.push_back( jet.Pt() );
+      _recoPFJet_CSVsort_px.push_back( jet.Px() );
+      _recoPFJet_CSVsort_py.push_back( jet.Py() );
+      _recoPFJet_CSVsort_pz.push_back( jet.Pz() );
+      _recoPFJet_CSVsort_eta.push_back( jet.Eta() );
+      _recoPFJet_CSVsort_phi.push_back( jet.Phi() );
+      _recoPFJet_CSVsort_CSVscore.push_back( CSVscore );
+      _recoPFJet_CSVsort_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
 
-      if(i_PFJet30<2){
-	_recoPFJet30_btag_e.push_back( jet.E() );
-	_recoPFJet30_btag_pt.push_back( jet.Pt() );
-	_recoPFJet30_btag_px.push_back( jet.Px() );
-	_recoPFJet30_btag_py.push_back( jet.Py() );
-	_recoPFJet30_btag_pz.push_back( jet.Pz() );
-	_recoPFJet30_btag_eta.push_back( jet.Eta() );
-	_recoPFJet30_btag_phi.push_back( jet.Phi() );
-	_recoPFJet30_btag_CSVscore.push_back( CSVscore );
-	_recoPFJet30_btag_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+      if(i_PFJet<2){
+	_recoPFJet_btag_e.push_back( jet.E() );
+	_recoPFJet_btag_pt.push_back( jet.Pt() );
+	_recoPFJet_btag_px.push_back( jet.Px() );
+	_recoPFJet_btag_py.push_back( jet.Py() );
+	_recoPFJet_btag_pz.push_back( jet.Pz() );
+	_recoPFJet_btag_eta.push_back( jet.Eta() );
+	_recoPFJet_btag_phi.push_back( jet.Phi() );
+	_recoPFJet_btag_CSVscore.push_back( CSVscore );
+	_recoPFJet_btag_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
       }
 
       else{
-	_recoPFJet30_untag_e.push_back( jet.E() );
-	_recoPFJet30_untag_pt.push_back( jet.Pt() );
-	_recoPFJet30_untag_px.push_back( jet.Px() );
-	_recoPFJet30_untag_py.push_back( jet.Py() );
-	_recoPFJet30_untag_pz.push_back( jet.Pz() );
-	_recoPFJet30_untag_eta.push_back( jet.Eta() );
-	_recoPFJet30_untag_phi.push_back( jet.Phi() );
-	_recoPFJet30_untag_CSVscore.push_back( CSVscore );
-	_recoPFJet30_untag_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+	_recoPFJet_untag_e.push_back( jet.E() );
+	_recoPFJet_untag_pt.push_back( jet.Pt() );
+	_recoPFJet_untag_px.push_back( jet.Px() );
+	_recoPFJet_untag_py.push_back( jet.Py() );
+	_recoPFJet_untag_pz.push_back( jet.Pz() );
+	_recoPFJet_untag_eta.push_back( jet.Eta() );
+	_recoPFJet_untag_phi.push_back( jet.Phi() );
+	_recoPFJet_untag_CSVscore.push_back( CSVscore );
+	_recoPFJet_untag_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
       }
 
     }
 
-    _n_recoPFJet30_untag=_recoPFJet30_untag_e.size();
+    _n_recoPFJet_untag=_recoPFJet_untag_e.size();
+
 
     //W-tag
     double mW=80.4;
 
 
-    if(_recoPFJet30_untag_e.size()>1){
+    if(_recoPFJet_untag_e.size()>1){
 
       vector<int> index_Wtag;
       index_Wtag.push_back(0);
       index_Wtag.push_back(0);
 	    
-      for(unsigned int i_jet1=0; i_jet1<_recoPFJet30_untag_e.size()-1; i_jet1++){
-	TLorentzVector jet1 ( _recoPFJet30_untag_px[i_jet1], _recoPFJet30_untag_py[i_jet1], _recoPFJet30_untag_pz[i_jet1], _recoPFJet30_untag_e[i_jet1] );
+      for(unsigned int i_jet1=0; i_jet1<_recoPFJet_untag_e.size()-1; i_jet1++){
+	TLorentzVector jet1 ( _recoPFJet_untag_px[i_jet1], _recoPFJet_untag_py[i_jet1], _recoPFJet_untag_pz[i_jet1], _recoPFJet_untag_e[i_jet1] );
 	
-	for(unsigned int i_jet2=i_jet1+1; i_jet2<_recoPFJet30_untag_e.size(); i_jet2++){
+	for(unsigned int i_jet2=i_jet1+1; i_jet2<_recoPFJet_untag_e.size(); i_jet2++){
 	  
 
-	  TLorentzVector jet2 ( _recoPFJet30_untag_px[i_jet2], _recoPFJet30_untag_py[i_jet2], _recoPFJet30_untag_pz[i_jet2], _recoPFJet30_untag_e[i_jet2] );
+	  TLorentzVector jet2 ( _recoPFJet_untag_px[i_jet2], _recoPFJet_untag_py[i_jet2], _recoPFJet_untag_pz[i_jet2], _recoPFJet_untag_e[i_jet2] );
 	  
 	  double mjj = (jet1+jet2).M();
 	  if(mjj>60 && mjj<100)
-	    _n_pair_Wtag_recoPFJet30_untag++;
+	    _n_pair_Wtag_recoPFJet_untag++;
 
 
-	  if( abs( mjj - mW ) < abs( _recoPFJet30_untag_best_mW - mW ) ){
+	  if( abs( mjj - mW ) < abs( _recoPFJet_untag_best_mW - mW ) ){
 	    
-	    _recoPFJet30_untag_best_mW = mjj;
+	    _recoPFJet_untag_best_mW = mjj;
 	    
 	    if(jet1.Pt()>jet2.Pt()){
 	      index_Wtag[0]=i_jet1;
@@ -1241,31 +2183,31 @@ void convert_tree(TString sample){
 
 	int i_jet=index_Wtag[k];
 
-	_recoPFJet30_untag_Wtag_e.push_back( _recoPFJet30_untag_e[i_jet] );
-	_recoPFJet30_untag_Wtag_pt.push_back( _recoPFJet30_untag_pt[i_jet] );
-	_recoPFJet30_untag_Wtag_px.push_back( _recoPFJet30_untag_px[i_jet] );
-	_recoPFJet30_untag_Wtag_py.push_back( _recoPFJet30_untag_py[i_jet] );
-	_recoPFJet30_untag_Wtag_pz.push_back( _recoPFJet30_untag_pz[i_jet] );
-	_recoPFJet30_untag_Wtag_eta.push_back( _recoPFJet30_untag_eta[i_jet] );
-	_recoPFJet30_untag_Wtag_phi.push_back( _recoPFJet30_untag_phi[i_jet] );
-	_recoPFJet30_untag_Wtag_CSVscore.push_back( _recoPFJet30_untag_CSVscore[i_jet] );
-	_recoPFJet30_untag_Wtag_Flavour.push_back( _recoPFJet30_untag_Flavour[i_jet] );
+	_recoPFJet_untag_Wtag_e.push_back( _recoPFJet_untag_e[i_jet] );
+	_recoPFJet_untag_Wtag_pt.push_back( _recoPFJet_untag_pt[i_jet] );
+	_recoPFJet_untag_Wtag_px.push_back( _recoPFJet_untag_px[i_jet] );
+	_recoPFJet_untag_Wtag_py.push_back( _recoPFJet_untag_py[i_jet] );
+	_recoPFJet_untag_Wtag_pz.push_back( _recoPFJet_untag_pz[i_jet] );
+	_recoPFJet_untag_Wtag_eta.push_back( _recoPFJet_untag_eta[i_jet] );
+	_recoPFJet_untag_Wtag_phi.push_back( _recoPFJet_untag_phi[i_jet] );
+	_recoPFJet_untag_Wtag_CSVscore.push_back( _recoPFJet_untag_CSVscore[i_jet] );
+	_recoPFJet_untag_Wtag_Flavour.push_back( _recoPFJet_untag_Flavour[i_jet] );
 
       }
 
     }
     
 
-    if( _n_recolep==2 && _n_recotauh>=1 && _n_recoPFJet30>=4){
+    if( _n_recolep==2 && _n_recotauh>=1 && _n_recoPFJet>=4){
   
       for(int perm=0; perm<4; perm++){
 	
-	TLorentzVector Whad_1 ( _recoPFJet30_untag_Wtag_px[0], _recoPFJet30_untag_Wtag_py[0], _recoPFJet30_untag_Wtag_pz[0], _recoPFJet30_untag_Wtag_e[0] );
-	TLorentzVector Whad_2 ( _recoPFJet30_untag_Wtag_px[1], _recoPFJet30_untag_Wtag_py[1], _recoPFJet30_untag_Wtag_pz[1], _recoPFJet30_untag_Wtag_e[1] );
+	TLorentzVector Whad_1 ( _recoPFJet_untag_Wtag_px[0], _recoPFJet_untag_Wtag_py[0], _recoPFJet_untag_Wtag_pz[0], _recoPFJet_untag_Wtag_e[0] );
+	TLorentzVector Whad_2 ( _recoPFJet_untag_Wtag_px[1], _recoPFJet_untag_Wtag_py[1], _recoPFJet_untag_Wtag_pz[1], _recoPFJet_untag_Wtag_e[1] );
 	TLorentzVector tauh ( _recotauh_px[0], _recotauh_py[0], _recotauh_pz[0], _recotauh_e[0]);
 	
-	TLorentzVector Bjet_1 ( _recoPFJet30_btag_px[0], _recoPFJet30_btag_py[0], _recoPFJet30_btag_pz[0], _recoPFJet30_btag_e[0] );
-	TLorentzVector Bjet_2 ( _recoPFJet30_btag_px[1], _recoPFJet30_btag_py[1], _recoPFJet30_btag_pz[1], _recoPFJet30_btag_e[1] );
+	TLorentzVector Bjet_1 ( _recoPFJet_btag_px[0], _recoPFJet_btag_py[0], _recoPFJet_btag_pz[0], _recoPFJet_btag_e[0] );
+	TLorentzVector Bjet_2 ( _recoPFJet_btag_px[1], _recoPFJet_btag_py[1], _recoPFJet_btag_pz[1], _recoPFJet_btag_e[1] );
 	
 	TLorentzVector lep_1 ( _recolep_px[0], _recolep_py[0], _recolep_pz[0], _recolep_e[0] );
 	TLorentzVector lep_2 ( _recolep_px[1], _recolep_py[1], _recolep_pz[1], _recolep_e[1] );
@@ -1359,6 +2301,15 @@ void convert_tree(TString sample){
     for(unsigned int i_gen=0; i_gen<(*_genpart_e).size(); i_gen++){
 
       TLorentzVector genpart_tlv( (*_genpart_px)[i_gen], (*_genpart_py)[i_gen], (*_genpart_pz)[i_gen], (*_genpart_e)[i_gen]);
+      
+      _genpart_pt.push_back(genpart_tlv.Pt());
+      _genpart_eta.push_back(genpart_tlv.Eta());
+      _genpart_phi.push_back(genpart_tlv.Phi());
+
+      pair<int,float> pair = find_i_dRmin_closest( genpart_tlv,
+						   (*_daughters_px), (*_daughters_py), (*_daughters_pz), (*_daughters_e) );
+      _genpart_i_closest_daughter.push_back(pair.first);
+      _genpart_dR_closest_daughter.push_back(pair.second);  
 
       int TauMothInd = (*_genpart_TauMothInd)[i_gen];
       int HMothInd = (*_genpart_HMothInd)[i_gen];
@@ -1850,9 +2801,98 @@ void convert_tree(TString sample){
 
     }
 
+
+
+    //b + tau matching for PFJet30_CSVsort
+
+    for(int i_PFJet30=0; i_PFJet30<_n_recoPFJet; i_PFJet30++){
+
+	TLorentzVector jet( (_recoPFJet_CSVsort_px)[i_PFJet30], (_recoPFJet_CSVsort_py)[i_PFJet30], (_recoPFJet_CSVsort_pz)[i_PFJet30], (_recoPFJet_CSVsort_e)[i_PFJet30]);
+
+	pair<int,float> pair_genb = find_i_dRmin_closest( jet,
+							  _genb_px, _genb_py, _genb_pz, _genb_e );
+
+	_recoPFJet_CSVsort_i_closest_genb.push_back(pair_genb.first);
+	_recoPFJet_CSVsort_dR_closest_genb.push_back(pair_genb.second);  
+
+	
+	pair<int,float> pair_gentauh = find_i_dRmin_closest( jet,
+							     _gentauh_px, _gentauh_py, _gentauh_pz, _gentauh_e );
+
+	_recoPFJet_CSVsort_i_closest_gentauh.push_back(pair_gentauh.first);
+	_recoPFJet_CSVsort_dR_closest_gentauh.push_back(pair_gentauh.second);
+
+
+
+    }
+
+
+
+    //Check lepton top/Higgs decay product
+    for(unsigned int i_lepton=0; i_lepton<reco_leptons.size(); i_lepton++){
+
+      int reco_TopMothInd = -1;
+      int reco_HMothInd = -1;
+      
+      TLorentzVector lep=reco_leptons[i_lepton].second;
+      int i_daughter = reco_leptons[i_lepton].first;
+      pair<int,float> pair = find_i_dRmin_closest( lep,
+						   _genlep_px, _genlep_py, _genlep_pz, _genlep_e );
+
+      int i_genlep = pair.first;
+      float dR = pair.second;
+      
+
+      //Check matching reco/gen lepton
+      if(fabs((*_PDGIdDaughters)[i_daughter]) == fabs(_genlep_pdg[i_genlep]) && dR<0.1){
+
+	bool isFromHardProcess = ( (_genlep_flags)[i_genlep] >> 8 ) & 1;
+	bool isDirectTauDecayProduct = ( (_genlep_flags)[i_genlep] >> 4) & 1;
+	bool isHardProcessTauDecayProduct = ( (_genlep_flags)[i_genlep] >> 9) & 1;
+	int TauMothInd = (_genlep_TauMothInd)[i_genlep];
+	int TopMothInd = (_genlep_TopMothInd)[i_genlep];
+	int HMothInd = -1;
+	bool isTauFromHardProcess = false;
+	if(TauMothInd>=0){
+	  HMothInd = (_gentau_HMothInd)[TauMothInd];
+	  isTauFromHardProcess = ( (_gentau_flags)[TauMothInd] >> 8 ) & 1;
+	}
+
+	//Top
+	if(TopMothInd>=0){
+
+	  if( (_gentop_decayMode[TopMothInd]==1 || _gentop_decayMode[TopMothInd]==2) && isFromHardProcess)
+	    reco_TopMothInd = TopMothInd;
+
+	  else if( (_gentop_decayMode[TopMothInd]==3 || _gentop_decayMode[TopMothInd]==4) && isTauFromHardProcess && isDirectTauDecayProduct && isHardProcessTauDecayProduct)
+	    reco_TopMothInd = TopMothInd;
+
+
+	}
+
+	//Higgs
+	if(HMothInd>=0){
+	  
+	  if( (_genH_decayMode[HMothInd]==0 || _genH_decayMode[HMothInd]==1 || _genH_decayMode[HMothInd]==3 || _genH_decayMode[HMothInd]==4 || _genH_decayMode[HMothInd]==5) && isTauFromHardProcess && isDirectTauDecayProduct && isHardProcessTauDecayProduct)
+	    reco_HMothInd = HMothInd;
+
+	}
+	  
+      }
+
+      _recolep_TopMothInd.push_back(reco_TopMothInd);
+      _recolep_HMothInd.push_back(reco_HMothInd);
+      
+
+    }
+
+    
+    
+
     tree_new->Fill();
 
   }
+
 
   tree_new->Write();
   f_new->Close();
