@@ -33,12 +33,12 @@ using namespace std;
 
 void skim_tree(TString sample){
 
-  TString file_in="ntuple_ttH_dRveto_gen_iso70.root";    
-  TString file_out="ntuple_ttH_dRveto_gen_iso70_skimmed.root";    
+  TString file_in="ntuple_ttH_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";    
+  TString file_out="ntuple_ttH_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";    
   TString dir;
 
   if(sample=="ttH"){
-    dir="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_12_2015/";
+    dir="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
   }
 
 
@@ -175,15 +175,15 @@ void skim_tree(TString sample){
   vector<float> *_recotauh_py;
   vector<float> *_recotauh_pz;
 
-  vector<float> *_recoPFJet30_btag_e;
-  vector<float> *_recoPFJet30_btag_px;
-  vector<float> *_recoPFJet30_btag_py;
-  vector<float> *_recoPFJet30_btag_pz;
+  vector<float> *_recoPFJet_btag_e;
+  vector<float> *_recoPFJet_btag_px;
+  vector<float> *_recoPFJet_btag_py;
+  vector<float> *_recoPFJet_btag_pz;
 
-  vector<float> *_recoPFJet30_untag_Wtag_e;
-  vector<float> *_recoPFJet30_untag_Wtag_px;
-  vector<float> *_recoPFJet30_untag_Wtag_py;
-  vector<float> *_recoPFJet30_untag_Wtag_pz;
+  vector<float> *_recoPFJet_untag_Wtag_e;
+  vector<float> *_recoPFJet_untag_Wtag_px;
+  vector<float> *_recoPFJet_untag_Wtag_py;
+  vector<float> *_recoPFJet_untag_Wtag_pz;
 
   tree->SetBranchAddress("n_genlep",&_n_genlep);
   tree->SetBranchAddress("genlep_pdg",&_genlep_pdg);
@@ -302,15 +302,15 @@ void skim_tree(TString sample){
   tree->SetBranchAddress("recotauh_pz",&_recotauh_pz);
   tree->SetBranchAddress("recotauh_e",&_recotauh_e);
 
-  tree->SetBranchAddress("recoPFJet30_btag_px",&_recoPFJet30_btag_px);
-  tree->SetBranchAddress("recoPFJet30_btag_py",&_recoPFJet30_btag_py);
-  tree->SetBranchAddress("recoPFJet30_btag_pz",&_recoPFJet30_btag_pz);
-  tree->SetBranchAddress("recoPFJet30_btag_e",&_recoPFJet30_btag_e);
+  tree->SetBranchAddress("recoPFJet_btag_px",&_recoPFJet_btag_px);
+  tree->SetBranchAddress("recoPFJet_btag_py",&_recoPFJet_btag_py);
+  tree->SetBranchAddress("recoPFJet_btag_pz",&_recoPFJet_btag_pz);
+  tree->SetBranchAddress("recoPFJet_btag_e",&_recoPFJet_btag_e);
 
-  tree->SetBranchAddress("recoPFJet30_untag_Wtag_px",&_recoPFJet30_untag_Wtag_px);
-  tree->SetBranchAddress("recoPFJet30_untag_Wtag_py",&_recoPFJet30_untag_Wtag_py);
-  tree->SetBranchAddress("recoPFJet30_untag_Wtag_pz",&_recoPFJet30_untag_Wtag_pz);
-  tree->SetBranchAddress("recoPFJet30_untag_Wtag_e",&_recoPFJet30_untag_Wtag_e);
+  tree->SetBranchAddress("recoPFJet_untag_Wtag_px",&_recoPFJet_untag_Wtag_px);
+  tree->SetBranchAddress("recoPFJet_untag_Wtag_py",&_recoPFJet_untag_Wtag_py);
+  tree->SetBranchAddress("recoPFJet_untag_Wtag_pz",&_recoPFJet_untag_Wtag_pz);
+  tree->SetBranchAddress("recoPFJet_untag_Wtag_e",&_recoPFJet_untag_Wtag_e);
 
   TTree* tree_new=tree->GetTree()->CloneTree(0);
 
@@ -501,10 +501,10 @@ void skim_tree(TString sample){
   vector<float> _recotauh_dR_genpi;
   vector<float> _recolep_dR_genlt;
   vector<float> _recolep_dR_genltau;
-  vector<float> _recoPFJet30_btag_dR_genbh;
-  vector<float> _recoPFJet30_btag_dR_genbl;
-  vector<float> _recoPFJet30_untag_Wtag_dR_genq1;
-  vector<float> _recoPFJet30_untag_Wtag_dR_genq2;
+  vector<float> _recoPFJet_btag_dR_genbh;
+  vector<float> _recoPFJet_btag_dR_genbl;
+  vector<float> _recoPFJet_untag_Wtag_dR_genq1;
+  vector<float> _recoPFJet_untag_Wtag_dR_genq2;
   int _perm_match;
   int _perm_gen_match;
 
@@ -695,17 +695,17 @@ void skim_tree(TString sample){
   tree_new->Branch("recotauh_dR_genpi",&_recotauh_dR_genpi);
   tree_new->Branch("recolep_dR_genlt",&_recolep_dR_genlt);
   tree_new->Branch("recolep_dR_genltau",&_recolep_dR_genltau);
-  tree_new->Branch("recoPFJet30_btag_dR_genbh",&_recoPFJet30_btag_dR_genbh);
-  tree_new->Branch("recoPFJet30_btag_dR_genbl",&_recoPFJet30_btag_dR_genbl);
-  tree_new->Branch("recoPFJet30_untag_Wtag_dR_genq1",&_recoPFJet30_untag_Wtag_dR_genq1);
-  tree_new->Branch("recoPFJet30_untag_Wtag_dR_genq2",&_recoPFJet30_untag_Wtag_dR_genq2);
+  tree_new->Branch("recoPFJet_btag_dR_genbh",&_recoPFJet_btag_dR_genbh);
+  tree_new->Branch("recoPFJet_btag_dR_genbl",&_recoPFJet_btag_dR_genbl);
+  tree_new->Branch("recoPFJet_untag_Wtag_dR_genq1",&_recoPFJet_untag_Wtag_dR_genq1);
+  tree_new->Branch("recoPFJet_untag_Wtag_dR_genq2",&_recoPFJet_untag_Wtag_dR_genq2);
   tree_new->Branch("perm_match",&_perm_match,"perm_match/I");
   tree_new->Branch("perm_gen_match",&_perm_gen_match,"perm_gen_match/I");
 
 
   cout<<"nentries="<<nentries<<endl;
 
-  //nentries=10;
+  //nentries=100;
   for (int i=0;i<nentries;i++) {
     
     if(i%10000==0)
@@ -901,10 +901,10 @@ void skim_tree(TString sample){
     _recotauh_dR_genpi.clear();
     _recolep_dR_genlt.clear();
     _recolep_dR_genltau.clear();
-    _recoPFJet30_btag_dR_genbh.clear();
-    _recoPFJet30_btag_dR_genbl.clear();
-    _recoPFJet30_untag_Wtag_dR_genq1.clear();
-    _recoPFJet30_untag_Wtag_dR_genq2.clear();
+    _recoPFJet_btag_dR_genbh.clear();
+    _recoPFJet_btag_dR_genbl.clear();
+    _recoPFJet_untag_Wtag_dR_genq1.clear();
+    _recoPFJet_untag_Wtag_dR_genq2.clear();
     _perm_match = -1;
     _perm_gen_match = -1;
 
@@ -1020,15 +1020,15 @@ void skim_tree(TString sample){
     _recotauh_py = 0;
     _recotauh_pz = 0;
 
-    _recoPFJet30_btag_e = 0;
-    _recoPFJet30_btag_px = 0;
-    _recoPFJet30_btag_py = 0;
-    _recoPFJet30_btag_pz = 0;
+    _recoPFJet_btag_e = 0;
+    _recoPFJet_btag_px = 0;
+    _recoPFJet_btag_py = 0;
+    _recoPFJet_btag_pz = 0;
     
-    _recoPFJet30_untag_Wtag_e = 0;
-    _recoPFJet30_untag_Wtag_px = 0;
-    _recoPFJet30_untag_Wtag_py = 0;
-    _recoPFJet30_untag_Wtag_pz = 0;
+    _recoPFJet_untag_Wtag_e = 0;
+    _recoPFJet_untag_Wtag_px = 0;
+    _recoPFJet_untag_Wtag_py = 0;
+    _recoPFJet_untag_Wtag_pz = 0;
   
     tree->GetEntry(i);
 
@@ -1036,8 +1036,7 @@ void skim_tree(TString sample){
     bool top1_had = (*_gentop_decayMode)[1]==0;
     bool top0_lep = (*_gentop_decayMode)[0]==1 || (*_gentop_decayMode)[0]==2 ;
     bool top1_lep = (*_gentop_decayMode)[1]==1 || (*_gentop_decayMode)[1]==2 ;
-    bool H_to_ltau =  (*_genH_decayMode)[0]==0 || (*_genH_decayMode)[0]==1 ;
-
+    bool H_to_ltau =  (*_genH_decayMode)[1]==0 || (*_genH_decayMode)[1]==1 ;
 
     if( ! ( ( (top0_had && top1_lep) || (top1_had && top0_lep) ) && H_to_ltau ) )
       continue;
@@ -1214,7 +1213,7 @@ void skim_tree(TString sample){
       int HMothInd = (*_gentau_HMothInd)[itau];
       int decayMode = (*_gentau_decayMode)[itau];
 
-      if( !( HMothInd==0 && isFromHardProcess ) )
+      if( !( HMothInd==1 && isFromHardProcess ) )
 	continue;
      
       if(decayMode==0 || decayMode==1)
@@ -1456,19 +1455,19 @@ void skim_tree(TString sample){
 
     }
 
-    for(unsigned int ib=0; ib<(*_recoPFJet30_btag_e).size(); ib++){
+    for(unsigned int ib=0; ib<(*_recoPFJet_btag_e).size(); ib++){
 
-      TLorentzVector recoPFJet30_btag_tlv( (*_recoPFJet30_btag_px)[ib], (*_recoPFJet30_btag_py)[ib], (*_recoPFJet30_btag_pz)[ib], (*_recoPFJet30_btag_e)[ib]);
-      _recoPFJet30_btag_dR_genbh.push_back( recoPFJet30_btag_tlv.DeltaR(genbh_tlv) );
-      _recoPFJet30_btag_dR_genbl.push_back( recoPFJet30_btag_tlv.DeltaR(genbl_tlv) );
+      TLorentzVector recoPFJet_btag_tlv( (*_recoPFJet_btag_px)[ib], (*_recoPFJet_btag_py)[ib], (*_recoPFJet_btag_pz)[ib], (*_recoPFJet_btag_e)[ib]);
+      _recoPFJet_btag_dR_genbh.push_back( recoPFJet_btag_tlv.DeltaR(genbh_tlv) );
+      _recoPFJet_btag_dR_genbl.push_back( recoPFJet_btag_tlv.DeltaR(genbl_tlv) );
 
     }
 
-    for(unsigned int ijet=0; ijet<(*_recoPFJet30_untag_Wtag_e).size(); ijet++){
+    for(unsigned int ijet=0; ijet<(*_recoPFJet_untag_Wtag_e).size(); ijet++){
 
-      TLorentzVector recoPFJet30_untag_Wtag_tlv( (*_recoPFJet30_untag_Wtag_px)[ijet], (*_recoPFJet30_untag_Wtag_py)[ijet], (*_recoPFJet30_untag_Wtag_pz)[ijet], (*_recoPFJet30_untag_Wtag_e)[ijet]);
-      _recoPFJet30_untag_Wtag_dR_genq1.push_back( recoPFJet30_untag_Wtag_tlv.DeltaR(genq1_tlv) );
-      _recoPFJet30_untag_Wtag_dR_genq2.push_back( recoPFJet30_untag_Wtag_tlv.DeltaR(genq2_tlv) );
+      TLorentzVector recoPFJet_untag_Wtag_tlv( (*_recoPFJet_untag_Wtag_px)[ijet], (*_recoPFJet_untag_Wtag_py)[ijet], (*_recoPFJet_untag_Wtag_pz)[ijet], (*_recoPFJet_untag_Wtag_e)[ijet]);
+      _recoPFJet_untag_Wtag_dR_genq1.push_back( recoPFJet_untag_Wtag_tlv.DeltaR(genq1_tlv) );
+      _recoPFJet_untag_Wtag_dR_genq2.push_back( recoPFJet_untag_Wtag_tlv.DeltaR(genq2_tlv) );
 
     }
 
@@ -1477,27 +1476,27 @@ void skim_tree(TString sample){
 
     if( _recotauh_dR_genpi.size()>0
 	&& _recolep_dR_genlt.size()>1
-	&& _recoPFJet30_btag_dR_genbh.size()>1
-	&& _recoPFJet30_untag_Wtag_dR_genq1.size()>1 ){
+	&& _recoPFJet_btag_dR_genbh.size()>1
+	&& _recoPFJet_untag_Wtag_dR_genq1.size()>1 ){
 
       if( _recotauh_dR_genpi[0]<0.1
-	  && ( ( _recoPFJet30_untag_Wtag_dR_genq1[0]<0.5 && _recoPFJet30_untag_Wtag_dR_genq2[1]<0.5 )
-	       || ( _recoPFJet30_untag_Wtag_dR_genq1[1]<0.5 && _recoPFJet30_untag_Wtag_dR_genq2[0]<0.5 ) ) ){
+	  && ( ( _recoPFJet_untag_Wtag_dR_genq1[0]<0.5 && _recoPFJet_untag_Wtag_dR_genq2[1]<0.5 )
+	       || ( _recoPFJet_untag_Wtag_dR_genq1[1]<0.5 && _recoPFJet_untag_Wtag_dR_genq2[0]<0.5 ) ) ){
 	
 	    if( _recolep_dR_genlt[0]<0.1 &&  _recolep_dR_genltau[1]<0.1
-		&& _recoPFJet30_btag_dR_genbl[0]<0.5 && _recoPFJet30_btag_dR_genbl[1]<0.5 )
+		&& _recoPFJet_btag_dR_genbl[0]<0.5 && _recoPFJet_btag_dR_genbl[1]<0.5 )
 	      _perm_match = 0;
 	    
 	    else if( _recolep_dR_genlt[1]<0.1 &&  _recolep_dR_genltau[0]<0.1
-		     && _recoPFJet30_btag_dR_genbl[0]<0.5 && _recoPFJet30_btag_dR_genbl[1]<0.5 )
+		     && _recoPFJet_btag_dR_genbl[0]<0.5 && _recoPFJet_btag_dR_genbl[1]<0.5 )
 	      _perm_match = 1;
 
 	    else if( _recolep_dR_genlt[0]<0.1 &&  _recolep_dR_genltau[1]<0.1
-		     && _recoPFJet30_btag_dR_genbl[1]<0.5 && _recoPFJet30_btag_dR_genbl[0]<0.5 )
+		     && _recoPFJet_btag_dR_genbl[1]<0.5 && _recoPFJet_btag_dR_genbl[0]<0.5 )
 	      _perm_match = 2;
 	    
 	    else if( _recolep_dR_genlt[1]<0.1 &&  _recolep_dR_genltau[0]<0.1
-		     && _recoPFJet30_btag_dR_genbl[1]<0.5 && _recoPFJet30_btag_dR_genbl[0]<0.5 )
+		     && _recoPFJet_btag_dR_genbl[1]<0.5 && _recoPFJet_btag_dR_genbl[0]<0.5 )
 	      _perm_match = 3;
 
       }

@@ -9,103 +9,83 @@
 #include <TLegend.h>
 #include <TCanvas.h>
 #include <TGaxis.h>
-
+#include <TLatex.h>
 #include <Helpers.C>
 
 
 void compar(){
 
-  TString log_file = "log_CERN_ele.txt";
+  TString log_file = "log_NDNebr_ele.txt";
   std::ifstream infile(log_file);
 
-  TChain * tree = new TChain("HTauTauTree");
-  tree->Add("/home/llr/cms/strebler/CMSSW_7_4_12_leptonMVA/src/LLRHiggsTauTau/NtupleProducer/test/syncNtuple_ttH_iso25.root");
+  TChain * tree = new TChain("syncTree");
+  tree->Add("/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_04_2016/syncNtuple_ttH_multilep.root");
   int nEntries = tree->GetEntries();
 
-  int _EventNumber;
-  int _n_recomu;
-  int _n_recoele;
-  int _n_recotauh;
-  int _n_recoPFJet30;
+  int _nEvent;
+  int _n_presel_ele;
 
-  vector<float>* _recoele_dz;
+  tree->SetBranchAddress("nEvent",&_nEvent);
+  tree->SetBranchAddress("n_presel_ele",&_n_presel_ele);
 
-  tree->SetBranchAddress("EventNumber",&_EventNumber);
-  tree->SetBranchAddress("n_recomu",&_n_recomu);
-  tree->SetBranchAddress("n_recoele",&_n_recoele);
-  tree->SetBranchAddress("n_recotauh",&_n_recotauh);
-  tree->SetBranchAddress("n_recoPFJet30",&_n_recoPFJet30);
-
-  tree->SetBranchAddress("recoele_dz",&_recoele_dz);
-
-  int i=0;
+  //int i=0;
   int nEntry=0;
   string line;
-  while(getline(infile,line)){   
-    if(i==0){
-      i++;
-      continue;
-    }
+  while(getline(infile,line)){
+    /*if(i==0){
+ *       i++;
+ *             continue;
+ *                 }*/
 
     std::istringstream iss(line);
     vector<float> var;
-    for(unsigned int j=0;j<17;j++)
+    for(unsigned int j=0;j<18;j++)
       var.push_back(-1);
 
 
-    iss >> var[0] >> var[1] >> var[2] >> var[3] >> var[4] >> var[5] >> var[6] >> var[7] >> var[8] >> var[9] >> var[10] >> var[11] >> var[12] >> var[13] >> var[14] >> var[15] >> var[16];
+    iss >> var[0] >> var[1] >> var[2] >> var[3] >> var[4] >> var[5] >> var[6] >> var[7] >> var[8] >> var[9] >> var[10] >> var[11] >> var[12] >> var[13] >> var[14] >> var[15] >> var[16] >> var[17];
 
     int event_log = var[0];
-    //cout<<event_log<<endl;
-    
-    _n_recomu = 0;
-    _n_recoele = 0;
-    _n_recotauh = 0;
-    _n_recoPFJet30 = 0;
+    //if((log_file.Contains("CERN") || log_file.Contains("NDNebr"))  && (var[0]==132692 || var[0]==1465225))
+    //      //continue;
 
-    _recoele_dz = 0;
+    _n_presel_ele = 0;
 
-    int nEntry_init = nEntry;
+    /*int nEntry_init = nEntry;
+ *
+ *     while(_nEvent=var[0] && nEntry!=nEntry_init-1){
+ *           tree->GetEntry(nEntry);
+ *                 nEntry++;
+ *                       if(nEntry>nEntries)
+ *                               nEntry = 0;
+ *                                   }
+ *
+ *                                       if(nEntry==nEntry_init-1)
+ *                                             cout<<"Problem"<<endl;*/
 
-    /*while(_n_recoele==0){
-      tree->GetEntry(nEntry);
+    tree->GetEntry(nEntry);
+    while(_n_presel_ele==0 && nEntry<nEntries){
       nEntry++;
-      if(nEntry>nEntries)
-	nEntry = 0;
-	}*/
-
-    while(_EventNumber!=var[0] && nEntry!=nEntry_init-1){
       tree->GetEntry(nEntry);
-      nEntry++;
-      if(nEntry>nEntries)
-	nEntry = 0;
     }
 
-    if(nEntry==nEntry_init-1)
-      cout<<"Problem"<<endl;
-
-    //if(event_log==156825 || event_log==873658)
-    if(log_file.Contains("CERN") && (event_log==1465225 || event_log==132692 || event_log==156825 || event_log==873658))
-      continue;
-
-    if(abs(var[15]-abs((*_recoele_dz)[0]))>0.0001){
-      cout<<"Event "<<_EventNumber<<endl;
-      cout<<"CERN "<<var[15]<<endl;
-      cout<<"LLR "<<abs((*_recoele_dz)[0])<<endl;
-      //return;
+   if(abs(_nEvent-var[0])>1e-5){
+      cout<<"Different"<<endl;
+      cout<<"Event #"<<_nEvent<<endl;
+      cout<<"ND has "<<var[0]<<endl;
+      return;
     }
+
+    nEntry++;
 
   }
-
 
 
   cout<<"Congratulations! You are synced!"<<endl;
 
   return;
 
-
 }
-
 
 
 
@@ -121,26 +101,16 @@ TH1F* histo_fromlog(TString log_file, int varnumber, int nbin, float min, float 
   string line;
   while(getline(infile,line)){   
     
-    if(i==0){
-      i++;
-      continue;
-    }
+
 
     std::istringstream iss(line);
     vector<float> var;
-    for(unsigned int j=0;j<17;j++)
+    for(unsigned int j=0;j<19;j++)
       var.push_back(-1);
 
 
-    iss >> var[0] >> var[1] >> var[2] >> var[3] >> var[4] >> var[5] >> var[6] >> var[7] >> var[8] >> var[9] >> var[10] >> var[11] >> var[12] >> var[13] >> var[14] >> var[15] >> var[16];
+    iss >> var[0] >> var[1] >> var[2] >> var[3] >> var[4] >> var[5] >> var[6] >> var[7] >> var[8] >> var[9] >> var[10] >> var[11] >> var[12] >> var[13] >> var[14] >> var[15] >> var[16] >> var[17] >> var[18];
 
-    int event_log = var[0];
-
-    if(log_file.Contains("NDNebr") && (var[0]==156825 || var[0]==873658))
-      continue;
-
-    if(log_file.Contains("CERN") && (event_log==1465225 || event_log==132692 || event_log==156825 || event_log==873658))
-      continue;
 
     h->Fill(var[varnumber]);
 
@@ -2297,7 +2267,7 @@ void compar_eleMVA_ele(){
 
 
 
-void compar_lepMVA_ele(){
+/*void compar_lepMVA_ele(){
 
   TChain * tree = new TChain("HTauTauTree");
   tree->Add("/home/llr/cms/strebler/CMSSW_7_4_12_leptonMVA/src/LLRHiggsTauTau/NtupleProducer/test/syncNtuple_ttH_iso25.root");
@@ -2328,4 +2298,147 @@ void compar_lepMVA_ele(){
 
   return;
 
+  }*/
+
+
+
+
+
+
+void compar_lepMVA_ele(){
+
+  /*TChain * tree = new TChain("HTauTauTree");
+  tree->Add("/home/llr/cms/strebler/CMSSW_7_4_12_leptonMVA/src/LLRHiggsTauTau/NtupleProducer/test/syncNtuple_ttH_iso25.root");
+
+  TH1F* h = new TH1F("h","h",56,0.,1.1);
+  tree->Draw("recomu_lepMVA_mvaId[0]>>h","n_recomu>=1","goff");*/
+
+  TH1F* h = histo_fromlog("ele.txt",18,120,-1.1,1.1);
+
+  vector<TH1F*> h_sync;
+  h_sync.push_back(histo_fromlog("log_CERN_ele.txt",18,120,-1.1,1.1));
+  h_sync.push_back(histo_fromlog("log_IPHC_ele.txt",18,120,-1.1,1.1));
+
+  h->SetTitle("");
+  h->SetStats(0);
+  h->SetMaximum(1.25*h->GetMaximum());
+
+  h->SetLineColor(kOrange-2);
+  h->SetFillColor(kOrange-2);
+
+  for(unsigned int i=0; i<h_sync.size(); i++){
+    h_sync[i]->SetLineColor(i+1);
+    h_sync[i]->SetLineWidth(2);
+  }
+  
+  TLegend* leg=new TLegend(0.25,0.65,0.65,0.85);
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.04);
+  leg->SetFillColor(0);
+  leg->AddEntry(h,"LLR");
+  leg->AddEntry(h_sync[0],"CERN");
+  //leg->AddEntry(h_sync[1],"IPHC");
+  
+
+  TCanvas* c=new TCanvas("c","c",650,600);
+  c->SetLeftMargin(0.15);
+
+
+  TPad *pad1 = new TPad("pad1", "pad1", 0, 0.3, 1, 1.0);
+  pad1->SetBottomMargin(0); // Upper and lower plot are joined
+  pad1->SetLeftMargin(0.15);
+  pad1->SetGridx();         // Vertical grid
+  pad1->Draw();             // Draw the upper pad: pad1
+  pad1->cd();               // pad1 becomes the current pad
+  
+  h->GetYaxis()->SetTitle(Form("Number of events / %.2f",binning(h)));
+  h_sync[0]->GetXaxis()->SetTitle("Electron lepton MVA");
+  
+  h->Draw();
+  h_sync[0]->Draw("same");
+  //h_sync[1]->Draw("same");
+  leg->Draw("same");
+
+  TLatex *texl = new TLatex(-1.09,1.01*h->GetMaximum(),"CMS Preliminary, #sqrt{s}=13 TeV, Simulation ttH");
+  texl->SetTextSize(0.04);
+  texl->Draw("same");
+
+  // Do not draw the Y axis label on the upper plot and redraw a small
+  // axis instead, in order to avoid the first label (0) to be clipped.
+  h->GetYaxis()->SetLabelSize(0.);
+  TGaxis *axis = new TGaxis( -1.1, 0.5, -1.1, h->GetMaximum(), 0.5,h->GetMaximum(),510,"");
+  axis->SetLabelFont(43); // Absolute font size in pixel (precision 3)
+  axis->SetLabelSize(15);
+  axis->Draw();
+  
+   // lower plot will be in pad
+  c->cd();          // Go back to the main canvas before defining pad2
+  TPad *pad2 = new TPad("pad2", "pad2", 0, 0.05, 1, 0.3);
+  pad2->SetTopMargin(0);
+  pad2->SetLeftMargin(0.15);
+  pad2->SetBottomMargin(0.25);
+  pad2->SetGridx(); // vertical grid
+  pad2->Draw();
+  pad2->cd();       // pad2 becomes the current pad
+  
+  // Define the ratio plot
+  vector<TH1F*> h_ratios;
+
+  for(unsigned int i=0;i<h_sync.size();i++){
+    TH1F *h_ratio = (TH1F*)h_sync[i]->Clone("h_ratio");
+    h_ratio->SetMarkerColor(h_sync[i]->GetLineColor());
+    h_ratio->SetMinimum(0.);  // Define Y ..
+    h_ratio->SetMaximum(2.); // .. range
+    h_ratio->Sumw2();
+    h_ratio->SetStats(0);      // No statistics on lower plot
+    h_ratio->Divide(h);
+    h_ratio->SetMarkerStyle(20);
+    h_ratio->SetMarkerSize(1);
+    h_ratios.push_back(h_ratio);
+  }
+
+  
+  h_ratios[0]->Draw("histp");       // Draw the ratio plot
+  //h_ratios[1]->Draw("histp same");
+    
+  // Y axis histo_emul plot settings
+  h->GetYaxis()->SetTitleSize(20);
+  h->GetYaxis()->SetTitleFont(43);
+  h->GetYaxis()->SetTitleOffset(1.45);
+  
+  // Ratio plot (h_ratio) settings
+  h_ratios[0]->SetTitle(""); // Remove the ratio title
+  
+  h_ratios[0]->GetYaxis()->SetLabelSize(0.);
+  TGaxis *axis2 = new TGaxis( -1.1, 0.01, -1.1, 1.99, 0.01, 1.99, 505,"");
+  axis2->SetLabelFont(43); // Absolute font size in pixel (precision 3)
+  axis2->SetLabelSize(15);
+  axis2->Draw();
+  
+  // Y axis ratio plot settings
+  h_ratios[0]->GetYaxis()->SetTitle("Ratio");
+  h_ratios[0]->GetYaxis()->SetNdivisions(505);
+  h_ratios[0]->GetYaxis()->SetTitleSize(20);
+  h_ratios[0]->GetYaxis()->SetTitleFont(43);
+  h_ratios[0]->GetYaxis()->SetTitleOffset(1.5);
+  h_ratios[0]->GetYaxis()->CenterTitle();
+
+  
+  // X axis ratio plot settings
+  h_ratios[0]->GetXaxis()->SetTitleSize(17);
+  h_ratios[0]->GetXaxis()->SetTitleFont(43);
+  h_ratios[0]->GetXaxis()->SetTitleOffset(4.);
+  h_ratios[0]->GetXaxis()->SetLabelFont(43); // Absolute font size in pixel (precision 3)
+  h_ratios[0]->GetXaxis()->SetLabelSize(15);
+
+
+  TString plotname="sync/ele_lepMVA_IPHC_CERN";
+  c->SaveAs("../plots/pdf/"+plotname+".pdf");
+  c->SaveAs("../plots/png/"+plotname+".png");
+
+  return;
+
 }
+
+
+

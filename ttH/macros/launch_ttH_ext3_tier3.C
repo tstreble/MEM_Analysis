@@ -35,7 +35,7 @@ void create_scripts(){
     myscript << "cd /home/llr/cms/strebler/MEM_Analysis/ttH/macros\n";
     myscript << "root -b -l <<EOF\n";
     myscript << ".L Helpers_convert_ttH.C+\n";
-    myscript << "convert_tree(\"ttH_ext3\",70,4,"<< j << ");\n";
+    myscript << "convert_tree(\"ttH_ext3\",0,\"byLooseIsolationMVArun2v1DBdR03oldDMwLT\",4,"<< j << ");\n";
     myscript << ".q\n";
     myscript << "EOF\n";
     myscript.close();   

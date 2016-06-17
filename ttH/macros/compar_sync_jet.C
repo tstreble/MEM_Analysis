@@ -18,34 +18,25 @@ void compar(){
   TString log_file = "log_NDNebr_jet.txt";
   std::ifstream infile(log_file);
 
-  TChain * tree = new TChain("HTauTauTree");
-  tree->Add("/home/llr/cms/strebler/CMSSW_7_4_12_leptonMVA/src/LLRHiggsTauTau/NtupleProducer/test/syncNtuple_ttH_iso25.root");
+  TChain * tree = new TChain("syncTree");
+  tree->Add("/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_04_2016/syncNtuple_ttH_multilep.root");
   int nEntries = tree->GetEntries();
 
-  int _EventNumber;
-  int _n_recomu;
-  int _n_recoele;
-  int _n_recotauh;
-  int _n_recoPFJet30;
+  int _nEvent;
+  int _n_presel_jet;
 
-  vector<float>* _recoPFJet30_pt;
+  tree->SetBranchAddress("nEvent",&_nEvent);
+  tree->SetBranchAddress("n_presel_jet",&_n_presel_jet);
 
-  tree->SetBranchAddress("EventNumber",&_EventNumber);
-  tree->SetBranchAddress("n_recomu",&_n_recomu);
-  tree->SetBranchAddress("n_recoele",&_n_recoele);
-  tree->SetBranchAddress("n_recotauh",&_n_recotauh);
-  tree->SetBranchAddress("n_recoPFJet30",&_n_recoPFJet30);
 
-  tree->SetBranchAddress("recoPFJet30_pt",&_recoPFJet30_pt);
-
-  int i=0;
+  //int i=0;
   int nEntry=0;
   string line;
   while(getline(infile,line)){   
-    if(i==0){
+    /*if(i==0){
       i++;
       continue;
-    }
+      }*/
 
     std::istringstream iss(line);
     vector<float> var;
@@ -55,15 +46,9 @@ void compar(){
 
     iss >> var[0] >> var[1] >> var[2] >> var[3] >> var[4] >> var[5] >> var[6] >> var[7] >> var[8];
 
+    _n_presel_jet = 0;
 
-    _n_recomu = 0;
-    _n_recoele = 0;
-    _n_recotauh = 0;
-    _n_recoPFJet30 = 0;
-
-    _recoPFJet30_pt = 0;
-
-    int nEntry_init = nEntry;
+    /*int nEntry_init = nEntry;
 
     //while(_EventNumber!=var[0] && nEntry!=nEntry_init-1){
     while(_n_recoPFJet30==0){
@@ -74,15 +59,23 @@ void compar(){
     }
 
     if(nEntry==nEntry_init-1)
-      cout<<"Problem"<<endl;
+    cout<<"Problem"<<endl;*/
 
+    tree->GetEntry(nEntry);
+    while(_n_presel_jet==0 && nEntry<nEntries){
+      nEntry++;
+      tree->GetEntry(nEntry);
+    }  
 
-    if(var[4]<1){
-      cout<<"Different Event"<<endl;
-      cout<<"NDNebr "<<var[0]<<endl;
-      cout<<"LLR "<<_EventNumber<<endl;
+    if(abs(_nEvent-var[0])>1e-5){
+      cout<<"Different"<<endl;
+      cout<<"Event #"<<_nEvent<<endl;
+      cout<<"ND has "<<var[0]<<endl;
       return;
     }
+
+    nEntry++;
+
   }
 
 

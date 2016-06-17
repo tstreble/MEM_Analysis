@@ -21,6 +21,7 @@
 #include "TMVA/MethodCuts.h"
 
 #include <vector>
+#include <map>
 #ifdef __MAKECINT__
 #pragma link C++ class vector<double>+;
 #pragma link C++ class vector<vector<int> >+;
@@ -41,6 +42,14 @@ bool pT_comparison_pairs(pair<int,TLorentzVector> pair1, pair<int,TLorentzVector
 bool CSV_comparison_pairs(pair<int,float> pair1, pair<int,float> pair2){
 
   return pair1.second>pair2.second;
+
+}
+
+
+
+bool pT_comparison_pairs_pdg(pair<pair<int,int>, TLorentzVector> pair1, pair<pair<int,int>, TLorentzVector> pair2){
+
+  return (pair1.second).Pt()>(pair2.second).Pt();
 
 }
 
@@ -110,8 +119,131 @@ TMVA::Reader* BookLeptonMVAReaderMoriond16(std::string basePath, std::string wei
 
 
 
+
+float max_Lep_eta;
+float mindr_lep1_jet;
+float mindr_lep2_jet;
+float met;
+float avg_dr_jet;
+float MT_met_lep1;
+float LepGood_conePt0;
+float LepGood_conePt1;
+float LepGood_conePt2;
+float nJet25_Recl;
+float mhtJet25_Recl;
+
+float iF_Recl0;
+float iF_Recl1;
+float iF_Recl2;
+
+
+TMVA::Reader* Book_2LSS_TTV_MVAReader(std::string basePath, std::string weightFileName)
+{
+
+    // weight/2lss_ttV_BDTG.weights.xml
+    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+
+    reader->AddVariable("max(abs(LepGood_eta[iF_Recl[0]]),abs(LepGood_eta[iF_Recl[1]]))", &max_Lep_eta      );
+    reader->AddVariable("MT_met_lep1",                                                    &MT_met_lep1      );
+    reader->AddVariable("nJet25_Recl",                                                    &nJet25_Recl      );
+    reader->AddVariable("mindr_lep1_jet",                                                 &mindr_lep1_jet   );
+    reader->AddVariable("mindr_lep2_jet",                                                 &mindr_lep2_jet   );
+    reader->AddVariable("LepGood_conePt[iF_Recl[0]]",                                     &LepGood_conePt0  );
+    reader->AddVariable("LepGood_conePt[iF_Recl[1]]",                                     &LepGood_conePt1  );
+
+    reader->AddSpectator("iF_Recl[0]",                                                    &iF_Recl0         );
+    reader->AddSpectator("iF_Recl[1]",                                                    &iF_Recl1         );
+    reader->AddSpectator("iF_Recl[2]",                                                    &iF_Recl2         );
+
+    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
+
+    return reader;
+}
+
+
+
+TMVA::Reader* Book_2LSS_TT_MVAReader(std::string basePath, std::string weightFileName)
+{
+
+    // weight/2lss_ttbar_BDTG.weights.xml
+    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+
+    reader->AddVariable("max(abs(LepGood_eta[iF_Recl[0]]),abs(LepGood_eta[iF_Recl[1]]))",  &max_Lep_eta      );
+    reader->AddVariable("nJet25_Recl",                                                     &nJet25_Recl      );
+    reader->AddVariable("mindr_lep1_jet",                                                  &mindr_lep1_jet   );
+    reader->AddVariable("mindr_lep2_jet",                                                  &mindr_lep2_jet   );
+    reader->AddVariable("min(met_pt,400)",                                                 &met              );
+    reader->AddVariable("avg_dr_jet",                                                      &avg_dr_jet       );
+    reader->AddVariable("MT_met_lep1",                                                     &MT_met_lep1      );
+
+    reader->AddSpectator("iF_Recl[0]",                                                     &iF_Recl0         );
+    reader->AddSpectator("iF_Recl[1]",                                                     &iF_Recl1         );
+    reader->AddSpectator("iF_Recl[2]",                                                     &iF_Recl2         );
+
+    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
+
+    return reader;
+}
+
+
+
+
+TMVA::Reader* Book_3l_TTV_MVAReader(std::string basePath, std::string weightFileName)
+{
+
+    // weight/3l_ttV_BDTG.weights.xml
+    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+
+    reader->AddVariable("max(abs(LepGood_eta[iF_Recl[0]]),abs(LepGood_eta[iF_Recl[1]]))", &max_Lep_eta      );
+    reader->AddVariable("MT_met_lep1",                                                    &MT_met_lep1      );
+    reader->AddVariable("nJet25_Recl",                                                    &nJet25_Recl      );
+    reader->AddVariable("mindr_lep1_jet",                                                 &mindr_lep1_jet   );
+    reader->AddVariable("mindr_lep2_jet",                                                 &mindr_lep2_jet   );
+    reader->AddVariable("LepGood_conePt[iF_Recl[0]]",                                     &LepGood_conePt0  );
+    reader->AddVariable("LepGood_conePt[iF_Recl[2]]",                                     &LepGood_conePt2  );
+
+    reader->AddSpectator("iF_Recl[0]",                                                    &iF_Recl0         );
+    reader->AddSpectator("iF_Recl[1]",                                                    &iF_Recl1         );
+    reader->AddSpectator("iF_Recl[2]",                                                    &iF_Recl2         );
+
+    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
+
+    return reader;
+}
+
+
+
+TMVA::Reader* Book_3l_TT_MVAReader(std::string basePath, std::string weightFileName)
+{
+
+    // weight/3l_ttbar_BDTG.weights.xml
+    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+
+    reader->AddVariable("max(abs(LepGood_eta[iF_Recl[0]]),abs(LepGood_eta[iF_Recl[1]]))",  &max_Lep_eta      );
+    reader->AddVariable("MT_met_lep1",                                                     &MT_met_lep1      );
+    reader->AddVariable("nJet25_Recl",                                                     &nJet25_Recl      );
+    reader->AddVariable("mhtJet25_Recl",                                                   &mhtJet25_Recl      );
+    reader->AddVariable("avg_dr_jet",                                                      &avg_dr_jet       );
+    reader->AddVariable("mindr_lep1_jet",                                                  &mindr_lep1_jet   );
+    reader->AddVariable("mindr_lep2_jet",                                                  &mindr_lep2_jet   );
+
+
+    reader->AddSpectator("iF_Recl[0]",                                                     &iF_Recl0         );
+    reader->AddSpectator("iF_Recl[1]",                                                     &iF_Recl1         );
+    reader->AddSpectator("iF_Recl[2]",                                                     &iF_Recl2         );
+
+    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
+
+    return reader;
+}
+
+
+
+
+
+
 void convert_tree(TString sample, int iso_tau=70,
-		  TString iso_type="",
+		  TString iso_type="", bool conept_sorting=false,
 		  int split=0, int i_split=0){
 
   TString dir_in;
@@ -121,183 +253,149 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<TString> list;
 
 
-  if(sample=="ttH"){
-    file="ntuple_ttH_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis.root");
+  if(sample=="ttH_Htautau"){
+    file="ntuple_ttH_Htautau";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/ttH/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttH/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttH_Htautau.root");
   }
 
-  else if(sample=="ttH_ext1"){
-    file="ntuple_ttH_ext1_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext1.root");
+  else if(sample=="ttH_Hnonbb"){
+    file="ntuple_ttH_Hnonbb";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/ttH/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttH/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttH_Hnonbb.root");
   }
 
-  else if(sample=="ttH_ext2"){
-    file="ntuple_ttH_ext2_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext2.root");
+
+  else if(sample=="ttbar_DL"){
+    file="ntuple_ttbar_DL";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/TTJets/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/TTJets/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttbar_DL.root");
   }
 
-  else if(sample=="ttH_ext3"){
-    file="ntuple_ttH_ext3_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3.root");
+  else if(sample=="ttbar_SLfromT"){
+    file="ntuple_ttbar_SLfromT";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/TTJets/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/TTJets/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttbar_SLfromT.root");
+  }
+
+  else if(sample=="ttbar_SLfromTbar"){
+    file="ntuple_ttbar_SLfromTbar";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/TTJets/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/TTJets/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttbar_SLfromTbar.root");
+  }
+
+  else if(sample=="ttZ"){
+    file="ntuple_ttZ";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/ttV/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttV/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttZ.root");
   }
 
   else if(sample=="ttW"){
-    file="ntuple_ttW_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/ttW_Samples/Htautau_framework_files/MiniAODv2_prod_12_2015/";
-    dir_out="/data_CMS/cms/strebler/ttW_Samples/ntuples_converted/MiniAODv2_prod_12_2015/";
-    list.push_back(dir_in+"HTauTauAnalysis.root");
+    file="ntuple_ttW";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/ttV/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttV/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttW.root");
   }
 
-  if(sample=="ttZ"){
-    file="ntuple_ttZ_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/ttZ_Samples/Htautau_framework_files/MiniAODv2_prod_12_2015/";
-    dir_out="/data_CMS/cms/strebler/ttZ_Samples/ntuples_converted/MiniAODv2_prod_12_2015/";
-    list.push_back(dir_in+"HTauTauAnalysis.root");
+  else if(sample=="TTLL_lowmass"){
+    file="ntuple_TTLL_lowmass";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/topG/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/topG/";
+    list.push_back(dir_in+"HTauTauAnalysis_TTLL_lowmass.root");
   }
 
-  else if(sample=="TTJets_ext3_1"){
-    file="ntuple_TTJets_ext3_1_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_1.root");
+  else if(sample=="WG"){
+    file="ntuple_WG";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/VG/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/VG/";
+    list.push_back(dir_in+"HTauTauAnalysis_WG.root");
   }
 
-  else if(sample=="TTJets_ext3_2"){
-    file="ntuple_TTJets_ext3_2_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_2.root");
+  else if(sample=="ZG"){
+    file="ntuple_ZG";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/VG/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/VG/";
+    list.push_back(dir_in+"HTauTauAnalysis_ZG.root");
   }
 
-  else if(sample=="TTJets_ext3_3"){
-    file="ntuple_TTJets_ext3_3_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_3.root");
+  else if(sample=="tG"){
+    file="ntuple_tG";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/topG/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/topG/";
+    list.push_back(dir_in+"HTauTauAnalysis_tG.root");
   }
 
-  else if(sample=="TTJets_ext3_4"){
-    file="ntuple_TTJets_ext3_4_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_4.root");
+  else if(sample=="ttG"){
+    file="ntuple_ttG";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/topG/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/topG/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttG.root");
   }
 
-  else if(sample=="TTJets_ext3_5"){
-    file="ntuple_TTJets_ext3_5_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_5.root");
+  else if(sample=="WpWpJJ"){
+    file="ntuple_WpWpJJ";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/Rares_EW/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
+    list.push_back(dir_in+"HTauTauAnalysis_WpWpJJ.root");
   }
 
-  else if(sample=="TTJets_ext3_6"){
-    file="ntuple_TTJets_ext3_6_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_6.root");
+  else if(sample=="ZZZ"){
+    file="ntuple_ZZZ";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/Rares_EW/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
+    list.push_back(dir_in+"HTauTauAnalysis_ZZZ.root");
   }
 
-  else if(sample=="TTJets_ext3_7"){
-    file="ntuple_TTJets_ext3_7_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_7.root");
+  else if(sample=="WZZ"){
+    file="ntuple_WZZ";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/Rares_EW/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
+    list.push_back(dir_in+"HTauTauAnalysis_WZZ.root");
   }
 
-  else if(sample=="TTJets_ext3_8"){
-    file="ntuple_TTJets_ext3_8_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_8.root");
+  else if(sample=="WWZ"){
+    file="ntuple_WWZ";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/Rares_EW/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
+    list.push_back(dir_in+"HTauTauAnalysis_WWZ.root");
+  }
+  
+  else if(sample=="WW_DoubleScat"){
+    file="ntuple_WW_DoubleScat";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/Rares_EW/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
+    list.push_back(dir_in+"HTauTauAnalysis_WW_DoubleScat.root");
   }
 
-  else if(sample=="TTJets_ext3_9"){
-    file="ntuple_TTJets_ext3_9_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext3_9.root");
+  else if(sample=="tZq"){
+    file="ntuple_tZq";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/Rares_EW/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
+    list.push_back(dir_in+"HTauTauAnalysis_tZq.root");
   }
 
-  else if(sample=="TTJets_ext4_1"){
-    file="ntuple_TTJets_ext4_1_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_1.root");
-  }
-
-  else if(sample=="TTJets_ext4_2"){
-    file="ntuple_TTJets_ext4_2_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_2.root");
-  }
-
-  else if(sample=="TTJets_ext4_3"){
-    file="ntuple_TTJets_ext4_3_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_3.root");
-  }
-
-  else if(sample=="TTJets_ext4_4"){
-    file="ntuple_TTJets_ext4_4_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_4.root");
-  }
-
-  else if(sample=="TTJets_ext4_5"){
-    file="ntuple_TTJets_ext4_5_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_5.root");
-  }
-
-  else if(sample=="TTJets_ext4_6"){
-    file="ntuple_TTJets_ext4_6_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_6.root");
-  }
-
-  else if(sample=="TTJets_ext4_7"){
-    file="ntuple_TTJets_ext4_7_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_7.root");
-  }
-
-  else if(sample=="TTJets_ext4_8"){
-    file="ntuple_TTJets_ext4_8_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_8.root");
-  }
-
-  else if(sample=="TTJets_ext4_9"){
-    file="ntuple_TTJets_ext4_9_dRveto_gen";
-    dir_in="/data_CMS/cms/strebler/TTJets_Samples/Htautau_framework_files/MiniAODv2_prod_03_2016/";
-    dir_out="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-    list.push_back(dir_in+"HTauTauAnalysis_ext4_9.root");
+  else if(sample=="TTTText1"){
+    file="ntuple_TTTText1";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/TTTT/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/TTTT/";
+    list.push_back(dir_in+"HTauTauAnalysis_TTTText1.root");
   }
 
 
-  if(sample=="sync_ttH"){
+  else if(sample=="sync_ttH"){
     file="syncNtuple_ttH";
-    dir_in="/home/llr/cms/strebler/CMSSW_7_6_3_patch2/src/LLRHiggsTauTau/NtupleProducer/test/";
-    dir_out="/home/llr/cms/strebler/CMSSW_7_6_3_patch2/src/LLRHiggsTauTau/NtupleProducer/test/";
-    list.push_back(dir_in+"HTauTauAnalysis.root");
+    dir_in="/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_06_2016/";
+    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_06_2016/";
+    list.push_back(dir_in+"HTauTauAnalysis_sync.root");
   }
 
-  if(sample=="sync_ttjets"){
+  else if(sample=="sync_ttjets"){
     file="syncNtuple_ttjets";
     dir_in="/home/llr/cms/strebler/CMSSW_7_6_3/src/LLRHiggsTauTau/NtupleProducer/test/";
     dir_out="/home/llr/cms/strebler/CMSSW_7_6_3/src/LLRHiggsTauTau/NtupleProducer/test/";
@@ -354,31 +452,17 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _jets_eta;
   vector<float> _jets_phi;
 
-  int _n_recolep;
-  vector<int> _recolep_ID;
-  vector<int> _recolep_charge;
-  vector<float> _recolep_e;
-  vector<float> _recolep_px;
-  vector<float> _recolep_py;
-  vector<float> _recolep_pz;
-  vector<float> _recolep_pt;
-  vector<float> _recolep_eta;
-  vector<float> _recolep_phi;
-  vector<float> _recolep_leptonMVA;
-  vector<int>   _recolep_TopMothInd;
-  vector<int>   _recolep_HMothInd;
-  vector<int>   _recolep_goodsign;
-  vector<bool>  _recolep_iseleChargeConsistent;
-
-
-  int _n_recomu;
-  vector<int> _recomu_ID;
+  int _n_recomu_presel;
+  int _n_recomu_fakeable;
+  int _n_recomu_cutsel;
+  int _n_recomu_mvasel;
   vector<int> _recomu_charge;
   vector<float> _recomu_e;
   vector<float> _recomu_px;
   vector<float> _recomu_py;
   vector<float> _recomu_pz;
   vector<float> _recomu_pt;
+  vector<float> _recomu_conept;
   vector<float> _recomu_eta;
   vector<float> _recomu_phi;
   vector<float> _recomu_dxy;
@@ -393,15 +477,27 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recomu_jetPtRatio;
   vector<float> _recomu_lepMVA_mvaId;
   vector<float> _recomu_leptonMVA;
+  vector<float> _recomu_rel_error_trackpt;
+  vector<bool>  _recomu_mediumID;
+  vector<bool>  _recomu_isfakeable;
+  vector<bool>  _recomu_iscutsel;
+  vector<bool>  _recomu_ismvasel;
+  vector<int>   _recomu_TopMothInd;
+  vector<int>   _recomu_HMothInd;
+  vector<int>   _recomu_goodsign;
+  vector<float> _recomu_fakerate;
 
-  int _n_recoele;
-  vector<int> _recoele_ID;
+  int _n_recoele_presel;
+  int _n_recoele_fakeable;
+  int _n_recoele_cutsel;
+  int _n_recoele_mvasel;
   vector<int> _recoele_charge;
   vector<float> _recoele_e;
   vector<float> _recoele_px;
   vector<float> _recoele_py;
   vector<float> _recoele_pz;
   vector<float> _recoele_pt;
+  vector<float> _recoele_conept;
   vector<float> _recoele_eta;
   vector<float> _recoele_phi;
   vector<float> _recoele_dxy;
@@ -417,8 +513,36 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoele_lepMVA_mvaId;
   vector<float> _recoele_leptonMVA;
   vector<bool>  _recoele_isChargeConsistent;
+  vector<bool>  _recoele_passConversionVeto;
+  vector<int>   _recoele_nMissingHits;
+  vector<bool>  _recoele_isfakeable;
+  vector<bool>  _recoele_iscutsel;
+  vector<bool>  _recoele_ismvasel;
+  vector<int>   _recoele_TopMothInd;
+  vector<int>   _recoele_HMothInd;
+  vector<int>   _recoele_goodsign;
+  vector<float> _recoele_fakerate;
+  vector<float> _recoele_QFrate; 
 
- 
+  int _n_recolep_fakeable;
+  int _n_recolep_mvasel;
+  vector<int> _recolep_charge;
+  vector<int> _recolep_pdg;
+  vector<float> _recolep_e;
+  vector<float> _recolep_px;
+  vector<float> _recolep_py;
+  vector<float> _recolep_pz;
+  vector<float> _recolep_pt;
+  vector<float> _recolep_conept;
+  vector<float> _recolep_eta;
+  vector<float> _recolep_phi;
+  vector<float> _recolep_leptonMVA;
+  vector<float> _recolep_fakerate;
+  vector<float> _recolep_QFrate; 
+  vector<bool>  _recolep_ismvasel;
+  vector<bool>  _recolep_tightcharge;
+  vector<bool>  _recolep_eleconv_misshits;
+
   int _n_recotauh;
   vector<int> _recotauh_charge;
   vector<int> _recotauh_decayMode;
@@ -470,8 +594,6 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_dR_closest_genpart;
   vector<int> _recoPFJet_i_2nd_closest_genpart;
   vector<float> _recoPFJet_dR_2nd_closest_genpart;
-  vector<int> _recoPFJet_i_closest_lep;
-  vector<float> _recoPFJet_dR_closest_lep;
   vector<int> _recoPFJet_i_closest_tau;
   vector<float> _recoPFJet_dR_closest_tau;
 
@@ -538,11 +660,21 @@ void convert_tree(TString sample, int iso_tau=70,
   float _PFMETx;
   float _PFMETy;
 
-  float _PFMET_cov00;
-  float _PFMET_cov01;
-  float _PFMET_cov10;
-  float _PFMET_cov11;
-
+  //Multilepton variables
+  float _HTmiss;
+  float _ETmissLD;
+  float _MT_lep0;
+  float _mindR_lep0_recoPFjet;
+  float _mindR_lep1_recoPFjet;
+  float _mindR_lep2_recoPFjet;
+  float _lep0_conept;
+  float _lep1_conept;
+  float _lep2_conept;
+  float _avg_dr_jet;
+  float _MVA_2lSS_ttV;
+  float _MVA_2lSS_ttbar;
+  float _MVA_3l_ttV;
+  float _MVA_3l_ttbar;
 
   //Gen information
   vector<float> _genpart_pt;
@@ -691,6 +823,8 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<int> _gennu_TauMothInd; //-1 if not from tau
   vector<int> _gennu_TopMothInd; //-1 if not from top
   vector<int> _gennu_WMothInd; //-1 if not from W
+
+
   
   tree_new->Branch("daughters_pt",&_daughters_pt);
   tree_new->Branch("daughters_eta",&_daughters_eta);
@@ -701,30 +835,17 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("jets_eta",&_jets_eta);
   tree_new->Branch("jets_phi",&_jets_phi);
 
-  tree_new->Branch("n_recolep",&_n_recolep,"n_recolep/I");
-  tree_new->Branch("recolep_ID",&_recolep_ID);
-  tree_new->Branch("recolep_charge",&_recolep_charge);
-  tree_new->Branch("recolep_e",&_recolep_e);
-  tree_new->Branch("recolep_px",&_recolep_px);
-  tree_new->Branch("recolep_py",&_recolep_py);
-  tree_new->Branch("recolep_pz",&_recolep_pz);
-  tree_new->Branch("recolep_pt",&_recolep_pt);
-  tree_new->Branch("recolep_eta",&_recolep_eta);
-  tree_new->Branch("recolep_phi",&_recolep_phi);
-  tree_new->Branch("recolep_leptonMVA",&_recolep_leptonMVA);
-  tree_new->Branch("recolep_TopMothInd",&_recolep_TopMothInd);
-  tree_new->Branch("recolep_HMothInd",&_recolep_HMothInd);
-  tree_new->Branch("recolep_goodsign",&_recolep_goodsign);
-  tree_new->Branch("recolep_iseleChargeConsistent",&_recolep_iseleChargeConsistent);
-
-  tree_new->Branch("n_recomu",&_n_recomu,"n_recomu/I");
-  tree_new->Branch("recomu_ID",&_recomu_ID);
+  tree_new->Branch("n_recomu_presel",&_n_recomu_presel,"n_recomu_presel/I");
+  tree_new->Branch("n_recomu_fakeable",&_n_recomu_fakeable,"n_recomu_fakeable/I");
+  tree_new->Branch("n_recomu_cutsel",&_n_recomu_cutsel,"n_recomu_cutsel/I");
+  tree_new->Branch("n_recomu_mvasel",&_n_recomu_mvasel,"n_recomu_mvasel/I");
   tree_new->Branch("recomu_charge",&_recomu_charge);
   tree_new->Branch("recomu_e",&_recomu_e);
   tree_new->Branch("recomu_px",&_recomu_px);
   tree_new->Branch("recomu_py",&_recomu_py);
   tree_new->Branch("recomu_pz",&_recomu_pz);
   tree_new->Branch("recomu_pt",&_recomu_pt);
+  tree_new->Branch("recomu_conept",&_recomu_conept);
   tree_new->Branch("recomu_eta",&_recomu_eta);
   tree_new->Branch("recomu_phi",&_recomu_phi);
   tree_new->Branch("recomu_dxy",&_recomu_dxy);
@@ -739,16 +860,27 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recomu_jetPtRatio",&_recomu_jetPtRatio);
   tree_new->Branch("recomu_lepMVA_mvaId",&_recomu_lepMVA_mvaId);
   tree_new->Branch("recomu_leptonMVA",&_recomu_leptonMVA);
+  tree_new->Branch("recomu_rel_error_trackpt",&_recomu_rel_error_trackpt);
+  tree_new->Branch("recomu_mediumID",&_recomu_mediumID);
+  tree_new->Branch("recomu_isfakeable",&_recomu_isfakeable);
+  tree_new->Branch("recomu_iscutsel",&_recomu_iscutsel);
+  tree_new->Branch("recomu_ismvasel",&_recomu_ismvasel);
+  tree_new->Branch("recomu_TopMothInd",&_recomu_TopMothInd);
+  tree_new->Branch("recomu_HMothInd",&_recomu_HMothInd);
+  tree_new->Branch("recomu_goodsign",&_recomu_goodsign);
+  tree_new->Branch("recomu_fakerate",&_recomu_fakerate);
 
-
-  tree_new->Branch("n_recoele",&_n_recoele,"n_recoele/I");
-  tree_new->Branch("recoele_ID",&_recoele_ID);
+  tree_new->Branch("n_recoele_presel",&_n_recoele_presel,"n_recoele_presel/I");
+  tree_new->Branch("n_recoele_fakeable",&_n_recoele_fakeable,"n_recoele_fakeable/I");
+  tree_new->Branch("n_recoele_cutsel",&_n_recoele_cutsel,"n_recoele_cutsel/I");
+  tree_new->Branch("n_recoele_mvasel",&_n_recoele_mvasel,"n_recoele_mvasel/I");
   tree_new->Branch("recoele_charge",&_recoele_charge);
   tree_new->Branch("recoele_e",&_recoele_e);
   tree_new->Branch("recoele_px",&_recoele_px);
   tree_new->Branch("recoele_py",&_recoele_py);
   tree_new->Branch("recoele_pz",&_recoele_pz);
   tree_new->Branch("recoele_pt",&_recoele_pt);
+  tree_new->Branch("recoele_conept",&_recoele_conept);
   tree_new->Branch("recoele_eta",&_recoele_eta);
   tree_new->Branch("recoele_phi",&_recoele_phi);
   tree_new->Branch("recoele_dxy",&_recoele_dxy);
@@ -764,6 +896,36 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoele_lepMVA_mvaId",&_recoele_lepMVA_mvaId);
   tree_new->Branch("recoele_leptonMVA",&_recoele_leptonMVA);
   tree_new->Branch("recoele_isChargeConsistent",&_recoele_isChargeConsistent);
+  tree_new->Branch("recoele_passConversionVeto",&_recoele_passConversionVeto);
+  tree_new->Branch("recoele_nMissingHits",&_recoele_nMissingHits);
+  tree_new->Branch("recoele_isfakeable",&_recoele_isfakeable);
+  tree_new->Branch("recoele_iscutsel",&_recoele_iscutsel);
+  tree_new->Branch("recoele_ismvasel",&_recoele_ismvasel);
+  tree_new->Branch("recoele_TopMothInd",&_recoele_TopMothInd);
+  tree_new->Branch("recoele_HMothInd",&_recoele_HMothInd);
+  tree_new->Branch("recoele_goodsign",&_recoele_goodsign);
+  tree_new->Branch("recoele_fakerate",&_recoele_fakerate);
+  tree_new->Branch("recoele_QFrate",&_recoele_QFrate);
+
+  tree_new->Branch("n_recolep_fakeable",&_n_recolep_fakeable,"n_recolep_fakeable/I");
+  tree_new->Branch("n_recolep_mvasel",&_n_recolep_mvasel,"n_recolep_mvasel/I");
+  tree_new->Branch("recolep_charge",&_recolep_charge);
+  tree_new->Branch("recolep_pdg",&_recolep_pdg);
+  tree_new->Branch("recolep_e",&_recolep_e);
+  tree_new->Branch("recolep_px",&_recolep_px);
+  tree_new->Branch("recolep_py",&_recolep_py);
+  tree_new->Branch("recolep_pz",&_recolep_pz);
+  tree_new->Branch("recolep_pt",&_recolep_pt);
+  tree_new->Branch("recolep_conept",&_recolep_conept);
+  tree_new->Branch("recolep_eta",&_recolep_eta);
+  tree_new->Branch("recolep_phi",&_recolep_phi);
+  tree_new->Branch("recolep_leptonMVA",&_recolep_leptonMVA);
+  tree_new->Branch("recolep_fakerate",&_recolep_fakerate);
+  tree_new->Branch("recolep_QFrate",&_recolep_QFrate);
+  tree_new->Branch("recolep_ismvasel",&_recolep_ismvasel);
+  tree_new->Branch("recolep_tightcharge",&_recolep_tightcharge);
+  tree_new->Branch("recolep_eleconv_misshits",&_recolep_eleconv_misshits);
+
 
   tree_new->Branch("n_recotauh",&_n_recotauh,"n_recotauh/I");
   tree_new->Branch("recotauh_decayMode",&_recotauh_decayMode);
@@ -816,8 +978,6 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_dR_closest_genpart",&_recoPFJet_dR_closest_genpart);
   tree_new->Branch("recoPFJet_i_2nd_closest_genpart",&_recoPFJet_i_2nd_closest_genpart);
   tree_new->Branch("recoPFJet_dR_2nd_closest_genpart",&_recoPFJet_dR_2nd_closest_genpart);
-  tree_new->Branch("recoPFJet_i_closest_lep",&_recoPFJet_i_closest_lep);
-  tree_new->Branch("recoPFJet_dR_closest_lep",&_recoPFJet_dR_closest_lep);
   tree_new->Branch("recoPFJet_i_closest_tau",&_recoPFJet_i_closest_tau);
   tree_new->Branch("recoPFJet_dR_closest_tau",&_recoPFJet_dR_closest_tau);
 			     
@@ -881,10 +1041,19 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("PFMET",&_PFMET,"PFMET/F");
   tree_new->Branch("PFMET_phi",&_PFMET_phi,"PFMET_phi/F");
 
-  tree_new->Branch("PFMET_cov00",&_PFMET_cov00,"PFMET_cov00/F");
-  tree_new->Branch("PFMET_cov01",&_PFMET_cov01,"PFMET_cov01/F");
-  tree_new->Branch("PFMET_cov10",&_PFMET_cov10,"PFMET_cov10/F");
-  tree_new->Branch("PFMET_cov11",&_PFMET_cov11,"PFMET_cov11/F");
+  tree_new->Branch("HTmiss",&_HTmiss,"HTmiss/F");
+  tree_new->Branch("ETmissLD",&_ETmissLD,"ETmissLD/F");
+  tree_new->Branch("MT_lep0",&_MT_lep0,"MT_lep0/F");
+  tree_new->Branch("mindR_lep0_recoPFjet",&_mindR_lep0_recoPFjet,"mindR_lep0_recoPFjet/F");
+  tree_new->Branch("mindR_lep1_recoPFjet",&_mindR_lep1_recoPFjet,"mindR_lep1_recoPFjet/F");
+  tree_new->Branch("lep0_conept",&_lep0_conept,"lep0_conept/F");
+  tree_new->Branch("lep1_conept",&_lep1_conept,"lep1_conept/F");
+  tree_new->Branch("lep2_conept",&_lep2_conept,"lep2_conept/F");
+  tree_new->Branch("avg_dr_jet",&_avg_dr_jet,"avg_dr_jet/F");
+  tree_new->Branch("MVA_2lSS_ttV",&_MVA_2lSS_ttV,"MVA_2lSS_ttV/F");
+  tree_new->Branch("MVA_2lSS_ttbar",&_MVA_2lSS_ttbar,"MVA_2lSS_ttbar/F");
+  tree_new->Branch("MVA_3l_ttV",&_MVA_3l_ttV,"MVA_3l_ttV/F");
+  tree_new->Branch("MVA_3l_ttbar",&_MVA_3l_ttbar,"MVA_3l_ttbar/F");
 
   tree_new->Branch("genpart_pt",&_genpart_pt);
   tree_new->Branch("genpart_eta",&_genpart_eta);
@@ -1047,9 +1216,15 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> *_dxy_innerTrack;
   vector<float> *_dz_innerTrack;
   vector<float> *_SIP;
+  vector<float> *_daughters_rel_error_trackpt;
   vector<int> *_daughters_muonID;
   vector<int> *_daughters_eleMissingHits;
   vector<bool> *_daughters_passConversionVeto;
+  vector<float> *_daughters_IetaIeta;
+  vector<float> *_daughters_hOverE;
+  vector<float> *_daughters_deltaEtaSuperClusterTrackAtVtx;
+  vector<float> *_daughters_deltaPhiSuperClusterTrackAtVtx;
+  vector<float> *_daughters_IoEmIoP;
 
   vector<float> *_daughters_e;
   vector<float> *_daughters_px;
@@ -1074,14 +1249,17 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> *_daughters_lepMVA_mvaId;
   vector<bool> *_daughters_iseleChargeConsistent;
 
-  
-  vector<float> *_METx_vect;
+
+  /*vector<float> *_METx_vect;
   vector<float> *_METy_vect;
 
   vector<float> *_MET_cov00_vect;
   vector<float> *_MET_cov01_vect;
   vector<float> *_MET_cov10_vect;
-  vector<float> *_MET_cov11_vect;
+  vector<float> *_MET_cov11_vect;*/
+
+  float _met;
+  float _metphi;
 
   vector<float> *_genpart_px;
   vector<float> *_genpart_py;
@@ -1113,9 +1291,15 @@ void convert_tree(TString sample, int iso_tau=70,
   tree->SetBranchAddress("dxy_innerTrack",&_dxy_innerTrack);
   tree->SetBranchAddress("dz_innerTrack",&_dz_innerTrack);
   tree->SetBranchAddress("SIP",&_SIP);
+  tree->SetBranchAddress("daughters_rel_error_trackpt",&_daughters_rel_error_trackpt);
   tree->SetBranchAddress("daughters_muonID",&_daughters_muonID);
   tree->SetBranchAddress("daughters_eleMissingHits",&_daughters_eleMissingHits);
   tree->SetBranchAddress("daughters_passConversionVeto",&_daughters_passConversionVeto);
+  tree->SetBranchAddress("daughters_IetaIeta",&_daughters_IetaIeta);
+  tree->SetBranchAddress("daughters_hOverE",&_daughters_hOverE);
+  tree->SetBranchAddress("daughters_deltaEtaSuperClusterTrackAtVtx",&_daughters_deltaEtaSuperClusterTrackAtVtx);
+  tree->SetBranchAddress("daughters_deltaPhiSuperClusterTrackAtVtx",&_daughters_deltaPhiSuperClusterTrackAtVtx);
+  tree->SetBranchAddress("daughters_IoEmIoP",&_daughters_IoEmIoP);
 
   tree->SetBranchAddress("daughters_px",&_daughters_px);
   tree->SetBranchAddress("daughters_py",&_daughters_py);
@@ -1140,12 +1324,15 @@ void convert_tree(TString sample, int iso_tau=70,
   tree->SetBranchAddress("daughters_lepMVA_mvaId",&_daughters_lepMVA_mvaId);
   tree->SetBranchAddress("daughters_iseleChargeConsistent",&_daughters_iseleChargeConsistent);
 
-  tree->SetBranchAddress("METx",&_METx_vect);
+  /*tree->SetBranchAddress("METx",&_METx_vect);
   tree->SetBranchAddress("METy",&_METy_vect);
   tree->SetBranchAddress("MET_cov00",&_MET_cov00_vect);
   tree->SetBranchAddress("MET_cov01",&_MET_cov01_vect);
   tree->SetBranchAddress("MET_cov10",&_MET_cov10_vect);
-  tree->SetBranchAddress("MET_cov11",&_MET_cov11_vect);
+  tree->SetBranchAddress("MET_cov11",&_MET_cov11_vect);*/
+
+  tree->SetBranchAddress("met",&_met);
+  tree->SetBranchAddress("metphi",&_metphi);  
 
   tree->SetBranchAddress("genpart_px",&_genpart_px);
   tree->SetBranchAddress("genpart_py",&_genpart_py);
@@ -1163,14 +1350,43 @@ void convert_tree(TString sample, int iso_tau=70,
   tree->SetBranchAddress("genpart_TauGenDecayMode",&_genpart_TauGenDecayMode);
   tree->SetBranchAddress("genpart_flags",&_genpart_flags);
   
+  TFile* f_tauID = TFile::Open(list[0]);
+  TH1F* h_tauID = (TH1F*)f_tauID->Get("HTauTauTree/TauIDs");
+  h_tauID->SetDirectory(0);
+  f_tauID->Close();
 
+  std::map<std::string,int> map_tauID;
+  for(int i=1; i<h_tauID->GetNbinsX();i++){
+    const char* bin_label=h_tauID->GetXaxis()->GetBinLabel(i);
+    std::string str(bin_label);
+    cout<<"i="<<i<<" bin_label="<<bin_label<<endl;
+    map_tauID[str]=i-1;
+  }
 
   TMVA::Reader* mu_reader = BookLeptonMVAReaderMoriond16("lepMVA_weights", "/mu_BDTG.weights.xml", "mu");
   TMVA::Reader* ele_reader = BookLeptonMVAReaderMoriond16("lepMVA_weights", "/el_BDTG.weights.xml", "ele");
 
+  TMVA::Reader* MVA_2lSS_TTV_reader = Book_2LSS_TTV_MVAReader("2lSSMVA_weights","/2lss_ttV_BDTG.weights.xml");
+  TMVA::Reader* MVA_2lSS_TT_reader = Book_2LSS_TT_MVAReader("2lSSMVA_weights","/2lss_ttbar_BDTG.weights.xml");
+  TMVA::Reader* MVA_3l_TTV_reader = Book_3l_TTV_MVAReader("3lMVA_weights","/3l_ttV_BDTG.weights.xml");
+  TMVA::Reader* MVA_3l_TT_reader = Book_3l_TT_MVAReader("3lMVA_weights","/3l_ttbar_BDTG.weights.xml");
+
+  
+  TFile* f_fakerate = TFile::Open("fake_rate_weights/FR_data_ttH_mva.root");
+  TH2F* h_fakerate_mu = (TH2F*)f_fakerate->Get("FR_mva075_mu_data_comb");
+  h_fakerate_mu->SetDirectory(0);
+  TH2F* h_fakerate_el = (TH2F*)f_fakerate->Get("FR_mva075_el_data_comb");
+  h_fakerate_el->SetDirectory(0);
+  f_fakerate->Close();
+
+  
+  TFile* f_QFrate = TFile::Open("charge_flip_weights/QF_data_el.root");
+  TH2F* h_QFrate_el = (TH2F*)f_QFrate->Get("chargeMisId");
+  h_QFrate_el->SetDirectory(0);
+  f_QFrate->Close();
 
 
-  //nentries=15;
+  //nentries=500;
   int skip_entries = 0;
 
   if(split>0){
@@ -1184,6 +1400,7 @@ void convert_tree(TString sample, int iso_tau=70,
     
     if(i%10000==0)
       cout<<"i="<<i<<endl;
+    
 
     _daughters_pt.clear();
     _daughters_eta.clear();
@@ -1194,31 +1411,17 @@ void convert_tree(TString sample, int iso_tau=70,
     _jets_eta.clear();
     _jets_phi.clear();
 
-    _n_recolep = 0;
-    _recolep_ID.clear();
-    _recolep_charge.clear();
-    _recolep_e.clear();
-    _recolep_px.clear();
-    _recolep_py.clear();
-    _recolep_pz.clear();
-    _recolep_pt.clear();
-    _recolep_eta.clear();
-    _recolep_phi.clear();
-    _recolep_leptonMVA.clear();
-    _recolep_TopMothInd.clear();
-    _recolep_HMothInd.clear();
-    _recolep_goodsign.clear();
-    _recolep_iseleChargeConsistent.clear();
-
-
-    _n_recomu = 0;
-    _recomu_ID.clear();
+    _n_recomu_presel = 0;
+    _n_recomu_fakeable = 0;
+    _n_recomu_cutsel = 0;
+    _n_recomu_mvasel = 0;
     _recomu_charge.clear();
     _recomu_e.clear();
     _recomu_px.clear();
     _recomu_py.clear();
     _recomu_pz.clear();
     _recomu_pt.clear();
+    _recomu_conept.clear();
     _recomu_eta.clear();
     _recomu_phi.clear();
     _recomu_dxy.clear();
@@ -1233,16 +1436,28 @@ void convert_tree(TString sample, int iso_tau=70,
     _recomu_jetPtRatio.clear();
     _recomu_lepMVA_mvaId.clear();
     _recomu_leptonMVA.clear();
+    _recomu_rel_error_trackpt.clear();
+    _recomu_mediumID.clear();
+    _recomu_isfakeable.clear();
+    _recomu_iscutsel.clear();
+    _recomu_ismvasel.clear();
+    _recomu_TopMothInd.clear();
+    _recomu_HMothInd.clear();
+    _recomu_goodsign.clear();
+    _recomu_fakerate.clear();
 
 
-    _n_recoele = 0;
-    _recoele_ID.clear();
+    _n_recoele_presel = 0;
+    _n_recoele_fakeable = 0;
+    _n_recoele_cutsel = 0;
+    _n_recoele_mvasel = 0;
     _recoele_charge.clear();
     _recoele_e.clear();
     _recoele_px.clear();
     _recoele_py.clear();
     _recoele_pz.clear();
     _recoele_pt.clear();
+    _recoele_conept.clear();
     _recoele_eta.clear();
     _recoele_phi.clear();
     _recoele_dxy.clear();
@@ -1258,7 +1473,36 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoele_lepMVA_mvaId.clear();
     _recoele_leptonMVA.clear();
     _recoele_isChargeConsistent.clear();
- 
+    _recoele_passConversionVeto.clear();
+    _recoele_nMissingHits.clear();
+    _recoele_isfakeable.clear();
+    _recoele_iscutsel.clear();
+    _recoele_ismvasel.clear();
+    _recoele_TopMothInd.clear();
+    _recoele_HMothInd.clear();
+    _recoele_goodsign.clear();
+    _recoele_fakerate.clear();
+    _recoele_QFrate.clear();
+
+    _n_recolep_fakeable = 0;
+    _n_recolep_mvasel = 0;
+    _recolep_charge.clear();
+    _recolep_pdg.clear();
+    _recolep_e.clear();
+    _recolep_px.clear();
+    _recolep_py.clear();
+    _recolep_pz.clear();
+    _recolep_pt.clear();
+    _recolep_conept.clear();
+    _recolep_eta.clear();
+    _recolep_phi.clear();
+    _recolep_leptonMVA.clear();
+    _recolep_fakerate.clear();
+    _recolep_QFrate.clear(); 
+    _recolep_ismvasel.clear();
+    _recolep_tightcharge.clear();
+    _recolep_eleconv_misshits.clear();
+
     _n_recotauh = 0;
     _recotauh_charge.clear();
     _recotauh_decayMode.clear();
@@ -1310,8 +1554,6 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_dR_closest_genpart.clear();
     _recoPFJet_i_2nd_closest_genpart.clear();
     _recoPFJet_dR_2nd_closest_genpart.clear();
-    _recoPFJet_i_closest_lep.clear();
-    _recoPFJet_dR_closest_lep.clear();
     _recoPFJet_i_closest_tau.clear();
     _recoPFJet_dR_closest_tau.clear();
 
@@ -1373,10 +1615,19 @@ void convert_tree(TString sample, int iso_tau=70,
     _PFMET = 0;
     _PFMET_phi = 0;
 
-    _PFMET_cov00 = 0;
-    _PFMET_cov01 = 0;
-    _PFMET_cov10 = 0;
-    _PFMET_cov11 = 0;
+    _HTmiss = 0;
+    _ETmissLD = 0;
+    _MT_lep0 = 0;
+    _mindR_lep0_recoPFjet = 0;
+    _mindR_lep1_recoPFjet = 0;
+    _lep0_conept = 0;
+    _lep1_conept = 0;
+    _lep2_conept = 0;
+    _avg_dr_jet = 0;
+    _MVA_2lSS_ttV = 0;
+    _MVA_2lSS_ttbar = 0;
+    _MVA_3l_ttV = 0;
+    _MVA_3l_ttbar = 0;
 
     _genpart_pt.clear();
     _genpart_eta.clear();
@@ -1538,9 +1789,15 @@ void convert_tree(TString sample, int iso_tau=70,
     _dxy_innerTrack = 0;
     _dz_innerTrack = 0;
     _SIP = 0;
+    _daughters_rel_error_trackpt = 0;
     _daughters_muonID = 0;
     _daughters_eleMissingHits = 0;
     _daughters_passConversionVeto = 0;
+    _daughters_IetaIeta = 0;
+    _daughters_hOverE = 0;
+    _daughters_deltaEtaSuperClusterTrackAtVtx = 0;
+    _daughters_deltaPhiSuperClusterTrackAtVtx = 0;
+    _daughters_IoEmIoP = 0;
 
     _daughters_e = 0;
     _daughters_px = 0;
@@ -1565,12 +1822,15 @@ void convert_tree(TString sample, int iso_tau=70,
     _daughters_lepMVA_mvaId = 0;
     _daughters_iseleChargeConsistent = 0;
 
-    _METx_vect = 0;
+    /*_METx_vect = 0;
     _METy_vect = 0;
     _MET_cov00_vect = 0;
     _MET_cov01_vect = 0;
     _MET_cov10_vect = 0;
-    _MET_cov11_vect = 0;
+    _MET_cov11_vect = 0;*/
+
+    _met = 0;
+    _metphi = 0;
 
     _genpart_px = 0;
     _genpart_py = 0;
@@ -1588,22 +1848,21 @@ void convert_tree(TString sample, int iso_tau=70,
     _genpart_TauGenDecayMode = 0;
     _genpart_flags = 0;
 
-    tree->GetEntry(i);
+    int entry_ok = tree->GetEntry(i);
+    if(entry_ok<0) continue;
 
-    
-    ///Leptons   
-    
-    vector< pair<int,TLorentzVector> > reco_leptons;
+    //vector< pair<int,TLorentzVector> > reco_leptons;
+
+    //////////////////////////////////////////////
+    ///                 Muons                  ///
+    //////////////////////////////////////////////
+
     vector< pair<int,TLorentzVector> > reco_mus;
-    vector< pair<int,TLorentzVector> > reco_eles;
-
    	
     for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
       int PDGId=(*_PDGIdDaughters)[i_daughter];
       TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
-      
-      pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
-     
+           
       _daughters_pt.push_back(daughter.Pt());
       _daughters_eta.push_back(daughter.Eta());
       _daughters_phi.push_back(daughter.Phi());      
@@ -1630,133 +1889,64 @@ void convert_tree(TString sample, int iso_tau=70,
 	bool looseID = (*_daughters_muonID)[i_daughter] & 1;
 
 	if(daughter.Pt()>5 && fabs(daughter.Eta())<2.4 && fabs(dxy)<=0.05 && fabs(dz)<0.1 && miniRelIso<0.4 && sip < 8 && looseID){
-	  reco_mus.push_back(daughter_pair);
-	  reco_leptons.push_back(daughter_pair);
-	}
-      }
 
-      
+	  lepMVA_pt = daughter.Pt();
+	  lepMVA_eta = daughter.Eta();
+	  lepMVA_jetNDauChargedMVASel = (*_daughters_jetNDauChargedMVASel)[i_daughter];
+	  lepMVA_miniRelIsoCharged = miniRelIsoCharged;
+	  lepMVA_miniRelIsoNeutral = miniRelIsoNeutral;
 
-    }
-
-
-
-
-    for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
-      int PDGId=(*_PDGIdDaughters)[i_daughter];
-      TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
-      
-      pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
-
-      if( fabs(PDGId)==11 ){
-
-	float dxy = (*_dxy)[i_daughter];
-	float dz = (*_dz)[i_daughter];
-	float miniRelIsoCharged = (*_daughters_miniRelIsoCharged)[i_daughter];
-	float miniRelIsoNeutral = (*_daughters_miniRelIsoNeutral)[i_daughter];
-	float miniRelIso = miniRelIsoCharged + miniRelIsoNeutral;
-	float sip = (*_SIP)[i_daughter];
-	
-	float eleMVAnt = (*_daughters_lepMVA_mvaId)[i_daughter];
-	bool VLooseIdEmuWP = false;
-	if(fabs(daughter.Eta())<0.8)
-	  VLooseIdEmuWP = (eleMVAnt>-0.7);
-	else if(fabs(daughter.Eta())<1.479)
-	  VLooseIdEmuWP = (eleMVAnt>-0.83);
-	else
-	  VLooseIdEmuWP = (eleMVAnt>-0.92);
-	
-	int eleMissingHits = (*_daughters_eleMissingHits)[i_daughter];
-	bool passConversionVeto = (*_daughters_passConversionVeto)[i_daughter];
-	
-	if(daughter.Pt()>7 && fabs(daughter.Eta())<2.5 && fabs(dxy)<=0.05 && fabs(dz)<0.1 && miniRelIso<0.4 && sip < 8 && VLooseIdEmuWP && eleMissingHits<=1 && passConversionVeto){
-
-	  bool dR_veto=false;
-	
-	  for(unsigned int i_mu=0; i_mu<reco_mus.size(); i_mu++){
-
-	    TLorentzVector mu=reco_mus[i_mu].second;
-	    float dR_ele_mu=mu.DeltaR(daughter);
-	    if(dR_ele_mu<0.05){
-	      dR_veto=true;
-	      break;
-	    }
+	  lepMVA_jetPtRelv2 = 0.; 
+	  lepMVA_jetPtRatio = 1.;      
+	  lepMVA_jetBTagCSV = 0.;
+	  if(_daughters_dR_closest_jet[i_daughter]<0.4){   
+	    lepMVA_jetPtRelv2 = (*_daughters_jetPtRel)[i_daughter]; 
+	    lepMVA_jetPtRatio = std::min((*_daughters_jetPtRatio)[i_daughter],float(1.5));      
+	    lepMVA_jetBTagCSV = std::max((*_daughters_jetBTagCSV)[i_daughter],float(0.));
 	  }
+	  
+	  lepMVA_sip3d = (*_SIP)[i_daughter];
+	  lepMVA_dxy = log(fabs((*_dxy_innerTrack)[i_daughter]));
+	  lepMVA_dz = log(fabs((*_dz_innerTrack)[i_daughter]));
+	  lepMVA_mvaId = (*_daughters_lepMVA_mvaId)[i_daughter];
 
-	  if(dR_veto)
-	    continue;
+	  float leptonMVA = mu_reader->EvaluateMVA("BDTG method");
 
-	  reco_eles.push_back(daughter_pair);
-	  reco_leptons.push_back(daughter_pair);
+	  bool ismvasel=false;
+	  bool isfakeable=false;
+	  if(daughter.Pt()>10 && leptonMVA>0.75 && lepMVA_jetBTagCSV<0.89){
+	    isfakeable=true;	
+	    ismvasel=true;
+	  }
+	  else if(daughter.Pt()>10 && leptonMVA<0.75 && lepMVA_jetBTagCSV<0.605 && lepMVA_jetPtRatio>0.3)
+	    isfakeable=true;
 
-	
+	  float conept = daughter.Pt();
+	  if(isfakeable && !ismvasel)
+	    conept = 0.85*daughter.Pt()/lepMVA_jetPtRatio;
+
+	  if(conept_sorting)
+	    daughter.SetPtEtaPhiM(conept,daughter.Eta(),daughter.Phi(),daughter.M());	  	    
+
+	  pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
+	  reco_mus.push_back(daughter_pair);
+	  //reco_leptons.push_back(daughter_pair);
 	}
-
       }
-
+      
     }
 
 
-    sort(reco_leptons.begin(), reco_leptons.end(), pT_comparison_pairs);
     sort(reco_mus.begin(), reco_mus.end(), pT_comparison_pairs);
-    sort(reco_eles.begin(), reco_eles.end(), pT_comparison_pairs);
-       
-    _n_recolep = reco_leptons.size();
 
-    for(unsigned int i_lepton=0; i_lepton<reco_leptons.size(); i_lepton++){
-      
-      int i_daughter=reco_leptons[i_lepton].first;
-      TLorentzVector lepton=reco_leptons[i_lepton].second;
-
-      _recolep_ID.push_back( (*_PDGIdDaughters)[i_daughter] );
-      _recolep_charge.push_back( (*_PDGIdDaughters)[i_daughter] > 0 ? -1 : 1 );
-      _recolep_e.push_back( lepton.E() );
-      _recolep_px.push_back( lepton.Px() );
-      _recolep_py.push_back( lepton.Py() );
-      _recolep_pz.push_back( lepton.Pz() );
-      _recolep_pt.push_back( lepton.Pt() );
-      _recolep_eta.push_back( lepton.Eta() );
-      _recolep_phi.push_back( lepton.Phi() );
-      _recolep_iseleChargeConsistent.push_back( (*_daughters_iseleChargeConsistent)[i_daughter]);
-      
-      lepMVA_pt = _recolep_pt[i_lepton];
-      lepMVA_eta = _recolep_eta[i_lepton];
-      lepMVA_jetNDauChargedMVASel = (*_daughters_jetNDauChargedMVASel)[i_daughter];
-      lepMVA_miniRelIsoCharged = (*_daughters_miniRelIsoCharged)[i_daughter];
-      lepMVA_miniRelIsoNeutral = (*_daughters_miniRelIsoNeutral)[i_daughter];
-      lepMVA_jetPtRelv2 =  (*_daughters_jetPtRel)[i_daughter]; 
-      lepMVA_jetPtRatio = std::min((*_daughters_jetPtRatio)[i_daughter],float(1.5));      
-      lepMVA_jetBTagCSV = std::max((*_daughters_jetBTagCSV)[i_daughter],float(0.));
-      lepMVA_sip3d = (*_SIP)[i_daughter];
-      
-      if(fabs(_recolep_ID[i_lepton])==13){
-	lepMVA_dxy = log(fabs( (*_dxy_innerTrack)[i_daughter] ));
-	lepMVA_dz = log(fabs( (*_dz_innerTrack)[i_daughter] ));
-      }
-      else if(fabs(_recolep_ID[i_lepton])==11){
-	lepMVA_dxy = log(fabs( (*_dxy)[i_daughter] ));
-	lepMVA_dz = log(fabs( (*_dz)[i_daughter] ));
-      }
-
-      lepMVA_mvaId = (*_daughters_lepMVA_mvaId)[i_daughter];
-
-      if(fabs(_recolep_ID[i_lepton])==13)
-	_recolep_leptonMVA.push_back( mu_reader->EvaluateMVA("BDTG method") );
-      else if(fabs(_recolep_ID[i_lepton])==11)
-	_recolep_leptonMVA.push_back( ele_reader->EvaluateMVA("BDTG method") );
-
-      
-    }
-
-
-    _n_recomu = reco_mus.size();
+    _n_recomu_presel = reco_mus.size();
 
     for(unsigned int i_mu=0; i_mu<reco_mus.size(); i_mu++){
       
       int i_daughter=reco_mus[i_mu].first;
-      TLorentzVector muon=reco_mus[i_mu].second;
+      TLorentzVector muon=reco_mus[i_mu].second;  //reco_mus may have cone pt
+      muon.SetPtEtaPhiM(_daughters_pt[i_daughter],muon.Eta(),muon.Phi(),muon.M());
 
-      _recomu_ID.push_back( (*_PDGIdDaughters)[i_daughter] );
       _recomu_charge.push_back( (*_PDGIdDaughters)[i_daughter] > 0 ? -1 : 1 );
       _recomu_e.push_back( muon.E() );
       _recomu_px.push_back( muon.Px() );
@@ -1804,18 +1994,187 @@ void convert_tree(TString sample, int iso_tau=70,
 
       _recomu_leptonMVA.push_back( mu_reader->EvaluateMVA("BDTG method") );
 
+
+      //Fakeable
+      bool isfakeable=false;
+      if(muon.Pt()>10 && _recomu_leptonMVA[i_mu]>0.75 && lepMVA_jetBTagCSV<0.89)
+	isfakeable=true;	
+      else if(muon.Pt()>10 && _recomu_leptonMVA[i_mu]<0.75 && lepMVA_jetBTagCSV<0.605 && lepMVA_jetPtRatio>0.3)
+	isfakeable=true;	
+
+      _recomu_isfakeable.push_back(isfakeable);
+      if(isfakeable)
+	_n_recomu_fakeable++;
+
+      float miniIso = lepMVA_miniRelIsoCharged + lepMVA_miniRelIsoNeutral;
+      bool mediumID = ((*_daughters_muonID)[i_daughter]>>2) & 1;
+      float rel_error_trackpt = (*_daughters_rel_error_trackpt)[i_daughter];
+
+      _recomu_rel_error_trackpt.push_back(rel_error_trackpt);
+      _recomu_mediumID.push_back(mediumID);
+
+      //Cut-based selection
+      bool iscutsel=false;
+      if(muon.Pt()>10 && miniIso<0.2 && lepMVA_sip3d<4 && mediumID && rel_error_trackpt<0.2)
+	iscutsel=true;
+	
+      _recomu_iscutsel.push_back(iscutsel);
+      if(iscutsel)
+	_n_recomu_cutsel++;
+
+      //MVA-based selection
+      bool ismvasel=false;
+      if(muon.Pt()>10 && _recomu_leptonMVA[i_mu]>0.75 && lepMVA_jetBTagCSV<0.89 && mediumID && rel_error_trackpt<0.2)
+	ismvasel=true;
+	
+      _recomu_ismvasel.push_back(ismvasel);
+      if(ismvasel)
+	_n_recomu_mvasel++;	
+
+      float conept = muon.Pt();
+      if(isfakeable && !ismvasel)
+	    conept = 0.85*muon.Pt()/lepMVA_jetPtRatio;
+   
+      _recomu_conept.push_back( conept );
+
+      //Fake rate
+      int bin = h_fakerate_mu->FindBin(min(conept,float(99.)), abs(muon.Eta()));
+      float FR = h_fakerate_mu->GetBinContent(bin);
+      _recomu_fakerate.push_back(FR);
+
     }
 
 
+    //////////////////////////////////////////////
+    ///              Electrons                 ///
+    //////////////////////////////////////////////
 
-    _n_recoele = reco_eles.size();
+    vector< pair<int,TLorentzVector> > reco_eles;
+
+
+
+    for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
+      int PDGId=(*_PDGIdDaughters)[i_daughter];
+      TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
+      
+      if( fabs(PDGId)==11 ){
+
+	float dxy = (*_dxy)[i_daughter];
+	float dz = (*_dz)[i_daughter];
+	float miniRelIsoCharged = (*_daughters_miniRelIsoCharged)[i_daughter];
+	float miniRelIsoNeutral = (*_daughters_miniRelIsoNeutral)[i_daughter];
+	float miniRelIso = miniRelIsoCharged + miniRelIsoNeutral;
+	float sip = (*_SIP)[i_daughter];
+	
+	float eleMVAnt = (*_daughters_lepMVA_mvaId)[i_daughter];
+	bool VLooseIdEmuWP = false;
+	if(fabs(daughter.Eta())<0.8)
+	  VLooseIdEmuWP = (eleMVAnt>-0.7);
+	else if(fabs(daughter.Eta())<1.479)
+	  VLooseIdEmuWP = (eleMVAnt>-0.83);
+	else
+	  VLooseIdEmuWP = (eleMVAnt>-0.92);
+	
+	int eleMissingHits = (*_daughters_eleMissingHits)[i_daughter];
+	
+	if(daughter.Pt()>7 && fabs(daughter.Eta())<2.5 && fabs(dxy)<=0.05 && fabs(dz)<0.1 && miniRelIso<0.4 && sip < 8 && VLooseIdEmuWP && eleMissingHits<=1){
+
+	  bool dR_veto=false;
+	
+	  for(unsigned int i_mu=0; i_mu<reco_mus.size(); i_mu++){
+
+	    TLorentzVector mu=reco_mus[i_mu].second;
+	    float dR_ele_mu=mu.DeltaR(daughter);
+	    if(dR_ele_mu<0.05){
+	      dR_veto=true;
+	      break;
+	    }
+	  }
+
+	  if(dR_veto)
+	    continue;
+
+	  lepMVA_pt = daughter.Pt();
+	  lepMVA_eta = daughter.Eta();
+	  lepMVA_jetNDauChargedMVASel = (*_daughters_jetNDauChargedMVASel)[i_daughter];
+	  lepMVA_miniRelIsoCharged = miniRelIsoCharged;
+	  lepMVA_miniRelIsoNeutral = miniRelIsoNeutral;
+
+	  lepMVA_jetPtRelv2 = 0.; 
+	  lepMVA_jetPtRatio = 1.;      
+	  lepMVA_jetBTagCSV = 0.;
+	  if(_daughters_dR_closest_jet[i_daughter]<0.4){   
+	    lepMVA_jetPtRelv2 = (*_daughters_jetPtRel)[i_daughter]; 
+	    lepMVA_jetPtRatio = std::min((*_daughters_jetPtRatio)[i_daughter],float(1.5));      
+	    lepMVA_jetBTagCSV = std::max((*_daughters_jetBTagCSV)[i_daughter],float(0.));
+	  }
+	  
+	  lepMVA_sip3d = (*_SIP)[i_daughter];
+	  lepMVA_dxy = log(fabs((*_dxy)[i_daughter]));
+	  lepMVA_dz = log(fabs((*_dz)[i_daughter]));
+	  lepMVA_mvaId = (*_daughters_lepMVA_mvaId)[i_daughter];
+
+	  float leptonMVA = ele_reader->EvaluateMVA("BDTG method");
+
+	  bool eleIDcut=false;
+	  if(daughter.Pt()<30)
+	    eleIDcut=true;
+	  else{
+	    
+	    float sigma_IetaIeta = (*_daughters_IetaIeta)[i_daughter];
+	    float hOverE = (*_daughters_hOverE)[i_daughter];
+	    float deltaEta_in = (*_daughters_deltaEtaSuperClusterTrackAtVtx)[i_daughter];
+	    float deltaPhi_in = (*_daughters_deltaPhiSuperClusterTrackAtVtx)[i_daughter];
+	    float IoEmIoP = (*_daughters_IoEmIoP)[i_daughter];
+	
+	    if(fabs(daughter.Eta())<1.479){
+	      if(sigma_IetaIeta<0.011 && hOverE<0.1 && deltaEta_in<0.01 && deltaPhi_in<0.04 && -0.5<IoEmIoP && IoEmIoP<0.01)
+		eleIDcut=true;
+	    }
+	    else{
+	      if(sigma_IetaIeta<0.003 && hOverE<0.07 && deltaEta_in<0.008 && deltaPhi_in<0.07 && -0.5<IoEmIoP && IoEmIoP<0.005)
+		eleIDcut=true;
+	    }
+	
+	  }
+                  
+	  //Fakeable	  	
+	  bool ismvasel=false;
+	  bool isfakeable=false;
+	  if(daughter.Pt()>10 && leptonMVA>0.75 && lepMVA_jetBTagCSV<0.89){
+	    isfakeable=true;	
+	    ismvasel=true;
+	  }
+	  else if(daughter.Pt()>10 && leptonMVA<0.75 && lepMVA_jetBTagCSV<0.605 && lepMVA_jetPtRatio>0.3)
+	    isfakeable=true;
+
+	  float conept = daughter.Pt();
+	  if(isfakeable && !ismvasel)
+	    conept = 0.85*daughter.Pt()/lepMVA_jetPtRatio;
+
+	  if(conept_sorting)
+	    daughter.SetPtEtaPhiM(conept,daughter.Eta(),daughter.Phi(),daughter.M());	  
+	  pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
+	  reco_eles.push_back(daughter_pair);
+	  //reco_leptons.push_back(daughter_pair);
+
+	}
+
+      }
+
+    }
+
+
+    sort(reco_eles.begin(), reco_eles.end(), pT_comparison_pairs);
+
+    _n_recoele_presel = reco_eles.size();
 
     for(unsigned int i_ele=0; i_ele<reco_eles.size(); i_ele++){
       
       int i_daughter=reco_eles[i_ele].first;
-      TLorentzVector elec=reco_eles[i_ele].second;
+      TLorentzVector elec=reco_eles[i_ele].second;  //reco_eles may have cone pt
+      elec.SetPtEtaPhiM(_daughters_pt[i_daughter],elec.Eta(),elec.Phi(),elec.M());
 
-      _recoele_ID.push_back( (*_PDGIdDaughters)[i_daughter] );
       _recoele_charge.push_back( (*_PDGIdDaughters)[i_daughter] > 0 ? -1 : 1 );
       _recoele_e.push_back( elec.E() );
       _recoele_px.push_back( elec.Px() );
@@ -1862,12 +2221,190 @@ void convert_tree(TString sample, int iso_tau=70,
 
       _recoele_leptonMVA.push_back( ele_reader->EvaluateMVA("BDTG method") );
 
+      bool eleIDcut=false;
+      if(elec.Pt()<30)
+	eleIDcut=true;
+      else{
+	
+	float sigma_IetaIeta = (*_daughters_IetaIeta)[i_daughter];
+	float hOverE = (*_daughters_hOverE)[i_daughter];
+	float deltaEta_in = (*_daughters_deltaEtaSuperClusterTrackAtVtx)[i_daughter];
+	float deltaPhi_in = (*_daughters_deltaPhiSuperClusterTrackAtVtx)[i_daughter];
+	float IoEmIoP = (*_daughters_IoEmIoP)[i_daughter];
+	
+	if(fabs(elec.Eta())<1.479){
+	  if(sigma_IetaIeta<0.011 && hOverE<0.1 && deltaEta_in<0.01 && deltaPhi_in<0.04 && -0.5<IoEmIoP && IoEmIoP<0.01)
+	    eleIDcut=true;
+	}
+	else{
+	  if(sigma_IetaIeta<0.003 && hOverE<0.07 && deltaEta_in<0.008 && deltaPhi_in<0.07 && -0.5<IoEmIoP && IoEmIoP<0.005)
+	    eleIDcut=true;
+	}
+	
+      }
+      
+      
+      int eleMissingHits = (*_daughters_eleMissingHits)[i_daughter];
+      bool passConversionVeto = (*_daughters_passConversionVeto)[i_daughter];
+      _recoele_nMissingHits.push_back(eleMissingHits);
+      _recoele_passConversionVeto.push_back(passConversionVeto);
+
+      
+      //Fakeable
+      bool isfakeable=false;
+      if(elec.Pt()>10 && eleIDcut && eleMissingHits==0){
+	if(_recoele_leptonMVA[i_ele]>0.75 && lepMVA_jetBTagCSV<0.89)
+	  isfakeable=true;	
+	else if(_recoele_leptonMVA[i_ele]<0.75 && lepMVA_jetBTagCSV<0.605 && lepMVA_jetPtRatio>0.3)
+	  isfakeable=true;
+      }	
+      
+      _recoele_isfakeable.push_back(isfakeable);
+      if(isfakeable)
+	_n_recoele_fakeable++;
+	  
+      //Cut-based selection
+      float miniIso = lepMVA_miniRelIsoCharged + lepMVA_miniRelIsoNeutral;
+
+      float eleMVAnt = (*_daughters_lepMVA_mvaId)[i_daughter];
+      bool TightIdEmuWP = false;
+      if(fabs(elec.Eta())<0.8)
+	TightIdEmuWP = (eleMVAnt>0.87);
+      else if(fabs(elec.Eta())<1.479)
+	TightIdEmuWP = (eleMVAnt>0.6);
+      else
+	TightIdEmuWP = (eleMVAnt>0.17);
+
+      bool iscutsel=false;
+      if(elec.Pt()>15 && miniIso<0.1 && lepMVA_sip3d<4 && TightIdEmuWP && eleMissingHits==0 && passConversionVeto && _recoele_isChargeConsistent[i_ele])
+	iscutsel=true;
+      
+      _recoele_iscutsel.push_back(iscutsel);
+      if(iscutsel)
+	_n_recoele_cutsel++;
+      	
+      //MVA-based selection
+      bool ismvasel=false;
+      if(elec.Pt()>15 && eleIDcut && _recoele_leptonMVA[i_ele]>0.75 && lepMVA_jetBTagCSV<0.89 && eleMissingHits==0 && passConversionVeto && _recoele_isChargeConsistent[i_ele])
+	ismvasel=true;
+      
+      _recoele_ismvasel.push_back(ismvasel);
+      if(ismvasel)
+	_n_recoele_mvasel++;
+
+      float conept = elec.Pt();
+      if(isfakeable && !ismvasel)
+	conept = 0.85*elec.Pt()/lepMVA_jetPtRatio;
+
+      _recoele_conept.push_back( conept );
+
+      //Fake rate
+      int bin_FR = h_fakerate_el->FindBin(min(conept,float(99.)), abs(elec.Eta()));
+      float FR = h_fakerate_el->GetBinContent(bin_FR);
+      _recoele_fakerate.push_back(FR);
+
+      int bin_QF = h_QFrate_el->FindBin(min(elec.Pt(),999.), abs(elec.Eta()));
+      float QF = h_QFrate_el->GetBinContent(bin_QF);
+      _recoele_QFrate.push_back(QF);     
+      
+    }
+    
+
+    vector< pair<pair<int,int>, TLorentzVector> > reco_leptons;
+    
+    for(unsigned int i_mu=0; i_mu<reco_mus.size(); i_mu++){
+
+      if(_recomu_isfakeable[i_mu]==0) continue;
+
+      pair<int,int> p_ind_pdg = make_pair(13,i_mu);
+      TLorentzVector mu = reco_mus[i_mu].second;
+      mu.SetPtEtaPhiM(_recomu_conept[i_mu],mu.Eta(),mu.Phi(),mu.M());
+      pair<pair<int,int>, TLorentzVector> pair=make_pair(p_ind_pdg, mu);
+      reco_leptons.push_back(pair);
+
+    }
+
+
+    for(unsigned int i_ele=0; i_ele<reco_eles.size(); i_ele++){
+
+      if(_recoele_isfakeable[i_ele]==0) continue;
+
+      pair<int,int> p_ind_pdg = make_pair(11,i_ele);
+      TLorentzVector ele = reco_eles[i_ele].second;
+      ele.SetPtEtaPhiM(_recoele_conept[i_ele],ele.Eta(),ele.Phi(),ele.M());
+      pair<pair<int,int>, TLorentzVector> pair=make_pair(p_ind_pdg, ele);
+      reco_leptons.push_back(pair);
+
+    }
+
+
+    sort(reco_leptons.begin(), reco_leptons.end(), pT_comparison_pairs_pdg);
+
+    _n_recolep_fakeable = reco_leptons.size();
+    _n_recolep_mvasel = 0;
+
+    for(unsigned int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
+
+      int pdg = reco_leptons[i_lep].first.first;
+
+      if(pdg==13){
+
+	int i_mu = reco_leptons[i_lep].first.second;
+	if(_recomu_ismvasel[i_mu]==1) _n_recolep_mvasel++;
+	_recolep_ismvasel.push_back(_recomu_ismvasel[i_mu]);
+	_recolep_charge.push_back(_recomu_charge[i_mu]);
+	_recolep_pdg.push_back(-13*_recomu_charge[i_mu]);
+	TLorentzVector mu = reco_mus[i_mu].second;
+	_recolep_e.push_back(mu.E());
+	_recolep_px.push_back(mu.Px());
+	_recolep_py.push_back(mu.Py());
+	_recolep_pz.push_back(mu.Pz());
+	_recolep_pt.push_back(mu.Pt());
+	_recolep_conept.push_back(_recomu_conept[i_mu]);
+	_recolep_eta.push_back(mu.Eta());
+	_recolep_phi.push_back(mu.Phi());
+	_recolep_leptonMVA.push_back(_recomu_leptonMVA[i_mu]);
+	_recolep_fakerate.push_back(_recomu_fakerate[i_mu]);	
+	_recolep_QFrate.push_back(0);
+	
+	float rel_error_trackpt = _recomu_rel_error_trackpt[i_mu];
+	_recolep_tightcharge.push_back(rel_error_trackpt<0.2);
+	_recolep_eleconv_misshits.push_back(true);	
+	
+      }
+
+      else if(pdg==11){
+
+	int i_ele = reco_leptons[i_lep].first.second;
+	if(_recoele_ismvasel[i_ele]==1) _n_recolep_mvasel++;
+	_recolep_ismvasel.push_back(_recoele_ismvasel[i_ele]);
+	_recolep_charge.push_back(_recoele_charge[i_ele]);
+	_recolep_pdg.push_back(-11*_recoele_charge[i_ele]);
+	TLorentzVector ele = reco_eles[i_ele].second;
+	_recolep_e.push_back(ele.E());
+	_recolep_px.push_back(ele.Px());
+	_recolep_py.push_back(ele.Py());
+	_recolep_pz.push_back(ele.Pz());
+	_recolep_pt.push_back(ele.Pt());
+	_recolep_conept.push_back(_recoele_conept[i_ele]);
+	_recolep_eta.push_back(ele.Eta());
+	_recolep_phi.push_back(ele.Phi());
+	_recolep_leptonMVA.push_back(_recoele_leptonMVA[i_ele]);
+	_recolep_fakerate.push_back(_recoele_fakerate[i_ele]);	
+	_recolep_QFrate.push_back(_recoele_QFrate[i_ele]);
+
+	_recolep_tightcharge.push_back(_recoele_isChargeConsistent[i_ele]);
+	_recolep_eleconv_misshits.push_back(_recoele_passConversionVeto[i_ele]&&(_recoele_nMissingHits[i_ele]==0));	
+      }
 
     }
 
 
 
-    ///Taus   
+    //////////////////////////////////////////////
+    ///                Taus                    ///
+    //////////////////////////////////////////////
+
     
     vector< pair<int,TLorentzVector> > reco_taus;
     
@@ -1877,47 +2414,34 @@ void convert_tree(TString sample, int iso_tau=70,
       
       pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
      
-      float iso=(*_daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits)[i_daughter];
-      //int iso=(*_tauID)[i_daughter] & (1<<16); //byLooseCombinedIsolationDeltaBetaCorr3Hits = bit#16
-   
-      int byLooseCombinedIsolationDeltaBetaCorr3Hits = ((*_tauID)[i_daughter]>>3)&1;
+      float iso=(*_daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits)[i_daughter];   
+      /*int byLooseCombinedIsolationDeltaBetaCorr3Hits = ((*_tauID)[i_daughter]>>3)&1;
       int byLooseCombinedIsolationDeltaBetaCorr3HitsdR03 = ((*_tauID)[i_daughter]>>21)&1;
-      int byLooseIsolationMVArun2v1DBdR03oldDMwLT = ((*_tauID)[i_daughter]>>24)&1;
+      int byLooseIsolationMVArun2v1DBdR03oldDMwLT = ((*_tauID)[i_daughter]>>24)&1;*/
+      int byLooseCombinedIsolationDeltaBetaCorr3Hits = ((*_tauID)[i_daughter]>>map_tauID["byLooseCombinedIsolationDeltaBetaCorr3Hits"])&1;
+      int byLooseCombinedIsolationDeltaBetaCorr3HitsdR03 = ((*_tauID)[i_daughter]>>map_tauID["byLooseCombinedIsolationDeltaBetaCorr3HitsdR03"])&1;
+      int byLooseIsolationMVArun2v1DBdR03oldDMwLT = ((*_tauID)[i_daughter]>>map_tauID["byLooseIsolationMVArun2v1DBdR03oldDMwLT"])&1;
 
       int decayModeFinding=(*_daughters_decayModeFindingOldDMs)[i_daughter];
-      //int decayModeFinding=(*_daughters_decayModeFindingNewDMs)[i_daughter];
-      //int antiMu=(*_daughters_againstMuonTight3)[i_daughter];
-      //int antiE=(*_daughters_againstElectronVLooseMVA5)[i_daughter];
-      int antiMu=((*_tauID)[i_daughter]>>6) & 1; //againsMuonLoose3 = bit #7
-      int antiE=((*_tauID)[i_daughter]>>8) & 1; //againsElectronVLooseMVA6 = bit #9
 
       float dxy = (*_dxy)[i_daughter];
       float dz = (*_dz)[i_daughter];
       
       bool iso_cut = iso<(0.1*iso_tau);
-      if(iso_type=="byLooseCombinedIsolationDeltaBetaCorr3Hits" || sample.Contains("sync"))
+      if(iso_type=="byLooseCombinedIsolationDeltaBetaCorr3Hits")
 	iso_cut = byLooseCombinedIsolationDeltaBetaCorr3Hits;
       else if(iso_type=="byLooseCombinedIsolationDeltaBetaCorr3HitsdR03")
 	iso_cut = byLooseCombinedIsolationDeltaBetaCorr3HitsdR03;
       else if(iso_type=="byLooseIsolationMVArun2v1DBdR03oldDMwLT")
 	iso_cut = byLooseIsolationMVArun2v1DBdR03oldDMwLT;
 	  
-      bool sync_cut=fabs(PDGId)==15 && daughter.Pt()>20 && fabs(daughter.Eta())<2.3 && iso_cut && decayModeFinding>0.5 && fabs(dxy)<=1000 && fabs(dz)<=0.2;   
+      //bool sync_cut=fabs(PDGId)==15 && daughter.Pt()>20 && fabs(daughter.Eta())<2.3 && iso_cut && decayModeFinding>0.5 && fabs(dxy)<=1000 && fabs(dz)<=0.2;   
       bool nomin_cut = fabs(PDGId)==15 && daughter.Pt()>20 && fabs(daughter.Eta())<2.3 && iso_cut && decayModeFinding>0.5 && abs(dxy)<=1000 && abs(dz)<=0.2;     
       
-      if( (sample.Contains("sync") && sync_cut) || (!sample.Contains("sync") && nomin_cut)){	
+      if( nomin_cut ){	
 	
 	bool dR_veto=false;
-	
-	/*for(unsigned int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
 
-	  TLorentzVector lep=reco_leptons[i_lep].second;
-	  float dR_lep_tau=lep.DeltaR(daughter);
-	  if(dR_lep_tau<0.4){
-	    dR_veto=true;
-	    break;
-	  }
-	  }*/
 
 	for(unsigned int i_lep=0; i_lep<reco_mus.size(); i_lep++){
 	  
@@ -1975,24 +2499,24 @@ void convert_tree(TString sample, int iso_tau=70,
 
       _recotauh_decayModeFindingOldDMs.push_back( (*_daughters_decayModeFindingOldDMs)[i_daughter] );
       _recotauh_decayModeFindingNewDMs.push_back( (*_daughters_decayModeFindingNewDMs)[i_daughter] );
-      _recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>3)&1 );
-      _recotauh_byMediumCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>4)&1 );
-      _recotauh_byTightCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>5)&1 );
-      _recotauh_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>21)&1 );
-      _recotauh_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>22)&1 );
-      _recotauh_byTightCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>23)&1 );
-      _recotauh_byLooseIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>24)&1 );
-      _recotauh_byMediumIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>25)&1 );
-      _recotauh_byTightIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>26)&1 );
-      _recotauh_byVTightIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>27)&1 );
+      _recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>map_tauID["byLooseCombinedIsolationDeltaBetaCorr3Hits"])&1 );
+      _recotauh_byMediumCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>map_tauID["byMediumCombinedIsolationDeltaBetaCorr3Hits"])&1 );
+      _recotauh_byTightCombinedIsolationDeltaBetaCorr3Hits.push_back( ((*_tauID)[i_daughter]>>map_tauID["byTightCombinedIsolationDeltaBetaCorr3Hits"])&1 );
+      _recotauh_byLooseCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>map_tauID["byLooseCombinedIsolationDeltaBetaCorr3HitsdR03"])&1 );
+      _recotauh_byMediumCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>map_tauID["byMediumCombinedIsolationDeltaBetaCorr3HitsdR03"])&1 );
+      _recotauh_byTightCombinedIsolationDeltaBetaCorr3HitsdR03.push_back( ((*_tauID)[i_daughter]>>map_tauID["byTightCombinedIsolationDeltaBetaCorr3HitsdR03"])&1 );
+      _recotauh_byLooseIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>map_tauID["byLooseIsolationMVArun2v1DBdR03oldDMwLT"])&1 );
+      _recotauh_byMediumIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>map_tauID["byMediumIsolationMVArun2v1DBdR03oldDMwLT"])&1 );
+      _recotauh_byTightIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>map_tauID["byTightIsolationMVArun2v1DBdR03oldDMwLT"])&1 );
+      _recotauh_byVTightIsolationMVArun2v1DBdR03oldDMwLT.push_back( ((*_tauID)[i_daughter]>>map_tauID["byVTightIsolationMVArun2v1DBdR03oldDMwLT"])&1 );
 
-      _recotauh_againstMuonLoose3.push_back( ((*_tauID)[i_daughter]>>6)&1 );
-      _recotauh_againstMuonTight3.push_back( ((*_tauID)[i_daughter]>>7)&1 );
-      _recotauh_againstElectronVLooseMVA6.push_back( ((*_tauID)[i_daughter]>>8)&1 );
-      _recotauh_againstElectronLooseMVA6.push_back( ((*_tauID)[i_daughter]>>9)&1 );
-      _recotauh_againstElectronMediumMVA6.push_back( ((*_tauID)[i_daughter]>>10)&1 );
-      _recotauh_againstElectronTightMVA6.push_back( ((*_tauID)[i_daughter]>>11)&1 );
-      _recotauh_againstElectronVTightMVA6.push_back( ((*_tauID)[i_daughter]>>12)&1 );
+      _recotauh_againstMuonLoose3.push_back( ((*_tauID)[i_daughter]>>map_tauID["againstMuonLoose3"])&1 );
+      _recotauh_againstMuonTight3.push_back( ((*_tauID)[i_daughter]>>map_tauID["againstMuonTight3"])&1 );
+      _recotauh_againstElectronVLooseMVA6.push_back( ((*_tauID)[i_daughter]>>map_tauID["againstElectronVLooseMVA6"])&1 );
+      _recotauh_againstElectronLooseMVA6.push_back( ((*_tauID)[i_daughter]>>map_tauID["againstElectronLooseMVA6"])&1 );
+      _recotauh_againstElectronMediumMVA6.push_back( ((*_tauID)[i_daughter]>>map_tauID["againstElectronMediumMVA6"])&1 );
+      _recotauh_againstElectronTightMVA6.push_back( ((*_tauID)[i_daughter]>>map_tauID["againstElectronTightMVA6"])&1 );
+      _recotauh_againstElectronVTightMVA6.push_back( ((*_tauID)[i_daughter]>>map_tauID["againstElectronVTightMVA6"])&1 );
 
       pair<int,float> pair = find_i_dRmin_closest( tauh,
 						   (*_genpart_px), (*_genpart_py), (*_genpart_pz), (*_genpart_e) );
@@ -2003,8 +2527,13 @@ void convert_tree(TString sample, int iso_tau=70,
 
     }   
 
+
+
+    //////////////////////////////////////////////
+    ///                Jets                    ///
+    //////////////////////////////////////////////
+
     
-    ///Jets
     
     vector< pair<int,TLorentzVector> > reco_jets;
     vector< pair<int,float> > i_jet_CSV_pairs;
@@ -2020,25 +2549,12 @@ void convert_tree(TString sample, int iso_tau=70,
       pair<int,TLorentzVector> jet_pair = make_pair(i_jet,jet);
       float CSVscore = (*_bCSVscore)[i_jet];
       pair<int,float> CSV_pair = make_pair(i_jet,CSVscore);
-      float PUJetID = (*_jets_PUJetID)[i_jet];
+      //float PUJetID = (*_jets_PUJetID)[i_jet];
       float PFJetID = (*_PFjetID)[i_jet];
 
-
-      //if(jet.Pt()>25 && fabs(jet.Eta())<2.4 && PUJetID>-0.63 && PFJetID>1){
       if(jet.Pt()>25 && fabs(jet.Eta())<2.4 && PFJetID>0){
 
 	bool dR_veto=false;
-
-	/*for(unsigned int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
-
-	  TLorentzVector lep=reco_leptons[i_lep].second;
-	  float dR_lep_jet=lep.DeltaR(jet);
-	  if(dR_lep_jet<0.4){
-	    dR_veto=true;
-	    break;
-	  }
-	
-	  }*/
 
 	for(unsigned int i_lep=0; i_lep<reco_mus.size(); i_lep++){
 	  
@@ -2077,13 +2593,13 @@ void convert_tree(TString sample, int iso_tau=70,
 	reco_jets.push_back(jet_pair);
 	i_jet_CSV_pairs.push_back(CSV_pair);
 
-	//Tight CSV WP: CSV>0.941
-	//Medium CSV WP: CSV>0.814
-	//Loose CSV WP: CSV>0.423   
+	//Tight CSV WP: CSV>0.935
+	//Medium CSV WP: CSV>0.8
+	//Loose CSV WP: CSV>0.46   
 
-	if(CSVscore>0.423)
+	if(CSVscore>0.46)
 	  _n_recoPFJet_btag_loose++;
-	if(CSVscore>0.814)
+	if(CSVscore>0.8)
 	  _n_recoPFJet_btag_medium++;
 
       }
@@ -2113,7 +2629,6 @@ void convert_tree(TString sample, int iso_tau=70,
       _recoPFJet_CSVscore.push_back(  (*_bCSVscore)[i_jet] );
       _recoPFJet_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
 
-
       int imin = -1;
       float dRmin = 100000;
       int imin_2nd = -1;
@@ -2142,14 +2657,7 @@ void convert_tree(TString sample, int iso_tau=70,
       _recoPFJet_i_closest_genpart.push_back(imin);
       _recoPFJet_dR_closest_genpart.push_back(dRmin);
       _recoPFJet_i_2nd_closest_genpart.push_back(imin_2nd);
-      _recoPFJet_dR_2nd_closest_genpart.push_back(dRmin_2nd);
-
-
-      pair<int,float> pair_lep = find_i_dRmin_closest( jet,
-						       _recolep_px, _recolep_py, _recolep_pz, _recolep_e );
-
-      _recoPFJet_i_closest_lep.push_back(pair_lep.first);
-      _recoPFJet_dR_closest_lep.push_back(pair_lep.second);      
+      _recoPFJet_dR_2nd_closest_genpart.push_back(dRmin_2nd);     
 
 
       pair<int,float> pair_tauh = find_i_dRmin_closest( jet,
@@ -2158,10 +2666,7 @@ void convert_tree(TString sample, int iso_tau=70,
       _recoPFJet_i_closest_tau.push_back(pair_tauh.first);
       _recoPFJet_dR_closest_tau.push_back(pair_tauh.second);  
 
-
-
     }
-
 
 
     for(unsigned int i_PFJet=0; i_PFJet<i_jet_CSV_pairs.size(); i_PFJet++){
@@ -2271,95 +2776,151 @@ void convert_tree(TString sample, int iso_tau=70,
 
     }
     
+ 
 
-    if( _n_recolep==2 && _n_recotauh>=1 && _n_recoPFJet>=4){
-  
-      for(int perm=0; perm<4; perm++){
-	
-	TLorentzVector Whad_1 ( _recoPFJet_untag_Wtag_px[0], _recoPFJet_untag_Wtag_py[0], _recoPFJet_untag_Wtag_pz[0], _recoPFJet_untag_Wtag_e[0] );
-	TLorentzVector Whad_2 ( _recoPFJet_untag_Wtag_px[1], _recoPFJet_untag_Wtag_py[1], _recoPFJet_untag_Wtag_pz[1], _recoPFJet_untag_Wtag_e[1] );
-	TLorentzVector tauh ( _recotauh_px[0], _recotauh_py[0], _recotauh_pz[0], _recotauh_e[0]);
-	
-	TLorentzVector Bjet_1 ( _recoPFJet_btag_px[0], _recoPFJet_btag_py[0], _recoPFJet_btag_pz[0], _recoPFJet_btag_e[0] );
-	TLorentzVector Bjet_2 ( _recoPFJet_btag_px[1], _recoPFJet_btag_py[1], _recoPFJet_btag_pz[1], _recoPFJet_btag_e[1] );
-	
-	TLorentzVector lep_1 ( _recolep_px[0], _recolep_py[0], _recolep_pz[0], _recolep_e[0] );
-	TLorentzVector lep_2 ( _recolep_px[1], _recolep_py[1], _recolep_pz[1], _recolep_e[1] );
-	
-	TLorentzVector bjet_leptop, bjet_hadtop, lep_top, lep_tau;
-	
-	switch(perm){
-	case 0:
-	  lep_top = lep_1;
-	  lep_tau = lep_2;
-	  bjet_leptop = Bjet_1;
-	  bjet_hadtop = Bjet_2;	
-	  break;
-	  
-	case 1:
-	  lep_top = lep_2;
-	  lep_tau = lep_1;
-	  bjet_leptop = Bjet_1;
-	  bjet_hadtop = Bjet_2;
-	  break;
-	  
-	case 2:
-	  lep_top = lep_1;
-	  lep_tau = lep_2;
-	  bjet_leptop = Bjet_2;
-	  bjet_hadtop = Bjet_1;	
-	  break;
-	  
-	case 3:
-	  lep_top = lep_2;
-	  lep_tau = lep_1;
-	  bjet_leptop = Bjet_2;
-	  bjet_hadtop = Bjet_1;	
-	  break;
-	  
-	default:
-	  break;
-	  
-	}
-	
-	_mtop_had_perm.push_back( (Whad_1+Whad_2+bjet_hadtop).M() );
-	_mblep_perm.push_back( (bjet_leptop+lep_top).M() );
-	_mleptauh_perm.push_back( (lep_tau+tauh).M() );
-	
-      }
-
-    }
-
-    ///MET
-
-    if( (*_MET_cov00_vect).size() > 0 ){
-
-      _PFMETx = (*_METx_vect)[0];
-      _PFMETy = (*_METy_vect)[0];
-
-      _PFMET_cov00 = (*_MET_cov00_vect)[0];
-      _PFMET_cov01 = (*_MET_cov01_vect)[0];
-      _PFMET_cov10 = (*_MET_cov10_vect)[0];
-      _PFMET_cov11 = (*_MET_cov11_vect)[0];
-      
-      for(unsigned int i_MET=0;i_MET<(*_MET_cov00_vect).size();i_MET++){
-	
-	if( (*_METx_vect)[i_MET]!=_PFMETx || (*_METy_vect)[i_MET]!=_PFMETy || (*_MET_cov00_vect)[i_MET]!=_PFMET_cov00 || (*_MET_cov01_vect)[i_MET]!=_PFMET_cov01 || (*_MET_cov10_vect)[i_MET]!=_PFMET_cov10 || (*_MET_cov11_vect)[i_MET]!=_PFMET_cov11 ){
-	  cout<<"Problem with MET"<<endl;
-	  return;
-	}
-
-      }
-      
-    }
-
+    //////////////////////////////////////////////
+    ///                MET                     ///
+    //////////////////////////////////////////////
+    
     TVector3 PFMET_tv3;
-    PFMET_tv3.SetXYZ(_PFMETx,_PFMETy,0);
+    PFMET_tv3.SetPtEtaPhi(_met,0,_metphi);
+    _PFMETx = PFMET_tv3.Px();
+    _PFMETy = PFMET_tv3.Py();    
     _PFMET = PFMET_tv3.Pt();    
     _PFMET_phi = PFMET_tv3.Phi();
 
 
-    // Gen information
+    TLorentzVector HTmiss_tlv;
+    
+    for(unsigned int i_mu=0; i_mu<reco_mus.size(); i_mu++){      
+      TLorentzVector muon=reco_mus[i_mu].second;
+      HTmiss_tlv-=muon;
+    }
+    for(unsigned int i_ele=0; i_ele<reco_eles.size(); i_ele++){      
+      TLorentzVector elec=reco_eles[i_ele].second;
+      HTmiss_tlv-=elec;
+    }
+    for(unsigned int i_tau=0; i_tau<reco_taus.size(); i_tau++){      
+      TLorentzVector tau=reco_taus[i_tau].second;
+      HTmiss_tlv-=tau;
+    }
+    for(unsigned int i_jet=0; i_jet<reco_jets.size(); i_jet++){      
+      TLorentzVector jet=reco_jets[i_jet].second;
+      HTmiss_tlv-=jet;
+    }
+
+    _HTmiss = HTmiss_tlv.Pt();    
+    _ETmissLD = _PFMET*0.00397 + _HTmiss*0.00265;
+
+    _MT_lep0= -999.;
+    _mindR_lep0_recoPFjet = -999.;
+    _mindR_lep1_recoPFjet = -999.;
+    _lep0_conept = -999.;
+    _lep1_conept = -999.;
+    _lep2_conept = -999.;
+    _avg_dr_jet = 0.;
+    _MVA_2lSS_ttV = -999.;
+    _MVA_2lSS_ttbar = -999.;
+    _MVA_3l_ttV = -999.;
+    _MVA_3l_ttbar = -999.;
+
+
+    TLorentzVector leading_lep(0.,0.,0.,0.);
+    TLorentzVector subleading_lep(0.,0.,0.,0.);
+    TLorentzVector trailing_lep(0.,0.,0.,0.);
+
+    if(reco_leptons.size()>0){
+      leading_lep=reco_leptons[0].second;
+      _lep0_conept = _recolep_conept[0];
+      _MT_lep0=sqrt( 2*_lep0_conept*_PFMET*(1-cos(leading_lep.Phi()-_PFMET_phi)) );
+
+      for(unsigned int i_jet=0; i_jet<reco_jets.size(); i_jet++){      
+	TLorentzVector jet=reco_jets[i_jet].second;
+	float dR=leading_lep.DeltaR(jet);
+	if(_mindR_lep0_recoPFjet<0 || dR<_mindR_lep0_recoPFjet)
+	  _mindR_lep0_recoPFjet = dR;
+
+      }
+
+    }
+
+    if(reco_leptons.size()>1){
+      subleading_lep=reco_leptons[1].second;
+
+      for(unsigned int i_jet=0; i_jet<reco_jets.size(); i_jet++){      
+	TLorentzVector jet=reco_jets[i_jet].second;
+	float dR=subleading_lep.DeltaR(jet);
+	if(_mindR_lep1_recoPFjet<0 || dR<_mindR_lep1_recoPFjet)
+	  _mindR_lep1_recoPFjet = dR;
+      }
+
+      _lep1_conept = _recolep_conept[1];
+
+    }
+      
+    if(reco_leptons.size()>2){
+      _lep2_conept = _recolep_conept[2];
+    }
+
+    
+    if(_n_recoPFJet>1){
+      int n_pair_jets = 0;
+    
+      for(unsigned int i_jet1=0; i_jet1<reco_jets.size(); i_jet1++){      
+	TLorentzVector jet1=reco_jets[i_jet1].second;
+	for(unsigned int i_jet2=i_jet1+1; i_jet2<reco_jets.size(); i_jet2++){     
+	  TLorentzVector jet2=reco_jets[i_jet2].second;
+	  _avg_dr_jet+=jet1.DeltaR(jet2);
+	  n_pair_jets++;
+	}
+      }    
+      
+      _avg_dr_jet/=n_pair_jets;
+
+    }      
+
+    if( (_n_recomu_presel+_n_recoele_presel)>=2){
+    
+      max_Lep_eta = max(fabs(leading_lep.Eta()),fabs(subleading_lep.Eta()));
+      MT_met_lep1 = _MT_lep0;
+      nJet25_Recl = _n_recoPFJet;
+      mindr_lep1_jet = _mindR_lep0_recoPFjet;
+      mindr_lep2_jet = _mindR_lep1_recoPFjet;
+      LepGood_conePt0 = _lep0_conept;
+      LepGood_conePt1 = _lep1_conept;
+      met = min(_PFMET,float(400.));
+      avg_dr_jet = _avg_dr_jet;
+      
+      _MVA_2lSS_ttV = MVA_2lSS_TTV_reader->EvaluateMVA("BDTG method");
+      _MVA_2lSS_ttbar = MVA_2lSS_TT_reader->EvaluateMVA("BDTG method");
+      
+    }
+
+    if( (_n_recomu_presel+_n_recoele_presel)>=3){
+    
+      max_Lep_eta = max(fabs(leading_lep.Eta()),fabs(subleading_lep.Eta()));
+      MT_met_lep1 = _MT_lep0;
+      nJet25_Recl = _n_recoPFJet;
+      mhtJet25_Recl = _HTmiss;
+      mindr_lep1_jet = _mindR_lep0_recoPFjet;
+      mindr_lep2_jet = _mindR_lep1_recoPFjet;
+      LepGood_conePt0 = _lep0_conept;
+      LepGood_conePt1 = _lep1_conept;
+      LepGood_conePt2 = _lep1_conept;
+      met = min(_PFMET,float(400.));
+      avg_dr_jet = _avg_dr_jet;
+      
+      _MVA_2lSS_ttV = MVA_2lSS_TTV_reader->EvaluateMVA("BDTG method");
+      _MVA_2lSS_ttbar = MVA_2lSS_TT_reader->EvaluateMVA("BDTG method");
+      _MVA_3l_ttV = MVA_3l_TTV_reader->EvaluateMVA("BDTG method");
+      _MVA_3l_ttbar = MVA_3l_TT_reader->EvaluateMVA("BDTG method");
+      
+    }
+
+
+    //////////////////////////////////////////////
+    ///              Gen info                  ///
+    //////////////////////////////////////////////
 
     vector<int> genlep_index;
     vector<int> gentauh_index;
@@ -2517,7 +3078,7 @@ void convert_tree(TString sample, int iso_tau=70,
 
 	_genW_pdg.push_back( (*_genpart_pdg)[i_gen] );
 		
-	_genW_decayMode.push_back(  (*_genpart_TopDecayMode)[i_gen] );
+	_genW_decayMode.push_back(  (*_genpart_WDecayMode)[i_gen] );
 	_genW_e.push_back( genpart_tlv.E() );
 	_genW_px.push_back( genpart_tlv.Px() );
 	_genW_py.push_back( genpart_tlv.Py() );
@@ -2903,13 +3464,15 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
     //Check lepton top/Higgs decay product
-    for(unsigned int i_lepton=0; i_lepton<reco_leptons.size(); i_lepton++){
+
+
+    for(unsigned int i_lepton=0; i_lepton<reco_mus.size(); i_lepton++){
 
       int reco_TopMothInd = -1;
       int reco_HMothInd = -1;
       
-      TLorentzVector lep=reco_leptons[i_lepton].second;
-      int i_daughter = reco_leptons[i_lepton].first;
+      TLorentzVector lep=reco_mus[i_lepton].second;
+      int i_daughter = reco_mus[i_lepton].first;
       pair<int,float> pair = find_i_dRmin_closest( lep,
 						   _genlep_px, _genlep_py, _genlep_pz, _genlep_e );
 
@@ -2954,23 +3517,82 @@ void convert_tree(TString sample, int iso_tau=70,
 	  
       }
 
-      _recolep_TopMothInd.push_back(reco_TopMothInd);
-      _recolep_HMothInd.push_back(reco_HMothInd);
+      _recomu_TopMothInd.push_back(reco_TopMothInd);
+      _recomu_HMothInd.push_back(reco_HMothInd);
       
 
     }
 
+
+    for(unsigned int i_lepton=0; i_lepton<reco_eles.size(); i_lepton++){
+
+      int reco_TopMothInd = -1;
+      int reco_HMothInd = -1;
+      
+      TLorentzVector lep=reco_eles[i_lepton].second;
+      int i_daughter = reco_eles[i_lepton].first;
+      pair<int,float> pair = find_i_dRmin_closest( lep,
+						   _genlep_px, _genlep_py, _genlep_pz, _genlep_e );
+
+      int i_genlep = pair.first;
+      float dR = pair.second;
+      
+
+      //Check matching reco/gen lepton
+      if(fabs((*_PDGIdDaughters)[i_daughter]) == fabs(_genlep_pdg[i_genlep]) && dR<0.1){
+
+	bool isFromHardProcess = ( (_genlep_flags)[i_genlep] >> 8 ) & 1;
+	bool isDirectTauDecayProduct = ( (_genlep_flags)[i_genlep] >> 4) & 1;
+	bool isHardProcessTauDecayProduct = ( (_genlep_flags)[i_genlep] >> 9) & 1;
+	int TauMothInd = (_genlep_TauMothInd)[i_genlep];
+	int TopMothInd = (_genlep_TopMothInd)[i_genlep];
+	int HMothInd = -1;
+	bool isTauFromHardProcess = false;
+	if(TauMothInd>=0){
+	  HMothInd = (_gentau_HMothInd)[TauMothInd];
+	  isTauFromHardProcess = ( (_gentau_flags)[TauMothInd] >> 8 ) & 1;
+	}
+
+	//Top
+	if(TopMothInd>=0){
+
+	  if( (_gentop_decayMode[TopMothInd]==1 || _gentop_decayMode[TopMothInd]==2) && isFromHardProcess)
+	    reco_TopMothInd = TopMothInd;
+
+	  else if( (_gentop_decayMode[TopMothInd]==3 || _gentop_decayMode[TopMothInd]==4) && isTauFromHardProcess && isDirectTauDecayProduct && isHardProcessTauDecayProduct)
+	    reco_TopMothInd = TopMothInd;
+
+
+	}
+
+	//Higgs
+	if(HMothInd>=0){
+	  
+	  if( (_genH_decayMode[HMothInd]==0 || _genH_decayMode[HMothInd]==1 || _genH_decayMode[HMothInd]==3 || _genH_decayMode[HMothInd]==4 || _genH_decayMode[HMothInd]==5) && isTauFromHardProcess && isDirectTauDecayProduct && isHardProcessTauDecayProduct)
+	    reco_HMothInd = HMothInd;
+
+	}
+	  
+      }
+
+      _recoele_TopMothInd.push_back(reco_TopMothInd);
+      _recoele_HMothInd.push_back(reco_HMothInd);
+      
+
+    }
+
+
     
     //Check lepton charge assignement
-    for(unsigned int i_recolep=0; i_recolep<reco_leptons.size(); i_recolep++){
+    for(unsigned int i_recolep=0; i_recolep<reco_mus.size(); i_recolep++){
 
-      TLorentzVector recolep=reco_leptons[i_recolep].second;
+      TLorentzVector recolep=reco_mus[i_recolep].second;
       float dRmin = -1;
       int i_closest_genlep = -1;
 
       for(unsigned int i_genlep=0; i_genlep<genlep_index.size(); i_genlep++){
 
-	if(abs(_genlep_pdg[i_genlep])!=abs(_recolep_ID[i_recolep]))
+	if(abs(_genlep_pdg[i_genlep])!=13)
 	  continue;
 
 	TLorentzVector genlep(_genlep_px[i_genlep], _genlep_py[i_genlep], _genlep_pz[i_genlep], _genlep_e[i_genlep]);
@@ -2986,13 +3608,48 @@ void convert_tree(TString sample, int iso_tau=70,
       int goodsign = 0;
 
       if(i_closest_genlep>=0 && dRmin<0.1){
-	if( _genlep_pdg[i_closest_genlep]*_recolep_ID[i_recolep]>0)
+	if( _genlep_pdg[i_closest_genlep]*_recomu_charge[i_recolep]<0)
 	  goodsign = 1;
 	else
 	  goodsign = -1;
       }
 
-      _recolep_goodsign.push_back(goodsign);
+      _recomu_goodsign.push_back(goodsign);
+
+    }
+
+
+    for(unsigned int i_recolep=0; i_recolep<reco_eles.size(); i_recolep++){
+
+      TLorentzVector recolep=reco_eles[i_recolep].second;
+      float dRmin = -1;
+      int i_closest_genlep = -1;
+
+      for(unsigned int i_genlep=0; i_genlep<genlep_index.size(); i_genlep++){
+
+	if(abs(_genlep_pdg[i_genlep])!=11)
+	  continue;
+
+	TLorentzVector genlep(_genlep_px[i_genlep], _genlep_py[i_genlep], _genlep_pz[i_genlep], _genlep_e[i_genlep]);
+	float dR = genlep.DeltaR(recolep);
+
+	if(dRmin<0 || dR<dRmin){
+	  dRmin = dR;
+	  i_closest_genlep = i_genlep;
+	}
+
+      }
+
+      int goodsign = 0;
+
+      if(i_closest_genlep>=0 && dRmin<0.1){
+	if( _genlep_pdg[i_closest_genlep]*_recoele_charge[i_recolep]<0)
+	  goodsign = 1;
+	else
+	  goodsign = -1;
+      }
+
+      _recoele_goodsign.push_back(goodsign);
 
     }
 
@@ -3001,6 +3658,7 @@ void convert_tree(TString sample, int iso_tau=70,
 
   }
 
+  f_new->cd();
 
   tree_new->Write();
   f_new->Close();

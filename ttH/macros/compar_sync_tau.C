@@ -15,58 +15,43 @@
 
 void compar(){
 
-  TString log_file = "log_IHEP_tau.txt";
+  TString log_file = "log_CERN_tau.txt";
   std::ifstream infile(log_file);
 
-  TChain * tree = new TChain("HTauTauTree");
-  tree->Add("/home/llr/cms/strebler/CMSSW_7_4_12_leptonMVA/src/LLRHiggsTauTau/NtupleProducer/test/syncNtuple_ttH_iso25.root");
+  TChain * tree = new TChain("syncTree");
+  tree->Add("/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_04_2016/syncNtuple_ttH_multilep.root");
+
   int nEntries = tree->GetEntries();
 
-  int _EventNumber;
-  int _n_recomu;
-  int _n_recoele;
-  int _n_recotauh;
-  int _n_recoPFJet30;
+  int _nEvent;
+  int _n_presel_tau;
 
-  vector<float>* _recomu_jetPtRel;
-  vector<float>* _recomu_dxy;
+  tree->SetBranchAddress("nEvent",&_nEvent);
+  tree->SetBranchAddress("n_presel_tau",&_n_presel_tau);
 
-  tree->SetBranchAddress("EventNumber",&_EventNumber);
-  tree->SetBranchAddress("n_recomu",&_n_recomu);
-  tree->SetBranchAddress("n_recoele",&_n_recoele);
-  tree->SetBranchAddress("n_recotauh",&_n_recotauh);
-  tree->SetBranchAddress("n_recoPFJet30",&_n_recoPFJet30);
-
-  tree->SetBranchAddress("recomu_jetPtRel",&_recomu_jetPtRel);
-  tree->SetBranchAddress("recomu_dxy",&_recomu_dxy);
 
   int i=0;
+  //int j=0;
   int nEntry=0;
   string line;
   while(getline(infile,line)){   
-    if(i==0){
+    /*if(i==0){
       i++;
       continue;
-    }
+      }*/
 
     std::istringstream iss(line);
     vector<float> var;
-    for(unsigned int j=0;j<17;j++)
+    for(unsigned int j=0;j<18;j++)
       var.push_back(-1);
 
 
     iss >> var[0] >> var[1] >> var[2] >> var[3] >> var[4] >> var[5] >> var[6] >> var[7] >> var[8];
 
 
-    _n_recomu = 0;
-    _n_recoele = 0;
-    _n_recotauh = 0;
-    _n_recoPFJet30 = 0;
+    _n_presel_tau = 0;
 
-    _recomu_jetPtRel = 0;
-    _recomu_dxy = 0;
-
-    int nEntry_init = nEntry;
+    /*int nEntry_init = nEntry;
 
     while(_n_recotauh==0){
     //while(_EventNumber!=var[0] && nEntry!=nEntry_init-1){
@@ -77,17 +62,26 @@ void compar(){
     }
 
     if(nEntry==nEntry_init-1)
-      cout<<"Problem"<<endl;
+    cout<<"Problem"<<endl;*/
 
 
-    if(_EventNumber!=var[0]){
-      cout<<"Different Event"<<endl;
-      cout<<"IHEP has "<<var[0]<<endl;
-      cout<<"I have "<<_EventNumber<<endl;
+    tree->GetEntry(nEntry);
+    while((_n_presel_tau==0) && nEntry<nEntries){
+      nEntry++;
+      tree->GetEntry(nEntry);
+    }  
+    nEntry++;
+
+
+    if(abs(_nEvent-var[0])>1e-5){
+      cout<<"Different"<<endl;
+      cout<<"Event #"<<_nEvent<<endl;
+      cout<<"ND has "<<var[0]<<endl;
       return;
     }
-  }
 
+
+  }
 
   cout<<"Congratulations! You are synced!"<<endl;
 
