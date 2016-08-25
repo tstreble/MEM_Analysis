@@ -90,29 +90,126 @@ void plot_2lSS_ttbar_MVA(){
 
 
 
+void plot_2lSS_ttbar_MVA_2(){
+
+  TString file_ttH="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Hnonbb_split.root";
+  TString file_ttH_tautau="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Htautau_split.root";
+
+
+  TString file_ttjets_SLfromT="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromT_split.root";
+  TString file_ttjets_SLfromTbar="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromTbar_split.root";
+  TString file_ttjets_DL="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_DL_split.root";
+
+  TH1F* h_ttH=single_plot(file_ttH,"HTauTauTree_2lSS","MVA_2lSS_ttbar","MC_weight*(category==11)",20,-1,1);
+  TH1F* h_ttH_tautau=single_plot(file_ttH_tautau,"HTauTauTree_2lSS","MVA_2lSS_ttbar","MC_weight*(category==11)",20,-1,1);
+
+
+  TH1F* h_ttjets_SLfromT=single_plot(file_ttjets_SLfromT,"HTauTauTree_2lSS_lepMVA_CR","MVA_2lSS_ttbar","MC_weight*event_weight_ttH*(category==41)",20,-1,1);
+  TH1F* h_ttjets_SLfromTbar=single_plot(file_ttjets_SLfromTbar,"HTauTauTree_2lSS_lepMVA_CR","MVA_2lSS_ttbar","MC_weight*event_weight_ttH*(category==41)",20,-1,1);
+  TH1F* h_ttjets_DL=single_plot(file_ttjets_DL,"HTauTauTree_2lSS_lepMVA_CR","MVA_2lSS_ttbar","MC_weight*event_weight_ttH*(category==41)",20,-1,1);
+
+  //h_ttH->Scale(1/h_ttH->Integral());
+  h_ttH_tautau->Scale(1/h_ttH_tautau->Integral());
+
+  float XS_ttjets_SLfromT_eff = 182.*1.675208e-07;
+  float XS_ttjets_SLfromTbar_eff = 182.*1.672702e-07;
+  float XS_ttjets_DL_eff = 87.3*1.312176e-06;
+  
+  float XS_ttjets_eff = XS_ttjets_SLfromT_eff + XS_ttjets_SLfromTbar_eff + XS_ttjets_DL_eff;
+
+    h_ttjets_SLfromT->Scale((XS_ttjets_SLfromT_eff/XS_ttjets_eff)*1./h_ttjets_SLfromT->Integral());
+  h_ttjets_SLfromTbar->Scale((XS_ttjets_SLfromTbar_eff/XS_ttjets_eff)*1./h_ttjets_SLfromTbar->Integral());
+  h_ttjets_DL->Scale((XS_ttjets_DL_eff/XS_ttjets_eff)*1./h_ttjets_DL->Integral());
+
+
+  h_ttH_tautau->SetLineWidth(2);
+  h_ttH_tautau->SetLineColor(kBlue);
+
+  h_ttjets_SLfromT->SetFillColor(kRed-9);
+  h_ttjets_SLfromT->SetLineColor(kRed-9);
+  h_ttjets_SLfromT->SetLineWidth(0);
+
+  h_ttjets_SLfromTbar->SetFillColor(kRed-9);
+  h_ttjets_SLfromTbar->SetLineColor(kRed-9);
+  h_ttjets_SLfromTbar->SetLineWidth(0);
+
+  h_ttjets_DL->SetFillColor(kRed+1);
+  h_ttjets_DL->SetLineColor(kRed+1);
+  h_ttjets_DL->SetLineWidth(0);
+
+
+  THStack* h_ttjets = new THStack("h_ttjets","");
+  h_ttjets->Add(h_ttjets_DL,"hist");
+  h_ttjets->Add(h_ttjets_SLfromT,"hist");
+  h_ttjets->Add(h_ttjets_SLfromTbar,"hist");
+
+
+  TLegend* leg=new TLegend(0.55,0.7,0.85,0.87);
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.035);
+  leg->SetFillStyle(0);
+  leg->AddEntry(h_ttH_tautau,"ttH, H->#tau#tau");
+  leg->AddEntry(h_ttjets_DL,"t#bar{t} DL");
+  leg->AddEntry(h_ttjets_SLfromT,"t#bar{t} l+jets");
+  leg->SetHeader("2lSS + 1#tau_{h} category");
+
+  TCanvas* c=new TCanvas("c","c",650,600);
+  c->SetLeftMargin(0.15);
+
+  h_ttjets->SetMaximum(1.5*max(h_ttjets->GetMaximum(),h_ttH_tautau->GetMaximum()));
+  h_ttjets->Draw("");
+  h_ttH_tautau->Draw("same");
+  leg->Draw("same");
+
+  h_ttjets->GetXaxis()->SetTitle("2lSS ttH vs t#bar{t} MVA");
+  h_ttjets->GetYaxis()->SetTitle("a. u.");
+  h_ttjets->GetYaxis()->SetTitleOffset(1.65);
+  h_ttjets->SetTitle("");
+
+  TLatex *texl = new TLatex(-0.99,1.5*1.07*h_ttjets->GetMaximum(),"CMS Preliminary, #sqrt{s}=13 TeV, Simulation");
+  texl->SetTextSize(0.03);
+  texl->Draw("same");
+
+  TString filename="MVA_2lSS_ttH_ttbar";
+  c->SaveAs("../plots/pdf/"+filename+".pdf");
+  c->SaveAs("../plots/png/"+filename+".png");
+
+  return;
+
+
+}
+
+
+
 
 
 TGraphErrors* ROC_2lSS_MVA(){
 
+  TString file_ttH_tautau="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Htautau_split.root";
 
-  TString file_ttH="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_04_2016/ntuple_ttH_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
-  TString file_ttjets_SLfromT="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_04_2016/ntuple_TTJets_SLfromT_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
-  TString file_ttjets_SLfromTbar="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_04_2016/ntuple_TTJets_SLfromTbar_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
-  TString file_ttjets_DL="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/MiniAODv2_prod_04_2016/ntuple_TTJets_DL_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
 
-  TH1F* h_ttH=single_plot(file_ttH,"HTauTauTree","MVA_2lSS_ttbar","MC_weight",100,-1,1);
-  TH1F* h_ttjets_SLfromT=single_plot(file_ttjets_SLfromT,"HTauTauTree","MVA_2lSS_ttbar","MC_weight",100,-1,1);
-  TH1F* h_ttjets_SLfromTbar=single_plot(file_ttjets_SLfromTbar,"HTauTauTree","MVA_2lSS_ttbar","MC_weight",100,-1,1);
-  TH1F* h_ttjets_DL=single_plot(file_ttjets_DL,"HTauTauTree","MVA_2lSS_ttbar","MC_weight",100,-1,1);
+  TString file_ttjets_SLfromT="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromT_split.root";
+  TString file_ttjets_SLfromTbar="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromTbar_split.root";
+  TString file_ttjets_DL="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_DL_split.root";
+
+  TH1F* h_ttH=single_plot(file_ttH_tautau,"HTauTauTree_2lSS","MVA_2lSS_ttbar","MC_weight*(category==11)",100,-1,1);
+
+  TH1F* h_ttjets_SLfromT=single_plot(file_ttjets_SLfromT,"HTauTauTree_2lSS_lepMVA_CR","MVA_2lSS_ttbar","MC_weight*event_weight_ttH*(category==41)",100,-1,1);
+  TH1F* h_ttjets_SLfromTbar=single_plot(file_ttjets_SLfromTbar,"HTauTauTree_2lSS_lepMVA_CR","MVA_2lSS_ttbar","MC_weight*event_weight_ttH*(category==41)",100,-1,1);
+  TH1F* h_ttjets_DL=single_plot(file_ttjets_DL,"HTauTauTree_2lSS_lepMVA_CR","MVA_2lSS_ttbar","MC_weight*event_weight_ttH*(category==41)",100,-1,1);
+
 
   h_ttH->Scale(1/h_ttH->Integral());
-  float XS_ttjets_SLfromT = 182. / (2*182. + 87.3);
 
-  float XS_ttjets_SLfromTbar = XS_ttjets_SLfromT;
-  float XS_ttjets_DL = 87.3 / (2*182. + 87.3);
-  h_ttjets_SLfromT->Scale(XS_ttjets_SLfromT/h_ttjets_SLfromT->Integral());
-  h_ttjets_SLfromTbar->Scale(XS_ttjets_SLfromTbar/h_ttjets_SLfromTbar->Integral());
-  h_ttjets_DL->Scale(XS_ttjets_DL/h_ttjets_DL->Integral());
+  float XS_ttjets_SLfromT_eff = 182.*1.675208e-07;
+  float XS_ttjets_SLfromTbar_eff = 182.*1.672702e-07;
+  float XS_ttjets_DL_eff = 87.3*1.312176e-06;
+  
+  float XS_ttjets_eff = XS_ttjets_SLfromT_eff + XS_ttjets_SLfromTbar_eff + XS_ttjets_DL_eff;
+
+    h_ttjets_SLfromT->Scale((XS_ttjets_SLfromT_eff/XS_ttjets_eff)*1./h_ttjets_SLfromT->Integral());
+  h_ttjets_SLfromTbar->Scale((XS_ttjets_SLfromTbar_eff/XS_ttjets_eff)*1./h_ttjets_SLfromTbar->Integral());
+  h_ttjets_DL->Scale((XS_ttjets_DL_eff/XS_ttjets_eff)*1./h_ttjets_DL->Integral());
 
   TH1F* h_ttjets = h_ttjets_SLfromT;
   h_ttjets->Add(h_ttjets_SLfromTbar);
@@ -123,8 +220,8 @@ TGraphErrors* ROC_2lSS_MVA(){
 
   for(int i=0; i<100; i++){
 
-    float x = h_ttH->Integral(0,i);
-    float y = h_ttjets->Integral(0,i);
+    float x = h_ttH->Integral(i,100);
+    float y = h_ttjets->Integral(i,100);
     ROC->SetPoint(i,x,y);
 
   }

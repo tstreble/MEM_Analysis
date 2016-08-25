@@ -20,387 +20,12 @@
 using namespace std;
 
 
-void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
+void split_tree(TString filename_in, TString filename_out,
+		int i_split1=0, int i_split2=0){
 
-  TString dir_in;
-  TString dir_out;
-  TString file;    
 
   vector<TString> list;
-
-  if(sample=="sync_ttH"){
-    file="sync_HTauTauTree_split";
-    dir_in="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_06_2016/";
-    dir_out="/data_CMS/cms/strebler/ttH_Samples/ntuples_splitted/MiniAODv2_prod_06_2016/";
-    list.push_back(dir_in+"syncNtuple_ttH_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  if(sample=="sync_ttH_80X"){
-    file="sync_HTauTauTree_split_80X";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/";
-    list.push_back(dir_in+"syncNtuple_ttH_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttH_Htautau"){
-    file="HTauTauTree_ttH_Htautau_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttH/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/ttH/";
-    list.push_back(dir_in+"ntuple_ttH_Htautau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttH_Hnonbb"){
-    file="HTauTauTree_ttH_Hnonbb_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttH/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/ttH/";
-    list.push_back(dir_in+"ntuple_ttH_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttH_Hnonbb_80X"){
-    file="HTauTauTree_ttH_Hnonbb_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/";
-    list.push_back(dir_in+"ntuple_ttH_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttbar_DL"){
-    file="HTauTauTree_ttbar_DL_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/TTJets/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/";
-    list.push_back(dir_in+"ntuple_ttbar_DL_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttbar_DL_80X"){
-    file="HTauTauTree_ttbar_DL_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/";
-    list.push_back(dir_in+"ntuple_ttbar_DL_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttbar_SLfromT"){
-    file="HTauTauTree_ttbar_SLfromT_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/TTJets/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/";
-    list.push_back(dir_in+"ntuple_ttbar_SLfromT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttbar_SLfromT_80X"){
-    file="HTauTauTree_ttbar_SLfromT_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/";
-    list.push_back(dir_in+"ntuple_ttbar_SLfromT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttbar_SLfromTbar"){
-    file="HTauTauTree_ttbar_SLfromTbar_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/TTJets/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTJets/";
-    list.push_back(dir_in+"ntuple_ttbar_SLfromTbar_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttbar_SLfromTbar_80X"){
-    file="HTauTauTree_ttbar_SLfromTbar_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/";
-    list.push_back(dir_in+"ntuple_ttbar_SLfromTbar_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttZ"){
-    file="HTauTauTree_ttZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/ttV/";
-    list.push_back(dir_in+"ntuple_ttZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttZ_80X"){
-    file="HTauTauTree_ttZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/";
-    list.push_back(dir_in+"ntuple_ttZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttW"){
-    file="HTauTauTree_ttW_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/ttV/";
-    list.push_back(dir_in+"ntuple_ttW_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttW_80X"){
-    file="HTauTauTree_ttW_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/";
-    list.push_back(dir_in+"ntuple_ttW_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="TTLL_lowmass"){
-    file="HTauTauTree_TTLL_lowmass_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/topG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/topG/";
-    list.push_back(dir_in+"ntuple_TTLL_lowmass_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="TTLL_lowmass_80X"){
-    file="HTauTauTree_TTLL_lowmass_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/topG/";
-    list.push_back(dir_in+"ntuple_TTLL_lowmass_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WG"){
-    file="HTauTauTree_WG_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/VG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/VG/";
-    list.push_back(dir_in+"ntuple_WG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WG_80X"){
-    file="HTauTauTree_WG_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/VG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/VG/";
-    list.push_back(dir_in+"ntuple_WG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ZG"){
-    file="HTauTauTree_ZG_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/VG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/VG/";
-    list.push_back(dir_in+"ntuple_ZG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ZG_80X"){
-    file="HTauTauTree_ZG_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/VG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/VG/";
-    list.push_back(dir_in+"ntuple_ZG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="tG"){
-    file="HTauTauTree_tG_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/topG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/topG/";
-    list.push_back(dir_in+"ntuple_tG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="tG_80X"){
-    file="HTauTauTree_tG_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/topG/";
-    list.push_back(dir_in+"ntuple_tG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttG"){
-    file="HTauTauTree_ttG_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/topG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/topG/";
-    list.push_back(dir_in+"ntuple_ttG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ttG_80X"){
-    file="HTauTauTree_ttG_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/topG/";
-    list.push_back(dir_in+"ntuple_ttG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WpWp"){
-    file="HTauTauTree_WpWp_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_WpWp_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WpWp_80X"){
-    file="HTauTauTree_WpWp_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_WpWp_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ZZZ"){
-    file="HTauTauTree_ZZZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_ZZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ZZZ_80X"){
-    file="HTauTauTree_ZZZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_ZZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WZZ"){
-    file="HTauTauTree_WZZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_WZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WZZ_80X"){
-    file="HTauTauTree_WZZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_WZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WWZ"){
-    file="HTauTauTree_WWZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_WWZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-
-  else if(sample=="WWZ_80X"){
-    file="HTauTauTree_WWZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_WWZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WW_DoubleScat"){
-    file="HTauTauTree_WW_DoubleScat_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_WW_DoubleScat_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WW_DoubleScat_80X"){
-    file="HTauTauTree_WW_DoubleScat_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/";
-    list.push_back(dir_in+"ntuple_WW_DoubleScat_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-
-  else if(sample=="WW_80X"){
-    file="HTauTauTree_WW_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Diboson/";
-    list.push_back(dir_in+"ntuple_WW_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="WZ_80X"){
-    file="HTauTauTree_WZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Diboson/";
-    list.push_back(dir_in+"ntuple_WZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="ZZ_80X"){
-    file="HTauTauTree_ZZ_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Diboson/";
-    list.push_back(dir_in+"ntuple_ZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="tZq"){
-    file="HTauTauTree_tZq_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/ttV/";
-    list.push_back(dir_in+"ntuple_tZq_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="tZq_80X"){
-    file="HTauTauTree_tZq_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/";
-    list.push_back(dir_in+"ntuple_tZq_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="TTTT_ext1"){
-    file="HTauTauTree_TTTT_ext1_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/TTTT/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_splitted/TTTT/";
-    list.push_back(dir_in+"ntuple_TTTT_ext1_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-  else if(sample=="TTTT_80X"){
-    file="HTauTauTree_TTTT_split";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTTT/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTTT/";
-    list.push_back(dir_in+"ntuple_TTTT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  }
-
-
-  else if(sample=="DoubleEG_2016B"){
-    file=Form("HTauTauTree_DoubleEG_2016B_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("DoubleEG_2016B_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-  else if(sample=="DoubleEG_2016C"){
-    file=Form("HTauTauTree_DoubleEG_2016C_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("DoubleEG_2016C_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-
-  else if(sample=="DoubleMu_2016B"){
-    file=Form("HTauTauTree_DoubleMu_2016B_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("DoubleMu_2016B_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-  else if(sample=="DoubleMu_2016C"){
-    file=Form("HTauTauTree_DoubleMu_2016C_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("DoubleMu_2016C_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-  
-  else if(sample=="MuonEG_2016B"){
-    file=Form("HTauTauTree_MuonEG_2016B_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("MuonEG_2016B_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-
-  else if(sample=="MuonEG_2016C"){
-    file=Form("HTauTauTree_MuonEG_2016C_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("MuonEG_2016C_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-  else if(sample=="SingleEle_2016B"){
-    file=Form("HTauTauTree_SingleEle_2016B_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("SingleEle_2016B_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-  else if(sample=="SingleEle_2016C"){
-    file=Form("HTauTauTree_SingleEle_2016C_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("SingleEle_2016C_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-  else if(sample=="SingleMuon_2016B"){
-    file=Form("HTauTauTree_SingleMuon_2016B_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("SingleMuon_2016B_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-  else if(sample=="SingleMuon_2016C"){
-    file=Form("HTauTauTree_SingleMuon_2016C_split_%i",i_sample);
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/";
-    list.push_back(dir_in+Form("SingleMuon_2016C_%i_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",i_sample));
-  }
-
-  if(i_split1>0)
-    file+=Form("_%i",i_split2);
-
-  file+=".root";
+  list.push_back(filename_in);
 
 
   TChain * tree = new TChain("HTauTauTree");
@@ -507,13 +132,14 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
 
   Long64_t nentries = tree->GetEntries();
 
-  TFile* f_new = TFile::Open(dir_out+file);
+  //TFile* f_new = TFile::Open(dir_out+file);
+  TFile* f_new = TFile::Open(filename_out);
   if(f_new!=0){
-    cout<<dir_out+file<<" already exists, please delete it before converting again"<<endl;
+    cout<<filename_out<<" already exists, please delete it before converting again"<<endl;
     return;
   }
   
-  f_new = TFile::Open(dir_out+file,"RECREATE");
+  f_new = TFile::Open(filename_out,"RECREATE");
 
   TTree* tree_2lSS=tree->GetTree()->CloneTree(0);
   tree_2lSS->SetNameTitle("HTauTauTree_2lSS","HTauTauTree_2lSS");
@@ -667,6 +293,7 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
   }
 
   for (int i=skip_entries;i<nentries;i++) {
+
 
     if(i%10000==0)
       cout<<"i="<<i<<endl;
@@ -843,7 +470,7 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
 
       bool tight_mvasel = _recolep_sel_ismvasel[0]==1 && _recolep_sel_ismvasel[1]==1;
       bool lep_quality = _recolep_sel_eleconv_misshits[0] && _recolep_sel_eleconv_misshits[1];
-      bool pt_lep = ((_recolep_sel_conept[0]>20 && abs(_recolep_sel_pdg[0])==13) || (_recolep_sel_conept[0]>25 && abs(_recolep_sel_pdg[0])==11)) && ((_recolep_sel_conept[1]>10 && abs(_recolep_sel_pdg[1])==13) || (_recolep_sel_conept[1]>15 && abs(_recolep_sel_pdg[1])==11));
+      bool pt_lep = ((_recolep_sel_conept[0]>25 && abs(_recolep_sel_pdg[0])==13) || (_recolep_sel_conept[0]>25 && abs(_recolep_sel_pdg[0])==11)) && ((_recolep_sel_conept[1]>10 && abs(_recolep_sel_pdg[1])==13) || (_recolep_sel_conept[1]>15 && abs(_recolep_sel_pdg[1])==11));
       bool SS_lep = _recolep_sel_charge[0]*_recolep_sel_charge[1]>0 && _recolep_sel_tightcharge[0] && _recolep_sel_tightcharge[1];
       bool SF_lep = abs(_recolep_sel_pdg[0])==abs(_recolep_sel_pdg[1]);
       bool metLD = (abs(_recolep_sel_pdg[0])==13 || abs(_recolep_sel_pdg[1])==13 || _ETmissLD>0.2);
@@ -891,7 +518,7 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
       //MuMu
       else if(abs(_recolep_sel_pdg[0])==13 && abs(_recolep_sel_pdg[1])==13){
 	
-	if(_n_recoPFJet_btag_medium>=1){
+	if(_n_recoPFJet_btag_medium>=2){
 	  
 	  if(_recolep_sel_charge[0]+_recolep_sel_charge[1]>0){
 	    if(tight_mvasel)
@@ -912,7 +539,7 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
 
 	}
 
-	else if(_n_recoPFJet_btag_loose>=2){
+	else{
 
 	  if(_recolep_sel_charge[0]+_recolep_sel_charge[1]>0){
 	    if(tight_mvasel)
@@ -937,7 +564,7 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
       //EMu
       else if((abs(_recolep_sel_pdg[0])==13 && abs(_recolep_sel_pdg[1])==11) || (abs(_recolep_sel_pdg[0])==11 && abs(_recolep_sel_pdg[1])==13)){
 
-	if(_n_recoPFJet_btag_medium>=1){
+	if(_n_recoPFJet_btag_medium>=2){
 
 	  if(_recolep_sel_charge[0]+_recolep_sel_charge[1]>0){
 	    if(tight_mvasel)
@@ -958,7 +585,7 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
 
 	}
 
-	else if(_n_recoPFJet_btag_loose>=2){
+	else{
 
 	  if(_recolep_sel_charge[0]+_recolep_sel_charge[1]>0){
 	    if(tight_mvasel)
@@ -1106,7 +733,7 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
 
 
 
-      if(_n_recoPFJet_btag_medium>=1){
+      if(_n_recoPFJet_btag_medium>=2){
 
 	if(_recolep_sel_charge[0]+_recolep_sel_charge[1]+_recolep_sel_charge[2]>0){
 	  if(tight_mvasel)
@@ -1124,7 +751,7 @@ void split_tree(TString sample, int i_sample=0, int i_split1=0, int i_split2=0){
 
       }
 
-      else if(_n_recoPFJet_btag_loose>=2){
+      else{
 
 	if(_recolep_sel_charge[0]+_recolep_sel_charge[1]+_recolep_sel_charge[2]>0){
 	  if(tight_mvasel)

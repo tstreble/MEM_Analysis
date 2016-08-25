@@ -20,6 +20,9 @@
 #include "TMVA/Reader.h"
 #include "TMVA/MethodCuts.h"
 
+#include "trigger_filter.C"
+#include "bTagSF.cc"
+
 #include <vector>
 #include <map>
 #ifdef __MAKECINT__
@@ -243,10 +246,12 @@ TMVA::Reader* Book_3l_TT_MVAReader(std::string basePath, std::string weightFileN
 
 
 
+
 void convert_tree(TString sample, int iso_tau=70,
 		  TString iso_type="", bool conept_sorting=false,
 		  int split=0, int i_split=0,
-		  bool isMC=true){
+		  bool isMC=true,
+		  int JEC=0, int TES=0){
 
   TString dir_in;
   TString dir_out;
@@ -254,7 +259,6 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
   vector<TString> list;
-
 
   if(sample=="ttH_Htautau"){
     file="ntuple_ttH_Htautau";
@@ -1066,6 +1070,7 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
   Long64_t nentries = tree->GetEntries();
+  nentries=100;
 
   cout<<"nentries="<<tree->GetEntries()<<endl;
 
@@ -1082,7 +1087,8 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
   TTree* tree_new=tree->GetTree()->CloneTree(0);
-  //TTree* tree_new=tree->CloneTree(0);
+  if(JEC!=0 || TES!=0)
+    tree_new=new TTree("HTauTauTree","HTauTauTree");
 
 
   //New branches
@@ -1233,6 +1239,8 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_eta;
   vector<float> _recoPFJet_phi;
   vector<float> _recoPFJet_CSVscore;
+  vector<float> _recoPFJet_jecUnc;
+
   vector<int> _recoPFJet_Flavour;
   vector<int> _recoPFJet_i_closest_genpart;
   vector<float> _recoPFJet_dR_closest_genpart;
@@ -1249,6 +1257,8 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_CSVsort_eta;
   vector<float> _recoPFJet_CSVsort_phi;
   vector<float> _recoPFJet_CSVsort_CSVscore;
+  vector<float> _recoPFJet_CSVsort_jecUnc;
+
   vector<int> _recoPFJet_CSVsort_Flavour;
   vector<int> _recoPFJet_CSVsort_i_closest_genb;
   vector<float> _recoPFJet_CSVsort_dR_closest_genb;
@@ -1267,6 +1277,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_btag_eta;
   vector<float> _recoPFJet_btag_phi;
   vector<float> _recoPFJet_btag_CSVscore;
+  vector<float> _recoPFJet_btag_jecUnc;  
   vector<int> _recoPFJet_btag_Flavour; 
 
   //Other jets
@@ -1279,6 +1290,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_untag_eta;
   vector<float> _recoPFJet_untag_phi;
   vector<float> _recoPFJet_untag_CSVscore;
+  vector<float> _recoPFJet_untag_jecUnc;
   vector<int> _recoPFJet_untag_Flavour;
 
   int _n_pair_Wtag_recoPFJet_untag;  //# pair of jets passing W-tag in untagged jets
@@ -1293,6 +1305,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_untag_Wtag_eta;
   vector<float> _recoPFJet_untag_Wtag_phi;
   vector<float> _recoPFJet_untag_Wtag_CSVscore;
+  vector<float> _recoPFJet_untag_Wtag_jecUnc;
   vector<int> _recoPFJet_untag_Wtag_Flavour; 
 
   vector<float> _mtop_had_perm;
@@ -1319,6 +1332,10 @@ void convert_tree(TString sample, int iso_tau=70,
   float _MVA_2lSS_ttbar;
   float _MVA_3l_ttV;
   float _MVA_3l_ttbar;
+
+  bool _isTrig;
+  bool _isTrig_3l;
+  float _bTagSF_weight;
 
   //Gen information
   vector<float> _genpart_pt;
@@ -1393,6 +1410,17 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _genH_eta;
   vector<float> _genH_phi;
   vector<int> _genH_flags;  
+
+  int _n_genZ;
+  vector<int> _genZ_decayMode; //0 mu+tauh, 1 e+tauh, 2 tauh+tauh, 3 mu+mu, 4 e+e, 5 e+mu
+  vector<float> _genZ_e;
+  vector<float> _genZ_px;
+  vector<float> _genZ_py;
+  vector<float> _genZ_pz;
+  vector<float> _genZ_pt;
+  vector<float> _genZ_eta;
+  vector<float> _genZ_phi;
+  vector<int> _genZ_flags;  
 
 
   int _n_gentop;
@@ -1477,16 +1505,16 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<int> _gennu_WMothInd; //-1 if not from W
 
 
-  
+
   tree_new->Branch("daughters_pt",&_daughters_pt);
   tree_new->Branch("daughters_eta",&_daughters_eta);
   tree_new->Branch("daughters_phi",&_daughters_phi);
   tree_new->Branch("daughters_dR_closest_jet",&_daughters_dR_closest_jet);
-
+  
   tree_new->Branch("jets_pt",&_jets_pt);
   tree_new->Branch("jets_eta",&_jets_eta);
   tree_new->Branch("jets_phi",&_jets_phi);
-
+      
   tree_new->Branch("n_recomu_presel",&_n_recomu_presel,"n_recomu_presel/I");
   tree_new->Branch("n_recomu_fakeable",&_n_recomu_fakeable,"n_recomu_fakeable/I");
   tree_new->Branch("n_recomu_cutsel",&_n_recomu_cutsel,"n_recomu_cutsel/I");
@@ -1521,7 +1549,7 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recomu_HMothInd",&_recomu_HMothInd);
   tree_new->Branch("recomu_goodsign",&_recomu_goodsign);
   tree_new->Branch("recomu_fakerate",&_recomu_fakerate);
-
+  
   tree_new->Branch("n_recoele_presel",&_n_recoele_presel,"n_recoele_presel/I");
   tree_new->Branch("n_recoele_fakeable",&_n_recoele_fakeable,"n_recoele_fakeable/I");
   tree_new->Branch("n_recoele_cutsel",&_n_recoele_cutsel,"n_recoele_cutsel/I");
@@ -1558,7 +1586,7 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoele_goodsign",&_recoele_goodsign);
   tree_new->Branch("recoele_fakerate",&_recoele_fakerate);
   tree_new->Branch("recoele_QFrate",&_recoele_QFrate);
-
+  
   tree_new->Branch("n_recolep_fakeable",&_n_recolep_fakeable,"n_recolep_fakeable/I");
   tree_new->Branch("n_recolep_mvasel",&_n_recolep_mvasel,"n_recolep_mvasel/I");
   tree_new->Branch("recolep_charge",&_recolep_charge);
@@ -1577,8 +1605,7 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recolep_ismvasel",&_recolep_ismvasel);
   tree_new->Branch("recolep_tightcharge",&_recolep_tightcharge);
   tree_new->Branch("recolep_eleconv_misshits",&_recolep_eleconv_misshits);
-
-
+  
   tree_new->Branch("n_recotauh",&_n_recotauh,"n_recotauh/I");
   tree_new->Branch("recotauh_decayMode",&_recotauh_decayMode);
   tree_new->Branch("recotauh_charge",&_recotauh_charge);
@@ -1592,7 +1619,7 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recotauh_dxy",&_recotauh_dxy);
   tree_new->Branch("recotauh_dz",&_recotauh_dz);
   tree_new->Branch("recotauh_iso",&_recotauh_iso);
-
+  
   tree_new->Branch("recotauh_decayModeFindingOldDMs",&_recotauh_decayModeFindingOldDMs);
   tree_new->Branch("recotauh_decayModeFindingNewDMs",&_recotauh_decayModeFindingNewDMs);
   tree_new->Branch("recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits",&_recotauh_byLooseCombinedIsolationDeltaBetaCorr3Hits);
@@ -1612,10 +1639,10 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recotauh_againstElectronMediumMVA6",&_recotauh_againstElectronMediumMVA6);
   tree_new->Branch("recotauh_againstElectronTightMVA6",&_recotauh_againstElectronTightMVA6);
   tree_new->Branch("recotauh_againstElectronVTightMVA6",&_recotauh_againstElectronVTightMVA6);
-
+  
   tree_new->Branch("recotauh_i_closest_genpart",&_recotauh_i_closest_genpart);
   tree_new->Branch("recotauh_dR_closest_genpart",&_recotauh_dR_closest_genpart);
-
+  
   tree_new->Branch("n_recoPFJet",&_n_recoPFJet,"n_recoPFJet/I");
   tree_new->Branch("recoPFJet_e",&_recoPFJet_e);
   tree_new->Branch("recoPFJet_pt",&_recoPFJet_pt);
@@ -1625,6 +1652,8 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_eta",&_recoPFJet_eta);
   tree_new->Branch("recoPFJet_phi",&_recoPFJet_phi);
   tree_new->Branch("recoPFJet_CSVscore",&_recoPFJet_CSVscore);
+  tree_new->Branch("recoPFJet_jecUnc",&_recoPFJet_jecUnc);
+  
   tree_new->Branch("recoPFJet_Flavour",&_recoPFJet_Flavour);
   tree_new->Branch("recoPFJet_i_closest_genpart",&_recoPFJet_i_closest_genpart);
   tree_new->Branch("recoPFJet_dR_closest_genpart",&_recoPFJet_dR_closest_genpart);
@@ -1632,7 +1661,7 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_dR_2nd_closest_genpart",&_recoPFJet_dR_2nd_closest_genpart);
   tree_new->Branch("recoPFJet_i_closest_tau",&_recoPFJet_i_closest_tau);
   tree_new->Branch("recoPFJet_dR_closest_tau",&_recoPFJet_dR_closest_tau);
-			     
+  
   tree_new->Branch("recoPFJet_CSVsort_e",&_recoPFJet_CSVsort_e);
   tree_new->Branch("recoPFJet_CSVsort_pt",&_recoPFJet_CSVsort_pt);
   tree_new->Branch("recoPFJet_CSVsort_px",&_recoPFJet_CSVsort_px);
@@ -1641,12 +1670,14 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_CSVsort_eta",&_recoPFJet_CSVsort_eta);
   tree_new->Branch("recoPFJet_CSVsort_phi",&_recoPFJet_CSVsort_phi);
   tree_new->Branch("recoPFJet_CSVsort_CSVscore",&_recoPFJet_CSVsort_CSVscore);
+  tree_new->Branch("recoPFJet_CSVsort_jecUnc",&_recoPFJet_CSVsort_jecUnc);
+  
   tree_new->Branch("recoPFJet_CSVsort_Flavour",&_recoPFJet_CSVsort_Flavour);
   tree_new->Branch("recoPFJet_CSVsort_i_closest_genb",&_recoPFJet_CSVsort_i_closest_genb);
   tree_new->Branch("recoPFJet_CSVsort_dR_closest_genb",&_recoPFJet_CSVsort_dR_closest_genb);
   tree_new->Branch("recoPFJet_CSVsort_i_closest_gentauh",&_recoPFJet_CSVsort_i_closest_gentauh);
   tree_new->Branch("recoPFJet_CSVsort_dR_closest_gentauh",&_recoPFJet_CSVsort_dR_closest_gentauh);
-
+  
   tree_new->Branch("n_recoPFJet_btag_medium",&_n_recoPFJet_btag_medium,"n_recoPFJet_btag_medium/I");
   tree_new->Branch("n_recoPFJet_btag_loose",&_n_recoPFJet_btag_loose,"n_recoPFJet_btag_loose/I");
   tree_new->Branch("recoPFJet_btag_e",&_recoPFJet_btag_e);
@@ -1657,8 +1688,9 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_btag_eta",&_recoPFJet_btag_eta);
   tree_new->Branch("recoPFJet_btag_phi",&_recoPFJet_btag_phi);
   tree_new->Branch("recoPFJet_btag_CSVscore",&_recoPFJet_btag_CSVscore);
+  tree_new->Branch("recoPFJet_btag_jecUnc",&_recoPFJet_btag_jecUnc);
   tree_new->Branch("recoPFJet_btag_Flavour",&_recoPFJet_btag_Flavour);
-
+  
   tree_new->Branch("n_recoPFJet_untag",&_n_recoPFJet_untag,"n_recoPFJet_untag/I");
   tree_new->Branch("recoPFJet_untag_e",&_recoPFJet_untag_e);
   tree_new->Branch("recoPFJet_untag_pt",&_recoPFJet_untag_pt);
@@ -1668,11 +1700,10 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_untag_eta",&_recoPFJet_untag_eta);
   tree_new->Branch("recoPFJet_untag_phi",&_recoPFJet_untag_phi);
   tree_new->Branch("recoPFJet_untag_CSVscore",&_recoPFJet_untag_CSVscore);
+  tree_new->Branch("recoPFJet_untag_jecUnc",&_recoPFJet_untag_jecUnc);
   tree_new->Branch("recoPFJet_untag_Flavour",&_recoPFJet_untag_Flavour);
-
-
+  
   tree_new->Branch("n_pair_Wtag_recoPFJet_untag",&_n_pair_Wtag_recoPFJet_untag,"n_pair_Wtag_recoPFJet_untag/I");  
-
   tree_new->Branch("recoPFJet_untag_best_mW",&_recoPFJet_untag_best_mW,"recoPFJet_untag_best_mW/F");  
   tree_new->Branch("recoPFJet_untag_Wtag_e",&_recoPFJet_untag_Wtag_e);
   tree_new->Branch("recoPFJet_untag_Wtag_pt",&_recoPFJet_untag_Wtag_pt);
@@ -1682,17 +1713,18 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_untag_Wtag_eta",&_recoPFJet_untag_Wtag_eta);
   tree_new->Branch("recoPFJet_untag_Wtag_phi",&_recoPFJet_untag_Wtag_phi);
   tree_new->Branch("recoPFJet_untag_Wtag_CSVscore",&_recoPFJet_untag_Wtag_CSVscore);
+  tree_new->Branch("recoPFJet_untag_Wtag_jecUnc",&_recoPFJet_untag_Wtag_jecUnc);
   tree_new->Branch("recoPFJet_untag_Wtag_Flavour",&_recoPFJet_untag_Wtag_Flavour);
-
+  
   tree_new->Branch("mtop_had_perm",&_mtop_had_perm);
   tree_new->Branch("mblep_perm",&_mblep_perm);
   tree_new->Branch("mleptauh_perm",&_mleptauh_perm);
-
+  
   tree_new->Branch("PFMETx",&_PFMETx,"PFMETx/F");
   tree_new->Branch("PFMETy",&_PFMETy,"PFMETy/F");
   tree_new->Branch("PFMET",&_PFMET,"PFMET/F");
   tree_new->Branch("PFMET_phi",&_PFMET_phi,"PFMET_phi/F");
-
+  
   tree_new->Branch("HTmiss",&_HTmiss,"HTmiss/F");
   tree_new->Branch("ETmissLD",&_ETmissLD,"ETmissLD/F");
   tree_new->Branch("MT_lep0",&_MT_lep0,"MT_lep0/F");
@@ -1706,160 +1738,178 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("MVA_2lSS_ttbar",&_MVA_2lSS_ttbar,"MVA_2lSS_ttbar/F");
   tree_new->Branch("MVA_3l_ttV",&_MVA_3l_ttV,"MVA_3l_ttV/F");
   tree_new->Branch("MVA_3l_ttbar",&_MVA_3l_ttbar,"MVA_3l_ttbar/F");
+  
+  tree_new->Branch("isTrig",&_isTrig,"isTrig/O");
+  tree_new->Branch("isTrig_3l",&_isTrig_3l,"isTrig_3l/O");
+  tree_new->Branch("bTagSF_weight",&_bTagSF_weight,"bTagSF_weight/F");
 
-  tree_new->Branch("genpart_pt",&_genpart_pt);
-  tree_new->Branch("genpart_eta",&_genpart_eta);
-  tree_new->Branch("genpart_phi",&_genpart_phi);
-  tree_new->Branch("genpart_i_closest_daughter",&_genpart_i_closest_daughter);
-  tree_new->Branch("genpart_dR_closest_daughter",&_genpart_dR_closest_daughter);
+  if(JEC==0 && TES==0){
 
-  tree_new->Branch("n_genlep",&_n_genlep,"n_genlep/I");
-  tree_new->Branch("n_genlep10",&_n_genlep10,"n_genlep10/I");
-  tree_new->Branch("n_genlep20",&_n_genlep20,"n_genlep20/I");
-  tree_new->Branch("n_genlep20_eta21",&_n_genlep20_eta21,"n_genlep20_eta21/I");
-  tree_new->Branch("n_genlep_fromTop",&_n_genlep_fromTop,"n_genlep_fromTop/I");
-  tree_new->Branch("n_genlep_fromTau",&_n_genlep_fromTau,"n_genlep_fromTau/I");
-  tree_new->Branch("genlep_pdg",&_genlep_pdg);
-  tree_new->Branch("genlep_charge",&_genlep_charge);
-  tree_new->Branch("genlep_e",&_genlep_e);
-  tree_new->Branch("genlep_px",&_genlep_px);
-  tree_new->Branch("genlep_py",&_genlep_py);
-  tree_new->Branch("genlep_pz",&_genlep_pz);
-  tree_new->Branch("genlep_pt",&_genlep_pt);
-  tree_new->Branch("genlep_eta",&_genlep_eta);
-  tree_new->Branch("genlep_phi",&_genlep_phi);
-  tree_new->Branch("genlep_flags",&_genlep_flags);
-  tree_new->Branch("genlep_TauMothInd",&_genlep_TauMothInd);
-  tree_new->Branch("genlep_TopMothInd",&_genlep_TopMothInd);
-  tree_new->Branch("genlep_WMothInd",&_genlep_WMothInd);
+    tree_new->Branch("genpart_pt",&_genpart_pt);
+    tree_new->Branch("genpart_eta",&_genpart_eta);
+    tree_new->Branch("genpart_phi",&_genpart_phi);
+    tree_new->Branch("genpart_i_closest_daughter",&_genpart_i_closest_daughter);
+    tree_new->Branch("genpart_dR_closest_daughter",&_genpart_dR_closest_daughter);
+    
+    tree_new->Branch("n_genlep",&_n_genlep,"n_genlep/I");
+    tree_new->Branch("n_genlep10",&_n_genlep10,"n_genlep10/I");
+    tree_new->Branch("n_genlep20",&_n_genlep20,"n_genlep20/I");
+    tree_new->Branch("n_genlep20_eta21",&_n_genlep20_eta21,"n_genlep20_eta21/I");
+    tree_new->Branch("n_genlep_fromTop",&_n_genlep_fromTop,"n_genlep_fromTop/I");
+    tree_new->Branch("n_genlep_fromTau",&_n_genlep_fromTau,"n_genlep_fromTau/I");
+    tree_new->Branch("genlep_pdg",&_genlep_pdg);
+    tree_new->Branch("genlep_charge",&_genlep_charge);
+    tree_new->Branch("genlep_e",&_genlep_e);
+    tree_new->Branch("genlep_px",&_genlep_px);
+    tree_new->Branch("genlep_py",&_genlep_py);
+    tree_new->Branch("genlep_pz",&_genlep_pz);
+    tree_new->Branch("genlep_pt",&_genlep_pt);
+    tree_new->Branch("genlep_eta",&_genlep_eta);
+    tree_new->Branch("genlep_phi",&_genlep_phi);
+    tree_new->Branch("genlep_flags",&_genlep_flags);
+    tree_new->Branch("genlep_TauMothInd",&_genlep_TauMothInd);
+    tree_new->Branch("genlep_TopMothInd",&_genlep_TopMothInd);
+    tree_new->Branch("genlep_WMothInd",&_genlep_WMothInd);
+    
+    tree_new->Branch("n_gentauh",&_n_gentauh,"n_gentauh/I");
+    tree_new->Branch("n_gentauh10",&_n_gentauh10,"n_gentauh10/I");
+    tree_new->Branch("n_gentauh30",&_n_gentauh30,"n_gentauh30/I");
+    tree_new->Branch("n_gentauh30_eta21",&_n_gentauh30_eta21,"n_gentauh30_eta21/I");
+    tree_new->Branch("n_gentauh_fromTop",&_n_gentauh_fromTop,"n_gentauh_fromTop/I");
+    tree_new->Branch("n_gentauh_fromTau",&_n_gentauh_fromTau,"n_gentauh_fromTau/I");
+    tree_new->Branch("gentauh_charge",&_gentauh_charge);
+    tree_new->Branch("gentauh_e",&_gentauh_e);
+    tree_new->Branch("gentauh_px",&_gentauh_px);
+    tree_new->Branch("gentauh_py",&_gentauh_py);
+    tree_new->Branch("gentauh_pz",&_gentauh_pz);
+    tree_new->Branch("gentauh_pt",&_gentauh_pt);
+    tree_new->Branch("gentauh_eta",&_gentauh_eta);
+    tree_new->Branch("gentauh_phi",&_gentauh_phi);
+    tree_new->Branch("gentauh_flags",&_gentauh_flags);
+    tree_new->Branch("gentauh_TauMothInd",&_gentauh_TauMothInd);
+    tree_new->Branch("gentauh_TopMothInd",&_gentauh_TopMothInd);
+    tree_new->Branch("gentauh_WMothInd",&_gentauh_WMothInd);
+    
+    tree_new->Branch("n_gentau",&_n_gentau,"n_gentau/I");
+    tree_new->Branch("n_gentau_fromTop",&_n_gentau_fromTop,"n_gentau_fromTop/I");
+    tree_new->Branch("n_gentau_fromH",&_n_gentau_fromH,"n_gentau_fromH/I");
+    tree_new->Branch("gentau_decayMode",&_gentau_decayMode);
+    tree_new->Branch("gentau_charge",&_gentau_charge);
+    tree_new->Branch("gentau_e",&_gentau_e);
+    tree_new->Branch("gentau_px",&_gentau_px);
+    tree_new->Branch("gentau_py",&_gentau_py);
+    tree_new->Branch("gentau_pz",&_gentau_pz);
+    tree_new->Branch("gentau_pt",&_gentau_pt);
+    tree_new->Branch("gentau_eta",&_gentau_eta);
+    tree_new->Branch("gentau_phi",&_gentau_phi);
+    tree_new->Branch("gentau_flags",&_gentau_flags);
+    tree_new->Branch("gentau_TopMothInd",&_gentau_TopMothInd);
+    tree_new->Branch("gentau_WMothInd",&_gentau_WMothInd);
+    tree_new->Branch("gentau_HMothInd",&_gentau_HMothInd);
+    
+    tree_new->Branch("n_genH",&_n_genH,"n_genH/I");
+    tree_new->Branch("genH_decayMode",&_genH_decayMode);
+    tree_new->Branch("genH_e",&_genH_e);
+    tree_new->Branch("genH_px",&_genH_px);
+    tree_new->Branch("genH_py",&_genH_py);
+    tree_new->Branch("genH_pz",&_genH_pz);
+    tree_new->Branch("genH_pt",&_genH_pt);
+    tree_new->Branch("genH_eta",&_genH_eta);
+    tree_new->Branch("genH_phi",&_genH_phi);
+    tree_new->Branch("genH_flags",&_genH_flags);
 
-  tree_new->Branch("n_gentauh",&_n_gentauh,"n_gentauh/I");
-  tree_new->Branch("n_gentauh10",&_n_gentauh10,"n_gentauh10/I");
-  tree_new->Branch("n_gentauh30",&_n_gentauh30,"n_gentauh30/I");
-  tree_new->Branch("n_gentauh30_eta21",&_n_gentauh30_eta21,"n_gentauh30_eta21/I");
-  tree_new->Branch("n_gentauh_fromTop",&_n_gentauh_fromTop,"n_gentauh_fromTop/I");
-  tree_new->Branch("n_gentauh_fromTau",&_n_gentauh_fromTau,"n_gentauh_fromTau/I");
-  tree_new->Branch("gentauh_charge",&_gentauh_charge);
-  tree_new->Branch("gentauh_e",&_gentauh_e);
-  tree_new->Branch("gentauh_px",&_gentauh_px);
-  tree_new->Branch("gentauh_py",&_gentauh_py);
-  tree_new->Branch("gentauh_pz",&_gentauh_pz);
-  tree_new->Branch("gentauh_pt",&_gentauh_pt);
-  tree_new->Branch("gentauh_eta",&_gentauh_eta);
-  tree_new->Branch("gentauh_phi",&_gentauh_phi);
-  tree_new->Branch("gentauh_flags",&_gentauh_flags);
-  tree_new->Branch("gentauh_TauMothInd",&_gentauh_TauMothInd);
-  tree_new->Branch("gentauh_TopMothInd",&_gentauh_TopMothInd);
-  tree_new->Branch("gentauh_WMothInd",&_gentauh_WMothInd);
-
-  tree_new->Branch("n_gentau",&_n_gentau,"n_gentau/I");
-  tree_new->Branch("n_gentau_fromTop",&_n_gentau_fromTop,"n_gentau_fromTop/I");
-  tree_new->Branch("n_gentau_fromH",&_n_gentau_fromH,"n_gentau_fromH/I");
-  tree_new->Branch("gentau_decayMode",&_gentau_decayMode);
-  tree_new->Branch("gentau_charge",&_gentau_charge);
-  tree_new->Branch("gentau_e",&_gentau_e);
-  tree_new->Branch("gentau_px",&_gentau_px);
-  tree_new->Branch("gentau_py",&_gentau_py);
-  tree_new->Branch("gentau_pz",&_gentau_pz);
-  tree_new->Branch("gentau_pt",&_gentau_pt);
-  tree_new->Branch("gentau_eta",&_gentau_eta);
-  tree_new->Branch("gentau_phi",&_gentau_phi);
-  tree_new->Branch("gentau_flags",&_gentau_flags);
-  tree_new->Branch("gentau_TopMothInd",&_gentau_TopMothInd);
-  tree_new->Branch("gentau_WMothInd",&_gentau_WMothInd);
-  tree_new->Branch("gentau_HMothInd",&_gentau_HMothInd);
-
-  tree_new->Branch("n_genH",&_n_genH,"n_genH/I");
-  tree_new->Branch("genH_decayMode",&_genH_decayMode);
-  tree_new->Branch("genH_e",&_genH_e);
-  tree_new->Branch("genH_px",&_genH_px);
-  tree_new->Branch("genH_py",&_genH_py);
-  tree_new->Branch("genH_pz",&_genH_pz);
-  tree_new->Branch("genH_pt",&_genH_pt);
-  tree_new->Branch("genH_eta",&_genH_eta);
-  tree_new->Branch("genH_phi",&_genH_phi);
-  tree_new->Branch("genH_flags",&_genH_flags);
-
-  tree_new->Branch("n_gentop",&_n_gentop,"n_gentop/I");
-  tree_new->Branch("gentop_pdg",&_gentop_pdg);
-  tree_new->Branch("gentop_decayMode",&_gentop_decayMode);
-  tree_new->Branch("gentop_e",&_gentop_e);
-  tree_new->Branch("gentop_px",&_gentop_px);
-  tree_new->Branch("gentop_py",&_gentop_py);
-  tree_new->Branch("gentop_pz",&_gentop_pz);
-  tree_new->Branch("gentop_pt",&_gentop_pt);
-  tree_new->Branch("gentop_eta",&_gentop_eta);
-  tree_new->Branch("gentop_phi",&_gentop_phi);
-  tree_new->Branch("gentop_flags",&_gentop_flags);
-  tree_new->Branch("gentop_isRecoMatched",&_gentop_isRecoMatched);
-  tree_new->Branch("gentop_i_recoPFJet_btag",&_gentop_i_recoPFJet_btag);
-  tree_new->Branch("gentop_i_recoPFJet_untag1",&_gentop_i_recoPFJet_untag1);
-  tree_new->Branch("gentop_i_recoPFJet_untag2",&_gentop_i_recoPFJet_untag2);
-  tree_new->Branch("gentop_i_recolep",&_gentop_i_recolep);
-
-  tree_new->Branch("n_genW",&_n_genW,"n_genW/I");
-  tree_new->Branch("n_genW_fromTop",&_n_genW_fromTop,"n_genW_fromTop/I");
-  tree_new->Branch("genW_pdg",&_genW_pdg);
-  tree_new->Branch("genW_decayMode",&_genW_decayMode);
-  tree_new->Branch("genW_e",&_genW_e);
-  tree_new->Branch("genW_px",&_genW_px);
-  tree_new->Branch("genW_py",&_genW_py);
-  tree_new->Branch("genW_pz",&_genW_pz);
-  tree_new->Branch("genW_pt",&_genW_pt);
-  tree_new->Branch("genW_eta",&_genW_eta);
-  tree_new->Branch("genW_phi",&_genW_phi);
-  tree_new->Branch("genW_flags",&_genW_flags);
-  tree_new->Branch("genW_TopMothInd",&_genW_TopMothInd);
-
-  tree_new->Branch("n_genb",&_n_genb,"n_genb/I");
-  tree_new->Branch("n_genb10",&_n_genb10,"n_genb10/I");
-  tree_new->Branch("n_genb_fromTop",&_n_genb_fromTop,"n_genb_fromTop/I");
-  tree_new->Branch("genb_pdg",&_genb_pdg);
-  tree_new->Branch("genb_e",&_genb_e);
-  tree_new->Branch("genb_px",&_genb_px);
-  tree_new->Branch("genb_py",&_genb_py);
-  tree_new->Branch("genb_pz",&_genb_pz);
-  tree_new->Branch("genb_pt",&_genb_pt);
-  tree_new->Branch("genb_eta",&_genb_eta);
-  tree_new->Branch("genb_phi",&_genb_phi);
-  tree_new->Branch("genb_flags",&_genb_flags);
-  tree_new->Branch("genb_TopMothInd",&_genb_TopMothInd);
-  tree_new->Branch("genb_WMothInd",&_genb_WMothInd);
-  tree_new->Branch("genb_i_closest_recolep",&_genb_i_closest_recolep);
-  tree_new->Branch("genb_dR_closest_recolep",&_genb_dR_closest_recolep);
-
-
-  tree_new->Branch("n_genq",&_n_genq,"n_genq/I");
-  tree_new->Branch("n_genq10",&_n_genq10,"n_genq10/I");
-  tree_new->Branch("n_genq_fromTop",&_n_genq_fromTop,"n_genq_fromTop/I");
-  tree_new->Branch("genq_pdg",&_genq_pdg);
-  tree_new->Branch("genq_e",&_genq_e);
-  tree_new->Branch("genq_px",&_genq_px);
-  tree_new->Branch("genq_py",&_genq_py);
-  tree_new->Branch("genq_pz",&_genq_pz);
-  tree_new->Branch("genq_pt",&_genq_pt);
-  tree_new->Branch("genq_eta",&_genq_eta);
-  tree_new->Branch("genq_phi",&_genq_phi);
-  tree_new->Branch("genq_flags",&_genq_flags);
-  tree_new->Branch("genq_TopMothInd",&_genq_TopMothInd);
-  tree_new->Branch("genq_WMothInd",&_genq_WMothInd);
-
-  tree_new->Branch("n_gennu",&_n_gennu,"n_gennu/I");
-  tree_new->Branch("n_gennu_fromTop",&_n_gennu_fromTop,"n_gennu_fromTop/I");
-  tree_new->Branch("n_gennu_fromTau",&_n_gennu_fromTau,"n_gennu_fromTau/I");
-  tree_new->Branch("gennu_pdg",&_gennu_pdg);
-  tree_new->Branch("gennu_e",&_gennu_e);
-  tree_new->Branch("gennu_px",&_gennu_px);
-  tree_new->Branch("gennu_py",&_gennu_py);
-  tree_new->Branch("gennu_pz",&_gennu_pz);
-  tree_new->Branch("gennu_pt",&_gennu_pt);
-  tree_new->Branch("gennu_eta",&_gennu_eta);
-  tree_new->Branch("gennu_phi",&_gennu_phi);
-  tree_new->Branch("gennu_flags",&_gennu_flags);
-  tree_new->Branch("gennu_TauMothInd",&_gennu_TauMothInd);
-  tree_new->Branch("gennu_TopMothInd",&_gennu_TopMothInd);
-  tree_new->Branch("gennu_WMothInd",&_gennu_WMothInd);
-
+    tree_new->Branch("n_genZ",&_n_genZ,"n_genZ/I");
+    tree_new->Branch("genZ_decayMode",&_genZ_decayMode);
+    tree_new->Branch("genZ_e",&_genZ_e);
+    tree_new->Branch("genZ_px",&_genZ_px);
+    tree_new->Branch("genZ_py",&_genZ_py);
+    tree_new->Branch("genZ_pz",&_genZ_pz);
+    tree_new->Branch("genZ_pt",&_genZ_pt);
+    tree_new->Branch("genZ_eta",&_genZ_eta);
+    tree_new->Branch("genZ_phi",&_genZ_phi);
+    tree_new->Branch("genZ_flags",&_genZ_flags);
+    
+    tree_new->Branch("n_gentop",&_n_gentop,"n_gentop/I");
+    tree_new->Branch("gentop_pdg",&_gentop_pdg);
+    tree_new->Branch("gentop_decayMode",&_gentop_decayMode);
+    tree_new->Branch("gentop_e",&_gentop_e);
+    tree_new->Branch("gentop_px",&_gentop_px);
+    tree_new->Branch("gentop_py",&_gentop_py);
+    tree_new->Branch("gentop_pz",&_gentop_pz);
+    tree_new->Branch("gentop_pt",&_gentop_pt);
+    tree_new->Branch("gentop_eta",&_gentop_eta);
+    tree_new->Branch("gentop_phi",&_gentop_phi);
+    tree_new->Branch("gentop_flags",&_gentop_flags);
+    tree_new->Branch("gentop_isRecoMatched",&_gentop_isRecoMatched);
+    tree_new->Branch("gentop_i_recoPFJet_btag",&_gentop_i_recoPFJet_btag);
+    tree_new->Branch("gentop_i_recoPFJet_untag1",&_gentop_i_recoPFJet_untag1);
+    tree_new->Branch("gentop_i_recoPFJet_untag2",&_gentop_i_recoPFJet_untag2);
+    tree_new->Branch("gentop_i_recolep",&_gentop_i_recolep);
+    
+    tree_new->Branch("n_genW",&_n_genW,"n_genW/I");
+    tree_new->Branch("n_genW_fromTop",&_n_genW_fromTop,"n_genW_fromTop/I");
+    tree_new->Branch("genW_pdg",&_genW_pdg);
+    tree_new->Branch("genW_decayMode",&_genW_decayMode);
+    tree_new->Branch("genW_e",&_genW_e);
+    tree_new->Branch("genW_px",&_genW_px);
+    tree_new->Branch("genW_py",&_genW_py);
+    tree_new->Branch("genW_pz",&_genW_pz);
+    tree_new->Branch("genW_pt",&_genW_pt);
+    tree_new->Branch("genW_eta",&_genW_eta);
+    tree_new->Branch("genW_phi",&_genW_phi);
+    tree_new->Branch("genW_flags",&_genW_flags);
+    tree_new->Branch("genW_TopMothInd",&_genW_TopMothInd);
+    
+    tree_new->Branch("n_genb",&_n_genb,"n_genb/I");
+    tree_new->Branch("n_genb10",&_n_genb10,"n_genb10/I");
+    tree_new->Branch("n_genb_fromTop",&_n_genb_fromTop,"n_genb_fromTop/I");
+    tree_new->Branch("genb_pdg",&_genb_pdg);
+    tree_new->Branch("genb_e",&_genb_e);
+    tree_new->Branch("genb_px",&_genb_px);
+    tree_new->Branch("genb_py",&_genb_py);
+    tree_new->Branch("genb_pz",&_genb_pz);
+    tree_new->Branch("genb_pt",&_genb_pt);
+    tree_new->Branch("genb_eta",&_genb_eta);
+    tree_new->Branch("genb_phi",&_genb_phi);
+    tree_new->Branch("genb_flags",&_genb_flags);
+    tree_new->Branch("genb_TopMothInd",&_genb_TopMothInd);
+    tree_new->Branch("genb_WMothInd",&_genb_WMothInd);
+    tree_new->Branch("genb_i_closest_recolep",&_genb_i_closest_recolep);
+    tree_new->Branch("genb_dR_closest_recolep",&_genb_dR_closest_recolep);
+    
+    
+    tree_new->Branch("n_genq",&_n_genq,"n_genq/I");
+    tree_new->Branch("n_genq10",&_n_genq10,"n_genq10/I");
+    tree_new->Branch("n_genq_fromTop",&_n_genq_fromTop,"n_genq_fromTop/I");
+    tree_new->Branch("genq_pdg",&_genq_pdg);
+    tree_new->Branch("genq_e",&_genq_e);
+    tree_new->Branch("genq_px",&_genq_px);
+    tree_new->Branch("genq_py",&_genq_py);
+    tree_new->Branch("genq_pz",&_genq_pz);
+    tree_new->Branch("genq_pt",&_genq_pt);
+    tree_new->Branch("genq_eta",&_genq_eta);
+    tree_new->Branch("genq_phi",&_genq_phi);
+    tree_new->Branch("genq_flags",&_genq_flags);
+    tree_new->Branch("genq_TopMothInd",&_genq_TopMothInd);
+    tree_new->Branch("genq_WMothInd",&_genq_WMothInd);
+    
+    tree_new->Branch("n_gennu",&_n_gennu,"n_gennu/I");
+    tree_new->Branch("n_gennu_fromTop",&_n_gennu_fromTop,"n_gennu_fromTop/I");
+    tree_new->Branch("n_gennu_fromTau",&_n_gennu_fromTau,"n_gennu_fromTau/I");
+    tree_new->Branch("gennu_pdg",&_gennu_pdg);
+    tree_new->Branch("gennu_e",&_gennu_e);
+    tree_new->Branch("gennu_px",&_gennu_px);
+    tree_new->Branch("gennu_py",&_gennu_py);
+    tree_new->Branch("gennu_pz",&_gennu_pz);
+    tree_new->Branch("gennu_pt",&_gennu_pt);
+    tree_new->Branch("gennu_eta",&_gennu_eta);
+    tree_new->Branch("gennu_phi",&_gennu_phi);
+    tree_new->Branch("gennu_flags",&_gennu_flags);
+    tree_new->Branch("gennu_TauMothInd",&_gennu_TauMothInd);
+    tree_new->Branch("gennu_TopMothInd",&_gennu_TopMothInd);
+    tree_new->Branch("gennu_WMothInd",&_gennu_WMothInd);
+    
+  }
 
   //Old branches only there in MC
   //Dummy created in data as well
@@ -1878,7 +1928,7 @@ void convert_tree(TString sample, int iso_tau=70,
   int _NUP = -1;
 
 
-  if(!isMC){
+  if(!isMC && JEC==0 && TES==0){
     
     tree_new->Branch("PUNumInteractions",&_PUNumInteractions,"PUNumInteractions/I");
     tree_new->Branch("daughters_genindex",&_daughters_genindex);
@@ -1924,6 +1974,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> *_jets_px;
   vector<float> *_jets_py;
   vector<float> *_jets_pz;
+  vector<float> *_jets_jecUnc;  
   vector<int> *_jets_Flavour;
   vector<float> *_jets_PUJetID;
   vector<int> *_PFjetID;
@@ -1949,6 +2000,16 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> *_daughters_px;
   vector<float> *_daughters_py;
   vector<float> *_daughters_pz;
+
+  vector<float> *_daughters_e_TauUp;
+  vector<float> *_daughters_px_TauUp;
+  vector<float> *_daughters_py_TauUp;
+  vector<float> *_daughters_pz_TauUp;
+  vector<float> *_daughters_e_TauDown;
+  vector<float> *_daughters_px_TauDown;
+  vector<float> *_daughters_py_TauDown;
+  vector<float> *_daughters_pz_TauDown;
+
   vector<int> *_PDGIdDaughters;
   vector<int> *_decayMode;
   vector<float> *_combreliso;
@@ -1958,6 +2019,7 @@ void convert_tree(TString sample, int iso_tau=70,
   //vector<int> *_daughters_againstMuonTight3;
   //vector<int> *_daughters_againstElectronVLooseMVA5;
   vector<Long64_t> *_tauID;
+  Long64_t _triggerbit;
 
   vector<int> *_daughters_jetNDauChargedMVASel;
   vector<float> *_daughters_miniRelIsoCharged;
@@ -2000,11 +2062,12 @@ void convert_tree(TString sample, int iso_tau=70,
   tree->SetBranchAddress("jets_py",&_jets_py);
   tree->SetBranchAddress("jets_pz",&_jets_pz);
   tree->SetBranchAddress("jets_e",&_jets_e);
+  tree->SetBranchAddress("jets_jecUnc",&_jets_jecUnc);
   tree->SetBranchAddress("jets_Flavour",&_jets_Flavour);
   tree->SetBranchAddress("jets_PUJetID",&_jets_PUJetID);
   tree->SetBranchAddress("PFjetID",&_PFjetID);
   tree->SetBranchAddress("bCSVscore",&_bCSVscore);
-
+  
   tree->SetBranchAddress("dxy",&_dxy);
   tree->SetBranchAddress("dz",&_dz);
   tree->SetBranchAddress("dxy_innerTrack",&_dxy_innerTrack);
@@ -2021,6 +2084,16 @@ void convert_tree(TString sample, int iso_tau=70,
   tree->SetBranchAddress("daughters_deltaPhiSuperClusterTrackAtVtx",&_daughters_deltaPhiSuperClusterTrackAtVtx);
   tree->SetBranchAddress("daughters_IoEmIoP_ttH",&_daughters_IoEmIoP_ttH);
 
+  tree->SetBranchAddress("daughters_px_TauUp",&_daughters_px_TauUp);
+  tree->SetBranchAddress("daughters_py_TauUp",&_daughters_py_TauUp);
+  tree->SetBranchAddress("daughters_pz_TauUp",&_daughters_pz_TauUp);
+  tree->SetBranchAddress("daughters_e_TauUp",&_daughters_e_TauUp);
+
+  tree->SetBranchAddress("daughters_px_TauDown",&_daughters_px_TauDown);
+  tree->SetBranchAddress("daughters_py_TauDown",&_daughters_py_TauDown);
+  tree->SetBranchAddress("daughters_pz_TauDown",&_daughters_pz_TauDown);
+  tree->SetBranchAddress("daughters_e_TauDown",&_daughters_e_TauDown);
+
   tree->SetBranchAddress("daughters_px",&_daughters_px);
   tree->SetBranchAddress("daughters_py",&_daughters_py);
   tree->SetBranchAddress("daughters_pz",&_daughters_pz);
@@ -2034,6 +2107,7 @@ void convert_tree(TString sample, int iso_tau=70,
   //tree->SetBranchAddress("daughters_againstMuonTight3",&_daughters_againstMuonTight3);
   //tree->SetBranchAddress("daughters_againstElectronVLooseMVA5",&_daughters_againstElectronVLooseMVA5);
   tree->SetBranchAddress("tauID",&_tauID);
+  tree->SetBranchAddress("triggerbit",&_triggerbit);
 
   tree->SetBranchAddress("daughters_jetNDauChargedMVASel",&_daughters_jetNDauChargedMVASel);
   tree->SetBranchAddress("daughters_miniRelIsoCharged",&_daughters_miniRelIsoCharged);
@@ -2075,18 +2149,74 @@ void convert_tree(TString sample, int iso_tau=70,
   }
 
 
+  //Branches need even with JEC/TES Up/Down
+
+  unsigned long long _EventNumber = -1;
+  int _RunNumber = -1, _lumi = -1;
+
+  float _PFMETCov00=-1., _PFMETCov01=-1., _PFMETCov10=-1., _PFMETCov11=-1.;
+  int _npv=-1;
+
+  if(JEC!=0 || TES!=0){
+
+    tree->SetBranchAddress("EventNumber",&_EventNumber);
+    tree->SetBranchAddress("RunNumber",&_RunNumber);
+    tree->SetBranchAddress("lumi",&_lumi);
+
+    tree->SetBranchAddress("triggerbit",&_triggerbit);
+
+    tree->SetBranchAddress("PFMETCov00",&_PFMETCov00);
+    tree->SetBranchAddress("PFMETCov01",&_PFMETCov01);
+    tree->SetBranchAddress("PFMETCov10",&_PFMETCov10);
+    tree->SetBranchAddress("PFMETCov11",&_PFMETCov11);
+
+    tree->SetBranchAddress("npv",&_npv);
+
+    tree->SetBranchAddress("MC_weight",&_MC_weight);
+    
+    tree_new->Branch("EventNumber",&_EventNumber,"EventNumber/l");
+    tree_new->Branch("RunNumber",&_RunNumber,"RunNumber/I");
+    tree_new->Branch("lumi",&_lumi,"lumi/I");
+
+    tree_new->Branch("triggerbit",&_triggerbit,"triggerbit/L");
+
+    tree_new->Branch("PFMETCov00",&_PFMETCov00,"PFMETCov00/F");
+    tree_new->Branch("PFMETCov01",&_PFMETCov01,"PFMETCov01/F");
+    tree_new->Branch("PFMETCov10",&_PFMETCov10,"PFMETCov10/F");
+    tree_new->Branch("PFMETCov11",&_PFMETCov11,"PFMETCov11/F");
+
+    tree_new->Branch("npv",&_npv,"npv/I");
+
+    tree_new->Branch("MC_weight",&_MC_weight,"MC_weight/F");
+
+  }
+
+
+  //TauID + trigger
+
   TFile* f_tauID = TFile::Open(list[0]);
   TH1F* h_tauID = (TH1F*)f_tauID->Get("HTauTauTree/TauIDs");
+  TH1F* h_Counter = (TH1F*) f_tauID->Get("HTauTauTree/Counters");
   h_tauID->SetDirectory(0);
+  h_Counter->SetDirectory(0);
   f_tauID->Close();
 
   std::map<std::string,int> map_tauID;
+
+  cout<<endl;
+  cout<<"TauID"<<endl;
   for(int i=1; i<h_tauID->GetNbinsX();i++){
     const char* bin_label=h_tauID->GetXaxis()->GetBinLabel(i);
     std::string str(bin_label);
     cout<<"i="<<i<<" bin_label="<<bin_label<<endl;
     map_tauID[str]=i-1;
   }
+
+  produce_triggerlist(sample,isMC,h_Counter);
+
+
+
+  //Lepton MVA
 
   TMVA::Reader* mu_reader = BookLeptonMVAReaderMoriond16("lepMVA_weights", "/mu_BDTG.weights.xml", "mu");
   TMVA::Reader* ele_reader = BookLeptonMVAReaderMoriond16("lepMVA_weights", "/el_BDTG.weights.xml", "ele");
@@ -2111,7 +2241,12 @@ void convert_tree(TString sample, int iso_tau=70,
   f_QFrate->Close();
 
 
-  //nentries=550;
+
+  //BTag SF
+
+  bTagSF* bTagSF_computer = new bTagSF("bTagSF_weights/CSVv2_ichep.csv","bTagSF_weights/bTagEfficiencies.root");
+
+
   int skip_entries = 0;
 
 
@@ -2275,7 +2410,9 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_pz.clear();
     _recoPFJet_eta.clear();
     _recoPFJet_phi.clear();
-    _recoPFJet_CSVscore.clear();    
+    _recoPFJet_CSVscore.clear(); 
+    _recoPFJet_jecUnc.clear();    
+ 
     _recoPFJet_Flavour.clear(); 
     _recoPFJet_i_closest_genpart.clear();
     _recoPFJet_dR_closest_genpart.clear();
@@ -2291,7 +2428,9 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_CSVsort_pz.clear();
     _recoPFJet_CSVsort_eta.clear();
     _recoPFJet_CSVsort_phi.clear();
-    _recoPFJet_CSVsort_CSVscore.clear();    
+    _recoPFJet_CSVsort_CSVscore.clear();  
+    _recoPFJet_CSVsort_jecUnc.clear();    
+  
     _recoPFJet_CSVsort_Flavour.clear();   
     _recoPFJet_CSVsort_i_closest_genb.clear();
     _recoPFJet_CSVsort_dR_closest_genb.clear(); 
@@ -2307,7 +2446,8 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_btag_pz.clear();
     _recoPFJet_btag_eta.clear();
     _recoPFJet_btag_phi.clear();
-    _recoPFJet_btag_CSVscore.clear();    
+    _recoPFJet_btag_CSVscore.clear();   
+    _recoPFJet_btag_jecUnc.clear();    
     _recoPFJet_btag_Flavour.clear();    
 
     _n_recoPFJet_untag = 0;
@@ -2318,7 +2458,8 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_untag_pz.clear();
     _recoPFJet_untag_eta.clear();
     _recoPFJet_untag_phi.clear();
-    _recoPFJet_untag_CSVscore.clear();    
+    _recoPFJet_untag_CSVscore.clear();  
+    _recoPFJet_untag_jecUnc.clear();    
     _recoPFJet_untag_Flavour.clear();
 
     _n_pair_Wtag_recoPFJet_untag = 0;
@@ -2331,6 +2472,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_untag_Wtag_eta.clear();
     _recoPFJet_untag_Wtag_phi.clear();
     _recoPFJet_untag_Wtag_CSVscore.clear();    
+    _recoPFJet_untag_Wtag_jecUnc.clear();    
     _recoPFJet_untag_Wtag_Flavour.clear();    
 
     _mtop_had_perm.clear();
@@ -2355,6 +2497,10 @@ void convert_tree(TString sample, int iso_tau=70,
     _MVA_2lSS_ttbar = 0;
     _MVA_3l_ttV = 0;
     _MVA_3l_ttbar = 0;
+
+    _isTrig = 0;
+    _isTrig_3l = 0;
+    _bTagSF_weight = 0;
 
     _genpart_pt.clear();
     _genpart_eta.clear();
@@ -2428,6 +2574,17 @@ void convert_tree(TString sample, int iso_tau=70,
     _genH_eta.clear();
     _genH_phi.clear();
     _genH_flags.clear();
+
+    _n_genZ = 0;
+    _genZ_decayMode.clear();
+    _genZ_e.clear();
+    _genZ_px.clear();
+    _genZ_py.clear();
+    _genZ_pz.clear();
+    _genZ_pt.clear();
+    _genZ_eta.clear();
+    _genZ_phi.clear();
+    _genZ_flags.clear();
 
     _n_gentop = 0;
     _gentop_pdg.clear();
@@ -2513,6 +2670,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _jets_px = 0;
     _jets_py = 0;
     _jets_pz = 0;
+    _jets_jecUnc = 0;
     _jets_Flavour = 0;
     _jets_PUJetID = 0;
     _PFjetID = 0;
@@ -2538,6 +2696,16 @@ void convert_tree(TString sample, int iso_tau=70,
     _daughters_px = 0;
     _daughters_py = 0;
     _daughters_pz = 0;
+
+    _daughters_e_TauUp = 0;
+    _daughters_px_TauUp = 0;
+    _daughters_py_TauUp = 0;
+    _daughters_pz_TauUp = 0;
+    _daughters_e_TauDown = 0;
+    _daughters_px_TauDown = 0;
+    _daughters_py_TauDown = 0;
+    _daughters_pz_TauDown = 0;
+
     _PDGIdDaughters = 0;
     _decayMode = 0;
     _combreliso = 0;
@@ -2547,6 +2715,7 @@ void convert_tree(TString sample, int iso_tau=70,
     //_daughters_againstMuonTight3 = 0;
     //_daughters_againstElectronVLooseMVA5 = 0;
     _tauID = 0;
+    _triggerbit = 0;
 
     _daughters_jetNDauChargedMVASel = 0;
     _daughters_miniRelIsoCharged = 0;
@@ -2583,9 +2752,25 @@ void convert_tree(TString sample, int iso_tau=70,
     _genpart_TauGenDecayMode = 0;
     _genpart_flags = 0;
 
+    _EventNumber = -1;
+    _RunNumber = -1;
+    _lumi = -1;
+    
+    _PFMETCov00 = -1.;
+    _PFMETCov01 = -1.;
+    _PFMETCov10 = -1.;
+    _PFMETCov11 = -1.;
+    
+    _npv = -1;
+
+    _MC_weight = 0;
+
     int entry_ok = tree->GetEntry(i);
     if(entry_ok<0) continue;
 
+
+    _isTrig = pass_trigger(_triggerbit);
+    _isTrig_3l = pass_trigger_3l(_triggerbit);
 
     //////////////////////////////////////////////
     ///                 Muons                  ///
@@ -2594,6 +2779,7 @@ void convert_tree(TString sample, int iso_tau=70,
     vector< pair<int,TLorentzVector> > reco_mus;
    	
     for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
+
       int PDGId=(*_PDGIdDaughters)[i_daughter];
       TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
            
@@ -2777,6 +2963,8 @@ void convert_tree(TString sample, int iso_tau=70,
       _recomu_fakerate.push_back(FR);
 
     }
+
+
 
 
     //////////////////////////////////////////////
@@ -3131,13 +3319,15 @@ void convert_tree(TString sample, int iso_tau=70,
     for(unsigned int i_daughter=0; i_daughter<(*_daughters_e).size(); i_daughter++){
       int PDGId=(*_PDGIdDaughters)[i_daughter];
       TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
+
+      if(TES>0)
+	daughter.SetPxPyPzE( (*_daughters_px_TauUp)[i_daughter] , (*_daughters_py_TauUp)[i_daughter] , (*_daughters_pz_TauUp)[i_daughter] , (*_daughters_e_TauUp)[i_daughter] );
+      else if(TES<0)
+	daughter.SetPxPyPzE( (*_daughters_px_TauDown)[i_daughter] , (*_daughters_py_TauDown)[i_daughter] , (*_daughters_pz_TauDown)[i_daughter] , (*_daughters_e_TauDown)[i_daughter] );
       
       pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
      
       float iso=(*_daughters_byCombinedIsolationDeltaBetaCorrRaw3Hits)[i_daughter];   
-      /*int byLooseCombinedIsolationDeltaBetaCorr3Hits = ((*_tauID)[i_daughter]>>3)&1;
-      int byLooseCombinedIsolationDeltaBetaCorr3HitsdR03 = ((*_tauID)[i_daughter]>>21)&1;
-      int byLooseIsolationMVArun2v1DBdR03oldDMwLT = ((*_tauID)[i_daughter]>>24)&1;*/
       int byLooseCombinedIsolationDeltaBetaCorr3Hits = ((*_tauID)[i_daughter]>>map_tauID["byLooseCombinedIsolationDeltaBetaCorr3Hits"])&1;
       int byLooseCombinedIsolationDeltaBetaCorr3HitsdR03 = ((*_tauID)[i_daughter]>>map_tauID["byLooseCombinedIsolationDeltaBetaCorr3HitsdR03"])&1;
       int byLooseIsolationMVArun2v1DBdR03oldDMwLT = ((*_tauID)[i_daughter]>>map_tauID["byLooseIsolationMVArun2v1DBdR03oldDMwLT"])&1;
@@ -3155,7 +3345,6 @@ void convert_tree(TString sample, int iso_tau=70,
       else if(iso_type=="byLooseIsolationMVArun2v1DBdR03oldDMwLT")
 	iso_cut = byLooseIsolationMVArun2v1DBdR03oldDMwLT;
 	  
-      //bool sync_cut=fabs(PDGId)==15 && daughter.Pt()>20 && fabs(daughter.Eta())<2.3 && iso_cut && decayModeFinding>0.5 && fabs(dxy)<=1000 && fabs(dz)<=0.2;   
       bool nomin_cut = fabs(PDGId)==15 && daughter.Pt()>20 && fabs(daughter.Eta())<2.3 && iso_cut && decayModeFinding>0.5 && abs(dxy)<=1000 && abs(dz)<=0.2;     
       
       if( nomin_cut ){	
@@ -3271,10 +3460,13 @@ void convert_tree(TString sample, int iso_tau=70,
     for(unsigned int i_jet=0; i_jet<(*_jets_e).size(); i_jet++){
 
       TLorentzVector jet ( (*_jets_px)[i_jet] , (*_jets_py)[i_jet] , (*_jets_pz)[i_jet] , (*_jets_e)[i_jet] );
-
+      
       _jets_pt.push_back(jet.Pt());
       _jets_eta.push_back(jet.Eta());
       _jets_phi.push_back(jet.Phi());      
+
+      //JEC
+      jet.SetPtEtaPhiE( jet.Pt() * (1+JEC*(*_jets_jecUnc)[i_jet]), jet.Eta(), jet.Phi(), jet.E() * (1+JEC*(*_jets_jecUnc)[i_jet]) );
 
       pair<int,TLorentzVector> jet_pair = make_pair(i_jet,jet);
       float CSVscore = (*_bCSVscore)[i_jet];
@@ -3285,26 +3477,6 @@ void convert_tree(TString sample, int iso_tau=70,
       if(jet.Pt()>25 && fabs(jet.Eta())<2.4 && PFJetID>0){
 
 	bool dR_veto=false;
-
-	/*for(unsigned int i_lep=0; i_lep<reco_mus.size(); i_lep++){
-	  
-	  TLorentzVector lep=reco_mus[i_lep].second;
-	  float dR_lep_tau=lep.DeltaR(jet);
-	  if(dR_lep_tau<0.4){
-	    dR_veto=true;
-	    break;
-	  }
-	}
-
-	for(unsigned int i_lep=0; i_lep<reco_eles.size(); i_lep++){
-	  
-	  TLorentzVector lep=reco_eles[i_lep].second;
-	  float dR_lep_tau=lep.DeltaR(jet);
-	  if(dR_lep_tau<0.4){
-	    dR_veto=true;
-	    break;
-	  }
-	  }*/
 
 	for(unsigned int i_lep=0; i_lep<reco_leptons.size(); i_lep++){
 	  
@@ -3355,11 +3527,15 @@ void convert_tree(TString sample, int iso_tau=70,
     _n_recoPFJet = reco_jets.size();
     
 
+    vector<TLorentzVector> recoPFJets;
+
     for(unsigned int i_PFJet=0; i_PFJet<reco_jets.size(); i_PFJet++){
 
       int i_jet = reco_jets[i_PFJet].first;
       TLorentzVector jet =  reco_jets[i_PFJet].second;
       
+      recoPFJets.push_back(jet);
+
       _recoPFJet_e.push_back( jet.E() );
       _recoPFJet_pt.push_back( jet.Pt() );
       _recoPFJet_px.push_back( jet.Px() );
@@ -3368,6 +3544,7 @@ void convert_tree(TString sample, int iso_tau=70,
       _recoPFJet_eta.push_back( jet.Eta() );
       _recoPFJet_phi.push_back( jet.Phi() );
       _recoPFJet_CSVscore.push_back(  (*_bCSVscore)[i_jet] );
+      _recoPFJet_jecUnc.push_back(  (*_jets_jecUnc)[i_jet] );
       _recoPFJet_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
 
       int imin = -1;
@@ -3414,6 +3591,10 @@ void convert_tree(TString sample, int iso_tau=70,
     }
 
 
+    _bTagSF_weight = bTagSF_computer->getEvtWeight(_recoPFJet_CSVscore, recoPFJets, _recoPFJet_Flavour);
+
+
+
     for(unsigned int i_PFJet=0; i_PFJet<i_jet_CSV_pairs.size(); i_PFJet++){
 
       int i_jet = i_jet_CSV_pairs[i_PFJet].first;
@@ -3429,6 +3610,7 @@ void convert_tree(TString sample, int iso_tau=70,
       _recoPFJet_CSVsort_eta.push_back( jet.Eta() );
       _recoPFJet_CSVsort_phi.push_back( jet.Phi() );
       _recoPFJet_CSVsort_CSVscore.push_back( CSVscore );
+      _recoPFJet_CSVsort_jecUnc.push_back(  (*_jets_jecUnc)[i_jet] );
       _recoPFJet_CSVsort_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
 
       if(i_PFJet<2){
@@ -3440,6 +3622,7 @@ void convert_tree(TString sample, int iso_tau=70,
 	_recoPFJet_btag_eta.push_back( jet.Eta() );
 	_recoPFJet_btag_phi.push_back( jet.Phi() );
 	_recoPFJet_btag_CSVscore.push_back( CSVscore );
+	_recoPFJet_btag_jecUnc.push_back(  (*_jets_jecUnc)[i_jet] );
 	_recoPFJet_btag_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
       }
 
@@ -3463,6 +3646,7 @@ void convert_tree(TString sample, int iso_tau=70,
 	_recoPFJet_untag_eta.push_back( jet.Eta() );
 	_recoPFJet_untag_phi.push_back( jet.Phi() );
 	_recoPFJet_untag_CSVscore.push_back( (*_bCSVscore)[i_jet] );
+	_recoPFJet_untag_jecUnc.push_back( (*_jets_jecUnc)[i_jet] );
 	_recoPFJet_untag_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
 
       }
@@ -3527,13 +3711,14 @@ void convert_tree(TString sample, int iso_tau=70,
 	_recoPFJet_untag_Wtag_eta.push_back( _recoPFJet_untag_eta[i_jet] );
 	_recoPFJet_untag_Wtag_phi.push_back( _recoPFJet_untag_phi[i_jet] );
 	_recoPFJet_untag_Wtag_CSVscore.push_back( _recoPFJet_untag_CSVscore[i_jet] );
+	_recoPFJet_untag_Wtag_jecUnc.push_back( _recoPFJet_untag_jecUnc[i_jet] );
 	_recoPFJet_untag_Wtag_Flavour.push_back( _recoPFJet_untag_Flavour[i_jet] );
 
       }
 
     }
     
- 
+
 
     //////////////////////////////////////////////
     ///                MET                     ///
@@ -3688,6 +3873,7 @@ void convert_tree(TString sample, int iso_tau=70,
       vector<int> gentop_index;
       vector<int> genW_index;
       vector<int> genH_index;
+      vector<int> genZ_index;
       vector<int> genb_index;
       vector<int> genq_index;
       vector<int> gennu_index;
@@ -3815,6 +4001,23 @@ void convert_tree(TString sample, int iso_tau=70,
 	  genH_index.push_back(i_gen);
 	  
 	}
+
+	else if( abs( (*_genpart_pdg)[i_gen] )==23){
+	  
+	  _genZ_decayMode.push_back( (*_genpart_HZDecayMode)[i_gen] );
+	  
+	  _genZ_e.push_back( genpart_tlv.E() );
+	  _genZ_px.push_back( genpart_tlv.Px() );
+	  _genZ_py.push_back( genpart_tlv.Py() );
+	  _genZ_pz.push_back( genpart_tlv.Pz() );
+	  _genZ_pt.push_back( genpart_tlv.Pt() );
+	  _genZ_eta.push_back( genpart_tlv.Eta() );
+	  _genZ_phi.push_back( genpart_tlv.Phi() );
+	  _genZ_flags.push_back(flags);
+	  
+	  genZ_index.push_back(i_gen);
+	  
+	}
 	
 	else if( abs( (*_genpart_pdg)[i_gen] )==6){
 	  
@@ -3935,6 +4138,7 @@ void convert_tree(TString sample, int iso_tau=70,
       _n_gentauh = _gentauh_e.size();
       _n_gentau = _gentau_e.size();
       _n_genH = _genH_e.size();
+      _n_genZ = _genZ_e.size();
       _n_gentop = _gentop_e.size();
       _n_genW = _genW_e.size();
       _n_genb = _genb_e.size();

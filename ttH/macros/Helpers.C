@@ -60,6 +60,23 @@ TH1F* single_plot(vector<TString> files, TString tree_name, TString var, TString
 
 
 
+
+TH1F* single_plot(vector<TString> files, TString tree_name, TString var, vector<TString> cut, int nbin, float min, float max){
+
+
+  TH1F* g=new TH1F("g","g",nbin,min,max);
+  g->Sumw2();
+
+  for(unsigned int i=0; i<files.size(); i++){
+    g->Add(single_plot(files[i],tree_name,var,cut[i],nbin,min,max));
+  }
+
+  return g;
+
+}
+
+
+
 TH1D* single_plot_d(vector<TString> files, TString tree_name, TString var, TString cut, int nbin, float min, float max){
 
   TChain * tree = new TChain(tree_name);
@@ -123,6 +140,26 @@ TH2F* single_plot2D(vector<TString> files, TString tree_name, TString var1, TStr
   TH2F* g=(TH2F*) ((TH2F*)gDirectory->Get("h"))->Clone();
   return g;
 }
+
+
+
+
+
+
+TH2F* single_plot2D(TString file, TString tree_name, TString var1, TString var2, TString cut, int nbinx, double* x, int nbiny, double* y){
+
+  TChain * tree = new TChain(tree_name);
+  tree->Add(file);
+
+  TH2F* g=new TH2F("g","g",nbinx,x,nbiny,y);
+  g->Sumw2();
+
+  tree->Draw(var2+":"+var1+">>g",cut,"goff");
+
+  return g;
+
+}
+
 
 
 

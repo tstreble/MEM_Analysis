@@ -15,18 +15,20 @@
 
 void compar(){
 
-  TString log_file = "log_NDNebr_mu.txt";
+  TString log_file = "log_CERN_mu.txt";
   std::ifstream infile(log_file);
 
   TChain * tree = new TChain("syncTree");
-  tree->Add("/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_04_2016/syncNtuple_ttH_multilep.root");
+  tree->Add("/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root");
   int nEntries = tree->GetEntries();
 
   int _nEvent;
   int _n_presel_mu;
+  float _mu0_leptonMVA;
 
   tree->SetBranchAddress("nEvent",&_nEvent);
   tree->SetBranchAddress("n_presel_mu",&_n_presel_mu);
+  tree->SetBranchAddress("mu0_leptonMVA",&_mu0_leptonMVA);
 
   //int i=0;
   int nEntry=0;
@@ -39,11 +41,11 @@ void compar(){
 
     std::istringstream iss(line);
     vector<float> var;
-    for(unsigned int j=0;j<18;j++)
+    for(unsigned int j=0;j<19;j++)
       var.push_back(-1);
 
 
-    iss >> var[0] >> var[1] >> var[2] >> var[3] >> var[4] >> var[5] >> var[6] >> var[7] >> var[8] >> var[9] >> var[10] >> var[11] >> var[12] >> var[13] >> var[14] >> var[15] >> var[16] >> var[17];
+    iss >> var[0] >> var[1] >> var[2] >> var[3] >> var[4] >> var[5] >> var[6] >> var[7] >> var[8] >> var[9] >> var[10] >> var[11] >> var[12] >> var[13] >> var[14] >> var[15] >> var[16] >> var[17] >> var[18];
 
     int event_log = var[0];
     //if((log_file.Contains("CERN") || log_file.Contains("NDNebr"))  && (var[0]==132692 || var[0]==1465225))
@@ -69,14 +71,12 @@ void compar(){
       tree->GetEntry(nEntry);
     }  
 
-    if(var[0]==1036933 || var[0]==2480520 || var[0]==2045811 || var[0]==2778626 || var[0]==2353695 || var[0]==2753629 || var[0]==2858044 || var[0]==2771134){
-      continue;
-    }
 
-    if(abs(_nEvent-var[0])>1e-5){
+    if(abs(_mu0_leptonMVA-var[18])>1e-5){
       cout<<"Different"<<endl;
       cout<<"Event #"<<_nEvent<<endl;
-      cout<<"ND has "<<var[0]<<endl;
+      cout<<"LLR has "<<_mu0_leptonMVA<<endl;
+      cout<<"CERN has "<<var[18]<<endl;
       return;
     }
 

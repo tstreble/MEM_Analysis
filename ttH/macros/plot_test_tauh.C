@@ -868,3 +868,170 @@ void plot_tau_anti_mu_eff(){
 
 
 }
+
+
+
+
+
+
+
+
+void plot_tau_reco_eff2(){
+
+  TString ttH_sample="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_skimmed/ttH/ntuple_ttH_Htautau_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
+
+
+  TH1F* h_gen = single_plot(ttH_sample,"HTauTauTree","genpi_pt","(genpi_pt>20 && genpi_pt<120 && abs(genpi_eta)<2.3)",10,20,120);
+
+
+  vector<TH1F*> h;
+  h.push_back(single_plot(ttH_sample,"HTauTauTree","genpi_pt","(genpi_pt>20 && genpi_pt<120 && abs(genpi_eta)<2.3 && genpi_dR_daughter_matched<0.3 && abs(PDGIdDaughters[genpi_i_daughter_matched])==15 && daughters_pt[genpi_i_daughter_matched]>20 && abs(daughters_eta[genpi_i_daughter_matched])<2.3 && daughters_decayModeFindingOldDMs[genpi_i_daughter_matched]==1)",10,20,120));
+  h.push_back(single_plot(ttH_sample,"HTauTauTree","genpi_pt","(genpi_pt>20 && genpi_pt<120 && abs(genpi_eta)<2.3 && genpi_dR_daughter_matched<0.3 && abs(PDGIdDaughters[genpi_i_daughter_matched])==15 && daughters_pt[genpi_i_daughter_matched]>20 && abs(daughters_eta[genpi_i_daughter_matched])<2.3 && daughters_decayModeFindingOldDMs[genpi_i_daughter_matched]==1 && ((tauID[genpi_i_daughter_matched]>>3)&1)==1)",10,20,120));
+  h.push_back(single_plot(ttH_sample,"HTauTauTree","genpi_pt","(genpi_pt>20 && genpi_pt<120 && abs(genpi_eta)<2.3 && genpi_dR_daughter_matched<0.3 && abs(PDGIdDaughters[genpi_i_daughter_matched])==15 && daughters_pt[genpi_i_daughter_matched]>20 && abs(daughters_eta[genpi_i_daughter_matched])<2.3 && daughters_decayModeFindingOldDMs[genpi_i_daughter_matched]==1 && ((tauID[genpi_i_daughter_matched]>>27)&1)==1)",10,20,120));
+
+
+  vector<TString> leg_entry;
+  leg_entry.push_back("No isolation");
+  leg_entry.push_back("Cut-based #DeltaR=0.5 Loose WP");
+  leg_entry.push_back("MVA-based #DeltaR=0.3 Medium WP");
+
+
+  TLegend* leg=new TLegend(0.2,0.65,0.5,0.87);
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.035);
+  leg->SetFillColor(0);
+
+
+  vector<TH1F*> h_eff;
+  for(unsigned int i=0;i<h.size();i++){
+    h_eff.push_back(new TH1F("h_eff","",10,20,120));
+    h_eff[i]->Divide(h[i],h_gen);
+    h_eff[i]->SetLineColor(i+1);
+    h_eff[i]->SetMarkerColor(i+1);
+    if(i>3){
+      h_eff[i]->SetLineColor(i+2);
+      h_eff[i]->SetMarkerColor(i+2);
+    }
+    h_eff[i]->SetMarkerStyle(20+i);
+    h_eff[i]->SetLineWidth(2);
+    h_eff[i]->SetStats(0);
+    leg->AddEntry(h_eff[i],leg_entry[i]);
+  }
+
+
+  TCanvas* c=new TCanvas("c","c",650,600);
+  c->SetLeftMargin(0.15);
+  h_eff[0]->SetMaximum(1.19);
+  h_eff[0]->SetMinimum(0);
+  h_eff[0]->GetXaxis()->SetRangeUser(10,130);
+  h_eff[0]->GetXaxis()->SetTitle("p_{T}^{#tau}(gen) [GeV]");
+  h_eff[0]->GetYaxis()->SetTitle("TauID efficiency");
+  h_eff[0]->GetXaxis()->SetTitleOffset(1.2);
+  h_eff[0]->GetYaxis()->SetTitleOffset(1.7);
+  gPad->SetTicks(1,1);
+
+  h_eff[0]->Draw("E");
+  for(unsigned int i=1; i<h.size();i++){
+    h_eff[i]->Draw("sameE");
+  }
+  
+  leg->Draw("same");
+
+  TLatex *texl = new TLatex(11,1.22,"CMS Preliminary, #sqrt{s}=13 TeV, Simulation ttH H->#tau#tau");
+  texl->SetTextSize(0.03);
+  texl->Draw("same");
+
+  TString filename="eff_reco_tauh_ttH_dRveto_genskim_2";
+  c->SaveAs("../plots/pdf/"+filename+".pdf");
+  c->SaveAs("../plots/png/"+filename+".png");
+
+  return;
+
+
+
+}
+
+
+
+
+
+
+
+void plot_tau_mistag(){
+
+  TString ttH_sample="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_skimmed/ttH/ntuple_ttH_Htautau_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
+
+
+  TH1F* h_gen = single_plot(ttH_sample,"HTauTauTree","genq1_pt","(genq1_pt>20 && genq1_pt<120 && abs(genq1_eta)<2.3)",10,20,120);
+
+
+  vector<TH1F*> h;
+  //h.push_back(single_plot(ttH_sample,"HTauTauTree","genq1_pt","(genq1_pt>20 && genq1_pt<120 && abs(genq1_eta)<2.3 && genq1_dR_daughter_matched<0.3 && abs(PDGIdDaughters[genq1_i_daughter_matched])==15 && daughters_pt[genq1_i_daughter_matched]>20 && abs(daughters_eta[genq1_i_daughter_matched])<2.3 && daughters_decayModeFindingOldDMs[genq1_i_daughter_matched]==1)",10,20,120));
+  h.push_back(single_plot(ttH_sample,"HTauTauTree","genq1_pt","(genq1_pt>20 && genq1_pt<120 && abs(genq1_eta)<2.3 && genq1_dR_daughter_matched<0.3 && abs(PDGIdDaughters[genq1_i_daughter_matched])==15 && daughters_pt[genq1_i_daughter_matched]>20 && abs(daughters_eta[genq1_i_daughter_matched])<2.3 && daughters_decayModeFindingOldDMs[genq1_i_daughter_matched]==1 && ((tauID[genq1_i_daughter_matched]>>3)&1)==1)",10,20,120));
+  h.push_back(single_plot(ttH_sample,"HTauTauTree","genq1_pt","(genq1_pt>20 && genq1_pt<120 && abs(genq1_eta)<2.3 && genq1_dR_daughter_matched<0.3 && abs(PDGIdDaughters[genq1_i_daughter_matched])==15 && daughters_pt[genq1_i_daughter_matched]>20 && abs(daughters_eta[genq1_i_daughter_matched])<2.3 && daughters_decayModeFindingOldDMs[genq1_i_daughter_matched]==1 && ((tauID[genq1_i_daughter_matched]>>27)&1)==1)",10,20,120));
+
+
+  vector<TString> leg_entry;
+  //leg_entry.push_back("No isolation");
+  leg_entry.push_back("Cut-based #DeltaR=0.5 Loose WP");
+  leg_entry.push_back("MVA-based #DeltaR=0.3 Medium WP");
+
+
+  TLegend* leg=new TLegend(0.2,0.65,0.5,0.87);
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.035);
+  leg->SetFillColor(0);
+
+
+  vector<TH1F*> h_eff;
+  for(unsigned int i=0;i<h.size();i++){
+    h_eff.push_back(new TH1F("h_eff","",10,20,120));
+    h_eff[i]->Divide(h[i],h_gen);
+    h_eff[i]->SetLineColor(i+2);
+    h_eff[i]->SetMarkerColor(i+2);
+    if(i>3){
+      h_eff[i]->SetLineColor(i+3);
+      h_eff[i]->SetMarkerColor(i+3);
+    }
+    h_eff[i]->SetMarkerStyle(20+i);
+    h_eff[i]->SetLineWidth(2);
+    h_eff[i]->SetStats(0);
+    leg->AddEntry(h_eff[i],leg_entry[i]);
+  }
+
+
+  TCanvas* c=new TCanvas("c","c",650,600);
+  c->SetLeftMargin(0.15);
+  c->SetLogy();
+  h_eff[0]->SetMaximum(9e-2);
+  h_eff[0]->SetMinimum(9e-4);
+  h_eff[0]->GetXaxis()->SetRangeUser(10,130);
+  h_eff[0]->GetXaxis()->SetTitle("p_{T}^{q}(gen) [GeV]");
+  h_eff[0]->GetYaxis()->SetTitle("TauID quark mistag rate");
+  h_eff[0]->GetXaxis()->SetTitleOffset(1.2);
+  h_eff[0]->GetYaxis()->SetTitleOffset(1.7);
+  gPad->SetTicks(1,1);
+
+  h_eff[0]->Draw("E");
+  for(unsigned int i=1; i<h.size();i++){
+    h_eff[i]->Draw("sameE");
+  }
+  
+  leg->Draw("same");
+
+  TLatex *texl = new TLatex(11,1e-1,"CMS Preliminary, #sqrt{s}=13 TeV, Simulation ttH H->#tau#tau");
+  texl->SetTextSize(0.03);
+  texl->Draw("same");
+
+  TString filename="mistag_reco_tauh_ttH_dRveto_genskim";
+  c->SaveAs("../plots/pdf/"+filename+".pdf");
+  c->SaveAs("../plots/png/"+filename+".png");
+
+  return;
+
+
+
+}
+
+
+

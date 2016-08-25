@@ -9,9 +9,10 @@ using namespace std;
 
 void write_mu_log(){
 
-  std::ofstream out("mu.txt");
+  std::ofstream out("mu_80X.txt");
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root";
+  //TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root";
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree");
   tree->Add(file);
@@ -57,25 +58,6 @@ void write_mu_log(){
   tree->SetBranchAddress("mu0_leptonMVA",&_mu0_leptonMVA);
 
 
-  /*out<<setw(12)<<"event# *";
-  out<<setw(13)<<"pt *";
-  out<<setw(13)<<"eta *";
-  out<<setw(13)<<"phi *";
-  out<<setw(13)<<"E *";
-  out<<setw(10)<<"pdgId *";
-  out<<setw(10)<<"charge *";
-  out<<" jetNDauChargedMVASel *";
-  out<<" miniRelIso *";
-  out<<" miniIsoCharged *";
-  out<<" miniIsoNeutral *";
-  out<<setw(13)<<" jetPtRel *";
-  out<<setw(13)<<" jetCSV *";
-  out<<setw(16)<<" jetPtRatio *";
-  out<<setw(13)<<" sip3D *";
-  out<<setw(14)<<"dxy *";
-  out<<setw(15)<<"dz *";
-  out<<" segmentCompatibility"<<endl;*/
-
 
   Long64_t nentries = tree->GetEntries();
 
@@ -87,25 +69,6 @@ void write_mu_log(){
     tree->GetEntry(i);
   
     if(_n_presel_mu==0) continue;
-
-    /*out<<setw(10)<<_nEvent<<" * ";
-    out<<setw(10)<<_mu0_conept<<" * ";
-    out<<setw(10)<<_mu0_eta<<" * ";
-    out<<setw(10)<<_mu0_phi<<" * ";
-    out<<setw(10)<<_mu0_E<<" * ";
-    out<<setw(7)<<(-13*_mu0_charge)<<" * ";
-    out<<setw(7)<<_mu0_charge<<" * ";
-    out<<setw(20)<<_mu0_jetNDauChargedMVASel<<" * ";
-    out<<setw(10)<<_mu0_miniRelIso<<" * ";
-    out<<setw(14)<<_mu0_miniIsoCharged<<" * ";
-    out<<setw(14)<<_mu0_miniIsoNeutral<<" * ";
-    out<<setw(10)<<_mu0_jetPtRel<<" * ";
-    out<<setw(10)<<_mu0_jetCSV<<" * ";
-    out<<setw(13)<<_mu0_jetPtRatio<<" * ";
-    out<<setw(10)<<_mu0_sip3D<<" * ";
-    out<<setw(10)<<_mu0_dxy<<" * ";
-    out<<setw(10)<<_mu0_dz<<" * ";
-    out<<setw(20)<<_mu0_segmentCompatibility<<endl;*/
 
     out<<_nEvent<<" ";
     out<<std::fixed<<std::setprecision(5)<<_mu0_pt<<" ";
@@ -142,9 +105,11 @@ void write_mu_log(){
 
 void write_ele_log(){
 
-  std::ofstream out("ele.txt");
+  //std::ofstream out("ele.txt");
+  std::ofstream out("ele_80X.txt");
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root";
+  //TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root";
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree");
   tree->Add(file);
@@ -190,25 +155,6 @@ void write_ele_log(){
   tree->SetBranchAddress("ele0_leptonMVA",&_ele0_leptonMVA);
 
 
-  /*out<<setw(12)<<"event# *";
-  out<<setw(13)<<"pt *";
-  out<<setw(13)<<"eta *";
-  out<<setw(13)<<"phi *";
-  out<<setw(13)<<"E *";
-  out<<setw(10)<<"pdgId *";
-  out<<setw(10)<<"charge *";
-  out<<" jetNDauChargedMVASel *";
-  out<<" miniRelIso *";
-  out<<" miniIsoCharged *";
-  out<<" miniIsoNeutral *";
-  out<<setw(13)<<" jetPtRel *";
-  out<<setw(13)<<" jetCSV *";
-  out<<setw(16)<<" jetPtRatio *";
-  out<<setw(13)<<" sip3D *";
-  out<<setw(14)<<"dxy *";
-  out<<setw(15)<<"dz *";
-  out<<setw(10)<<" eleMVA"<<endl;*/
-
 
   Long64_t nentries = tree->GetEntries();
 
@@ -221,24 +167,6 @@ void write_ele_log(){
   
     if(_n_presel_ele==0) continue;
 
-    /*out<<setw(10)<<_nEvent<<" * ";
-    out<<setw(10)<<_ele0_conept<<" * ";
-    out<<setw(10)<<_ele0_eta<<" * ";
-    out<<setw(10)<<_ele0_phi<<" * ";
-    out<<setw(10)<<_ele0_E<<" * ";
-    out<<setw(7)<<(-11*_ele0_charge)<<" * ";
-    out<<setw(7)<<_ele0_charge<<" * ";
-    out<<setw(20)<<_ele0_jetNDauChargedMVASel<<" * ";
-    out<<setw(10)<<_ele0_miniRelIso<<" * ";
-    out<<setw(14)<<_ele0_miniIsoCharged<<" * ";
-    out<<setw(14)<<_ele0_miniIsoNeutral<<" * ";
-    out<<setw(10)<<_ele0_jetPtRel<<" * ";
-    out<<setw(10)<<_ele0_jetCSV<<" * ";
-    out<<setw(13)<<_ele0_jetPtRatio<<" * ";
-    out<<setw(10)<<_ele0_sip3D<<" * ";
-    out<<setw(10)<<_ele0_dxy<<" * ";
-    out<<setw(10)<<_ele0_dz<<" * ";
-    out<<setw(10)<<_ele0_ntMVAeleID<<endl;*/
 
     out<<_nEvent<<" ";
     out<<std::fixed<<std::setprecision(5)<<_ele0_pt<<" ";
@@ -278,9 +206,14 @@ void write_ele_log(){
 
 void write_tau_log(){
 
-  std::ofstream out("tau.txt");
+  /*std::ofstream out("tau.txt");
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root";
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root";*/
+
+  std::ofstream out("tau_80X.txt");
+
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_ttH_multilep.root";
+
 
   TChain * tree = new TChain("syncTree");
   tree->Add(file);
@@ -310,17 +243,6 @@ void write_tau_log(){
   tree->SetBranchAddress("tau0_byMediumIsolationMVArun2v1DBdR03oldDMwLT",&_tau0_byMediumIsolationMVArun2v1DBdR03oldDMwLT);
 
 
-  /*out<<setw(12)<<"event# *";
-  out<<setw(13)<<"pt *";
-  out<<setw(13)<<"eta *";
-  out<<setw(13)<<"phi *";
-  out<<setw(13)<<"E *";
-  out<<setw(10)<<"charge *";
-  out<<setw(14)<<"dxy *";
-  out<<setw(15)<<"dz *";
-  out<<" decayModeFindingOldDMs *";
-  out<<" byMediumIsolationMVArun2v1DBdR03oldDMwLT"<<endl;*/
-
 
   Long64_t nentries = tree->GetEntries();
 
@@ -332,17 +254,6 @@ void write_tau_log(){
     tree->GetEntry(i);
   
     if(_n_presel_tau==0) continue;
-
-    /*out<<setw(10)<<_nEvent<<" * ";
-    out<<setw(10)<<_tau0_pt<<" * ";
-    out<<setw(10)<<_tau0_eta<<" * ";
-    out<<setw(10)<<_tau0_phi<<" * ";
-    out<<setw(10)<<_tau0_E<<" * ";
-    out<<setw(7)<<_tau0_charge<<" * ";
-    out<<setw(10)<<_tau0_dxy<<" * ";
-    out<<setw(10)<<_tau0_dz<<" * ";
-    out<<setw(10)<<_tau0_decayModeFindingOldDMs<<" * ";
-    out<<setw(10)<<_tau0_byMediumIsolationMVArun2v1DBdR03oldDMwLT<<endl;*/
 
     out<<_nEvent<<" ";
     out<<std::fixed<<std::setprecision(5)<<_tau0_pt<<" ";
@@ -372,9 +283,14 @@ void write_tau_log(){
 
 void write_jet_log(){
 
-  std::ofstream out("jet.txt");
+  /*std::ofstream out("jet.txt");
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root";
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_ttH_multilep.root";*/
+
+  std::ofstream out("jet_80X.txt");
+
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_ttH_multilep.root";
+
 
   TChain * tree = new TChain("syncTree");
   tree->Add(file);
@@ -399,15 +315,6 @@ void write_jet_log(){
   tree->SetBranchAddress("PFMET",&_PFMET);
   tree->SetBranchAddress("PFMETphi",&_PFMETphi);
 
-
-  /*out<<setw(12)<<"event# *";
-  out<<setw(13)<<"pt *";
-  out<<setw(13)<<"eta *";
-  out<<setw(13)<<"phi *";
-  out<<setw(13)<<"E *";
-  out<<setw(13)<<"CSV *";
-  out<<setw(13)<<"MET *";
-  out<<setw(13)<<"MET phi"<<endl;*/
  
 
 
@@ -422,14 +329,6 @@ void write_jet_log(){
   
     if(_n_presel_jet==0) continue;
 
-    /*out<<setw(10)<<_nEvent<<" * ";
-    out<<setw(10)<<_jet0_pt<<" * ";
-    out<<setw(10)<<_jet0_eta<<" * ";
-    out<<setw(10)<<_jet0_phi<<" * ";
-    out<<setw(10)<<_jet0_E<<" * ";
-    out<<setw(10)<<_jet0_CSV<<" * ";
-    out<<setw(10)<<_PFMET<<" * ";
-    out<<setw(10)<<_PFMETphi<<endl;*/
     cout<<_nEvent<<endl;
 
     out<<_nEvent<<" ";
@@ -456,9 +355,12 @@ void write_jet_log(){
 
 void write_2lSS_SR_ee_log(){
 
-  std::ofstream out("2lSS_SR_ee.txt");
+  /*std::ofstream out("2lSS_SR_ee.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lSS_SR_ee_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
+
 
   TChain * tree = new TChain("syncTree_2lSS_ee");
   tree->Add(file);
@@ -536,10 +438,12 @@ void write_2lSS_SR_ee_log(){
 
 void write_2lSS_lepMVA_CR_ee_log(){
 
-  std::ofstream out("2lSS_lepMVA_CR_ee.txt");
+  //std::ofstream out("2lSS_lepMVA_CR_ee.txt");
+  //TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
-
+  std::ofstream out("2lSS_lepMVA_CR_ee_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
+ 
   TChain * tree = new TChain("syncTree_2lSS_lepMVA_CR_ee");
   tree->Add(file);
 
@@ -616,9 +520,12 @@ void write_2lSS_lepMVA_CR_ee_log(){
 
 void write_2lOS_CR_ee_log(){
 
-  std::ofstream out("2lOS_CR_ee.txt");
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  /*std::ofstream out("2lOS_CR_ee.txt");
+  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
+
+  std::ofstream out("2lOS_CR_ee_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lOS_CR_ee");
   tree->Add(file);
@@ -696,9 +603,12 @@ void write_2lOS_CR_ee_log(){
 
 void write_2lSS_SR_mumu_log(){
 
-  std::ofstream out("2lSS_SR_mumu.txt");
+  /*std::ofstream out("2lSS_SR_mumu.txt");
+  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lSS_SR_mumu_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
+
 
   TChain * tree = new TChain("syncTree_2lSS_mumu");
   tree->Add(file);
@@ -776,9 +686,11 @@ void write_2lSS_SR_mumu_log(){
 
 void write_2lSS_lepMVA_CR_mumu_log(){
 
-  std::ofstream out("2lSS_lepMVA_CR_mumu.txt");
+  /*std::ofstream out("2lSS_lepMVA_CR_mumu.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lSS_lepMVA_CR_mumu_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lSS_lepMVA_CR_mumu");
   tree->Add(file);
@@ -856,9 +768,11 @@ void write_2lSS_lepMVA_CR_mumu_log(){
 
 void write_2lOS_CR_mumu_log(){
 
-  std::ofstream out("2lOS_CR_mumu.txt");
+  /*std::ofstream out("2lOS_CR_mumu.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lOS_CR_mumu_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lOS_CR_mumu");
   tree->Add(file);
@@ -935,9 +849,11 @@ void write_2lOS_CR_mumu_log(){
 
 void write_2lSS_SR_emu_log(){
 
-  std::ofstream out("2lSS_SR_emu.txt");
+  /*std::ofstream out("2lSS_SR_emu.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lSS_SR_emu_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lSS_emu");
   tree->Add(file);
@@ -1015,9 +931,11 @@ void write_2lSS_SR_emu_log(){
 
 void write_2lSS_lepMVA_CR_emu_log(){
 
-  std::ofstream out("2lSS_lepMVA_CR_emu.txt");
+  /*std::ofstream out("2lSS_lepMVA_CR_emu.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lSS_lepMVA_CR_emu_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lSS_lepMVA_CR_emu");
   tree->Add(file);
@@ -1095,9 +1013,11 @@ void write_2lSS_lepMVA_CR_emu_log(){
 
 void write_2lOS_CR_emu_log(){
 
-  std::ofstream out("2lOS_CR_emu.txt");
+  /*std::ofstream out("2lOS_CR_emu.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lOS_CR_emu_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lOS_CR_emu");
   tree->Add(file);
@@ -1176,9 +1096,11 @@ void write_2lOS_CR_emu_log(){
 
 void write_2lSS_SR_tau_log(){
 
-  std::ofstream out("2lSS_SR_tau.txt");
+  /*std::ofstream out("2lSS_SR_tau.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lSS_SR_tau_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lSS_tau");
   tree->Add(file);
@@ -1256,9 +1178,11 @@ void write_2lSS_SR_tau_log(){
 
 void write_2lSS_lepMVA_CR_tau_log(){
 
-  std::ofstream out("2lSS_lepMVA_CR_tau.txt");
+  /*std::ofstream out("2lSS_lepMVA_CR_tau.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lSS_lepMVA_CR_tau_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lSS_lepMVA_CR_tau");
   tree->Add(file);
@@ -1336,9 +1260,11 @@ void write_2lSS_lepMVA_CR_tau_log(){
 
 void write_2lOS_CR_tau_log(){
 
-  std::ofstream out("2lOS_CR_tau.txt");
+  /*std::ofstream out("2lOS_CR_tau.txt");
+    TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";*/
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("2lOS_CR_tau_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_2lOS_CR_tau");
   tree->Add(file);
@@ -1417,9 +1343,11 @@ void write_2lOS_CR_tau_log(){
 
 void write_3l_SR_log(){
 
-  std::ofstream out("3l_SR.txt");
+  //std::ofstream out("3l_SR.txt");
+  //TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("3l_SR_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_3l");
   tree->Add(file);
@@ -1497,9 +1425,11 @@ void write_3l_SR_log(){
 
 void write_3l_lepMVA_CR_log(){
 
-  std::ofstream out("3l_lepMVA_CR.txt");
+  //std::ofstream out("3l_lepMVA_CR.txt");
+  //TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
 
-  TString file="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/syncNtuple_event_ttH_multilep.root";
+  std::ofstream out("3l_lepMVA_CR_80X.txt");
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/syncNtuple_event_ttH_multilep.root";
 
   TChain * tree = new TChain("syncTree_3l_lepMVA_CR");
   tree->Add(file);

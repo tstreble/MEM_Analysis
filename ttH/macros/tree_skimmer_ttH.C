@@ -31,29 +31,25 @@ using namespace std;
 
 
 
-void skim_tree(TString sample){
+void skim_tree(){
 
-  TString file_in="ntuple_ttH_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";    
-  TString file_out="ntuple_ttH_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";    
-  TString dir;
 
-  if(sample=="ttH"){
-    dir="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/";
-  }
+  TString file_in = "/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttH/ntuple_ttH_Htautau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
+  TString file_out = "/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_skimmed/ttH/ntuple_ttH_Htautau_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
 
 
   TChain * tree = new TChain("HTauTauTree");
-  tree->Add(dir+file_in);
+  tree->Add(file_in);
 
   Long64_t nentries = tree->GetEntries();
 
-  TFile* f_new = TFile::Open(dir+file_out);
+  TFile* f_new = TFile::Open(file_out);
   if(f_new!=0){
-    cout<<dir+file_out<<" already exists, please delete it before converting again"<<endl;
+    cout<<file_out<<" already exists, please delete it before converting again"<<endl;
     return;
   }
   
-  f_new = TFile::Open(dir+file_out,"RECREATE");
+  f_new = TFile::Open(file_out,"RECREATE");
 
 
 
@@ -409,6 +405,8 @@ void skim_tree(TString sample){
   float _genq1_eta;
   float _genq1_phi;
   int _genq1_flags; 
+  int _genq1_i_daughter_matched;
+  float _genq1_dR_daughter_matched;
 
   int _genq2_pdg;
   float _genq2_e;
@@ -419,6 +417,8 @@ void skim_tree(TString sample){
   float _genq2_eta;
   float _genq2_phi;
   int _genq2_flags; 
+  int _genq2_i_daughter_matched;
+  float _genq2_dR_daughter_matched;
 
   int _gentaulep_fromH_charge;
   float _gentaulep_fromH_e;
@@ -602,6 +602,8 @@ void skim_tree(TString sample){
   tree_new->Branch("genq1_eta",&_genq1_eta,"genq1_eta/F");
   tree_new->Branch("genq1_phi",&_genq1_phi,"genq1_phi/F");
   tree_new->Branch("genq1_flags",&_genq1_flags,"genq1_flags/I");
+  tree_new->Branch("genq1_i_daughter_matched",&_genq1_i_daughter_matched,"genq1_i_daughter_matched/I");
+  tree_new->Branch("genq1_dR_daughter_matched",&_genq1_dR_daughter_matched,"genq1_dR_daughter_matched/F");
 
   tree_new->Branch("genq2_pdg",&_genq2_pdg,"genq2_pdg/I");
   tree_new->Branch("genq2_e",&_genq2_e,"genq2_e/F");
@@ -612,6 +614,8 @@ void skim_tree(TString sample){
   tree_new->Branch("genq2_eta",&_genq2_eta,"genq2_eta/F");
   tree_new->Branch("genq2_phi",&_genq2_phi,"genq2_phi/F");
   tree_new->Branch("genq2_flags",&_genq2_flags,"genq2_flags/I");
+  tree_new->Branch("genq2_i_daughter_matched",&_genq2_i_daughter_matched,"genq2_i_daughter_matched/I");
+  tree_new->Branch("genq2_dR_daughter_matched",&_genq2_dR_daughter_matched,"genq2_dR_daughter_matched/F");
 
   tree_new->Branch("gentaulep_fromH_charge",&_gentaulep_fromH_charge,"gentaulep_fromH_charge/I");
   tree_new->Branch("gentaulep_fromH_e",&_gentaulep_fromH_e,"gentaulep_fromH_e/F");
@@ -806,7 +810,10 @@ void skim_tree(TString sample){
     _genq1_pt = 0;
     _genq1_eta = 0;
     _genq1_phi = 0;
-    _genq1_flags = 0; 
+    _genq1_flags = 0;
+
+    _genq1_i_daughter_matched = -1;
+    _genq1_dR_daughter_matched = 9999; 
 
     _genq2_pdg = 0;
     _genq2_e = 0;
@@ -817,6 +824,9 @@ void skim_tree(TString sample){
     _genq2_eta = 0;
     _genq2_phi = 0;
     _genq2_flags = 0; 
+
+    _genq2_i_daughter_matched = -1;
+    _genq2_dR_daughter_matched = 9999;
 
     _gentaulep_fromH_charge = 0;
     _gentaulep_fromH_e = 0;
@@ -1187,6 +1197,20 @@ void skim_tree(TString sample){
 
     TLorentzVector genq1_tlv(_genq1_px,_genq1_py,_genq1_pz,_genq1_e);
 
+    for(unsigned int ireco=0; ireco<(*_daughters_e).size(); ireco++){
+
+      if( abs((*_PDGIdDaughters)[ireco])!=15)
+	continue;
+
+      TLorentzVector recotauh_tlv((*_daughters_px)[ireco],(*_daughters_py)[ireco],(*_daughters_pz)[ireco],(*_daughters_e)[ireco]);
+
+      float dR=genq1_tlv.DeltaR(recotauh_tlv);
+      if( dR< _genq1_dR_daughter_matched ){
+	_genq1_dR_daughter_matched = dR;
+	_genq1_i_daughter_matched = ireco;
+      }
+
+    }
 
     _genq2_pdg = (*_genq_pdg)[iq2];
     _genq2_e = (*_genq_e)[iq2];
@@ -1200,7 +1224,20 @@ void skim_tree(TString sample){
 
     TLorentzVector genq2_tlv(_genq2_px,_genq2_py,_genq2_pz,_genq2_e);
 
+    for(unsigned int ireco=0; ireco<(*_daughters_e).size(); ireco++){
 
+      if( abs((*_PDGIdDaughters)[ireco])!=15)
+	continue;
+
+      TLorentzVector recotauh_tlv((*_daughters_px)[ireco],(*_daughters_py)[ireco],(*_daughters_pz)[ireco],(*_daughters_e)[ireco]);
+
+      float dR=genq2_tlv.DeltaR(recotauh_tlv);
+      if( dR< _genq2_dR_daughter_matched ){
+	_genq2_dR_daughter_matched = dR;
+	_genq2_i_daughter_matched = ireco;
+      }
+
+    }
 
     //tau's
 

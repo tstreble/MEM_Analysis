@@ -29,8 +29,11 @@ using namespace std;
 
 void create_syncNtuple(){
 
-  TString dir_in="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_06_2016/";
-  TString dir_out="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/";
+  //TString dir_in="/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_06_2016/";
+  //TString dir_out="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/";
+  TString dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/";
+  TString dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/";
+
   TString file="syncNtuple_ttH_multilep.root";    
 
   vector<TString> list;
@@ -1004,7 +1007,11 @@ void create_syncNtuple_eventbased(){
 
   TString dir_in="/data_CMS/cms/strebler/ttH_Samples/ntuples_splitted/MiniAODv2_prod_06_2016/";
   TString dir_out="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/";
-  TString file="syncNtuple_event_ttH_multilep.root";    
+  TString file="syncNtuple_event_ttH_multilep.root";
+
+  /*TString dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/";
+  TString dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/";
+  TString file="syncNtuple_event_ttH_multilep.root";*/
 
   vector<TString> list;
   list.push_back(dir_in+"sync_HTauTauTree_split.root");
@@ -1180,7 +1187,7 @@ void create_syncNtuple_eventbased(){
    
     tree_2lSS->GetEntry(i);
 
-    _max_eta_lep = max((*_recolep_sel_eta)[0], (*_recolep_sel_eta)[1]);
+    _max_eta_lep = max(fabs((*_recolep_sel_eta)[0]), fabs((*_recolep_sel_eta)[1]));
 
     if(_category>=1 && _category<=4)
       tree_new_2lSS_mumu->Fill();
@@ -1227,7 +1234,7 @@ void create_syncNtuple_eventbased(){
 
     tree_2lOS_CR->GetEntry(i);
  
-    _max_eta_lep = max((*_recolep_sel_eta)[0], (*_recolep_sel_eta)[1]);
+    _max_eta_lep = max(fabs((*_recolep_sel_eta)[0]), fabs((*_recolep_sel_eta)[1]));
 
     if(_category==-1 || _category==-3)
       tree_new_2lOS_CR_mumu->Fill();
@@ -1276,7 +1283,7 @@ void create_syncNtuple_eventbased(){
 
     tree_2lSS_lepMVA_CR->GetEntry(i);
  
-    _max_eta_lep = max((*_recolep_sel_eta)[0], (*_recolep_sel_eta)[1]);
+    _max_eta_lep = max(fabs((*_recolep_sel_eta)[0]), fabs((*_recolep_sel_eta)[1]));
 
     if(_category>=31 && _category<=34)
       tree_new_2lSS_lepMVA_CR_mumu->Fill();
@@ -1286,16 +1293,6 @@ void create_syncNtuple_eventbased(){
       tree_new_2lSS_lepMVA_CR_ee->Fill();
     else if(_category==41)
       tree_new_2lSS_lepMVA_CR_tau->Fill();
-
-
-    tree_3l->GetEntry(i);
- 
-    _max_eta_lep = max((*_recolep_sel_eta)[0], (*_recolep_sel_eta)[1]);
-
-    if(_category>=12 && _category<=15)
-      tree_new_3l->Fill();
-    else if(_category>=42 && _category<=45)
-      tree_new_3l_lepMVA_CR->Fill();
 
 
   }
@@ -1334,12 +1331,10 @@ void create_syncNtuple_eventbased(){
    
     tree_3l->GetEntry(i);
  
-    _max_eta_lep = max((*_recolep_sel_eta)[0], (*_recolep_sel_eta)[1]);
+    _max_eta_lep = max(fabs((*_recolep_sel_eta)[0]), fabs((*_recolep_sel_eta)[1]));
 
     if(_category>=12 && _category<=15)
       tree_new_3l->Fill();
-    else if(_category>=42 && _category<=45)
-      tree_new_3l_lepMVA_CR->Fill();
 
 
   }
@@ -1378,7 +1373,7 @@ void create_syncNtuple_eventbased(){
    
     tree_3l_lepMVA_CR->GetEntry(i);
  
-    _max_eta_lep = max((*_recolep_sel_eta)[0], (*_recolep_sel_eta)[1]);
+    _max_eta_lep = max(fabs((*_recolep_sel_eta)[0]), fabs((*_recolep_sel_eta)[1]));
 
     if(_category>=42 && _category<=45)
       tree_new_3l_lepMVA_CR->Fill();
