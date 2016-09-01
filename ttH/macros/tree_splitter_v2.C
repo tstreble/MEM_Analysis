@@ -16,6 +16,7 @@
 #include <TLorentzVector.h>
 #include <TVector3.h>
 
+#include <leptonSF.cc>
 
 using namespace std;
 
@@ -55,6 +56,8 @@ void split_tree(TString filename_in, TString filename_out,
   vector<float> *_recolep_eta;
   vector<float> *_recolep_phi;
   vector<float> *_recolep_fakerate;
+  vector<float> *_recolep_fakerate_QCD_MC;
+  vector<float> *_recolep_fakerate_ttbar_MC;
   vector<float> *_recolep_QFrate; 
   vector<bool>  *_recolep_ismvasel;
   vector<bool>  *_recolep_tightcharge;
@@ -98,6 +101,8 @@ void split_tree(TString filename_in, TString filename_out,
   tree->SetBranchAddress("recolep_eta",&_recolep_eta);
   tree->SetBranchAddress("recolep_phi",&_recolep_phi);
   tree->SetBranchAddress("recolep_fakerate",&_recolep_fakerate);
+  tree->SetBranchAddress("recolep_fakerate_QCD_MC",&_recolep_fakerate_QCD_MC);
+  tree->SetBranchAddress("recolep_fakerate_ttbar_MC",&_recolep_fakerate_ttbar_MC);
   tree->SetBranchAddress("recolep_QFrate",&_recolep_QFrate);
   tree->SetBranchAddress("recolep_ismvasel",&_recolep_ismvasel);
   tree->SetBranchAddress("recolep_tightcharge",&_recolep_tightcharge);
@@ -232,6 +237,8 @@ void split_tree(TString filename_in, TString filename_out,
   vector<float> _recolep_sel_eta;
   vector<float> _recolep_sel_phi;
   vector<float> _recolep_sel_fakerate;
+  vector<float> _recolep_sel_fakerate_QCD_MC;
+  vector<float> _recolep_sel_fakerate_ttbar_MC;
   vector<float> _recolep_sel_QFrate; 
   vector<bool>  _recolep_sel_ismvasel;
   vector<bool>  _recolep_sel_tightcharge;
@@ -248,7 +255,11 @@ void split_tree(TString filename_in, TString filename_out,
   vector<float> _recotauh_sel_phi;
 
   float _event_weight_ttH;
+  float _event_weight_ttH_FR_QCD_MC;
+  float _event_weight_ttH_FR_TT_MC;
 
+  float _triggerSF_weight;
+  float _leptonSF_ttH_weight;
 
   for(unsigned int i=0; i<tree_new.size();i++){
     
@@ -265,6 +276,8 @@ void split_tree(TString filename_in, TString filename_out,
     tree_new[i]->Branch("recolep_sel_eta",&_recolep_sel_eta);
     tree_new[i]->Branch("recolep_sel_phi",&_recolep_sel_phi);
     tree_new[i]->Branch("recolep_sel_fakerate",&_recolep_sel_fakerate);
+    tree_new[i]->Branch("recolep_sel_fakerate_QCD_MC",&_recolep_sel_fakerate_QCD_MC);
+    tree_new[i]->Branch("recolep_sel_fakerate_ttbar_MC",&_recolep_sel_fakerate_ttbar_MC);
     tree_new[i]->Branch("recolep_sel_QFrate",&_recolep_sel_QFrate);
     tree_new[i]->Branch("recolep_sel_ismvasel",&_recolep_sel_ismvasel);
 
@@ -279,6 +292,11 @@ void split_tree(TString filename_in, TString filename_out,
     tree_new[i]->Branch("recotauh_sel_phi",&_recotauh_sel_phi);
 
     tree_new[i]->Branch("event_weight_ttH",&_event_weight_ttH,"event_weight_ttH/F");
+    tree_new[i]->Branch("event_weight_ttH_FR_QCD_MC",&_event_weight_ttH_FR_QCD_MC,"event_weight_ttH_FR_QCD_MC/F");
+    tree_new[i]->Branch("event_weight_ttH_FR_TT_MC",&_event_weight_ttH_FR_TT_MC,"event_weight_ttH_FR_TT_MC/F");
+    tree_new[i]->Branch("triggerSF_weight",&_triggerSF_weight,"triggerSF_weight/F");
+    tree_new[i]->Branch("leptonSF_ttH_weight",&_leptonSF_ttH_weight,"leptonSF_ttH_weight/F");
+
 
   }
 
@@ -292,7 +310,8 @@ void split_tree(TString filename_in, TString filename_out,
     nentries = nentries/i_split1 * (i_split2+1);
   }
 
-  for (int i=skip_entries;i<nentries;i++) {
+
+  for (int i=skip_entries;i<skip_entries+nentries;i++) {
 
 
     if(i%10000==0)
@@ -311,6 +330,8 @@ void split_tree(TString filename_in, TString filename_out,
     _recolep_sel_eta.clear();
     _recolep_sel_phi.clear();
     _recolep_sel_fakerate.clear();
+    _recolep_sel_fakerate_QCD_MC.clear();
+    _recolep_sel_fakerate_ttbar_MC.clear();
     _recolep_sel_QFrate.clear(); 
     _recolep_sel_ismvasel.clear();
     _recolep_sel_tightcharge.clear();
@@ -340,6 +361,8 @@ void split_tree(TString filename_in, TString filename_out,
     _recolep_eta = 0;
     _recolep_phi = 0;
     _recolep_fakerate = 0;
+    _recolep_fakerate_QCD_MC = 0;
+    _recolep_fakerate_ttbar_MC = 0;
     _recolep_QFrate = 0; 
     _recolep_ismvasel = 0;
     _recolep_ismvasel = 0;
@@ -424,6 +447,8 @@ void split_tree(TString filename_in, TString filename_out,
 	  _recolep_sel_eta.push_back(lep1.Eta());
 	  _recolep_sel_phi.push_back(lep1.Phi());
 	  _recolep_sel_fakerate.push_back((*_recolep_fakerate)[i_lep]);
+	  _recolep_sel_fakerate_QCD_MC.push_back((*_recolep_fakerate_QCD_MC)[i_lep]);
+	  _recolep_sel_fakerate_ttbar_MC.push_back((*_recolep_fakerate_ttbar_MC)[i_lep]);
 	  _recolep_sel_QFrate.push_back((*_recolep_QFrate)[i_lep]);
 	  _recolep_sel_ismvasel.push_back((*_recolep_ismvasel)[i_lep]);
 	  _recolep_sel_tightcharge.push_back((*_recolep_tightcharge)[i_lep]);
@@ -485,19 +510,56 @@ void split_tree(TString filename_in, TString filename_out,
       bool jetmult_CR = tight_mvasel && lep_quality && pt_lep && SS_lep && inv_mass_lep_pairs && inv_mass_Zee && metLD && jetmult_CR_jets;
       bool ttbarOF_CR = tight_mvasel && lep_quality && pt_lep && !SS_lep && !SF_lep && inv_mass_lep_pairs && inv_mass_Zee && metLD && jetmult_ttbar_OF;
 
+      /*cout<<"tight_mvasel="<<tight_mvasel<<endl;
+      cout<<"lep_quality="<<lep_quality<<endl;
+      cout<<"pt_lep="<<pt_lep<<endl;
+      cout<<"SS_lep="<<SS_lep<<endl;
+      cout<<"inv_mass_lep_pairs="<<inv_mass_lep_pairs<<endl;
+      cout<<"inv_mass_Zee="<<inv_mass_Zee<<endl;
+      cout<<"metLD="<<metLD<<endl;
+      cout<<"jetmult_sig="<<jetmult_sig<<endl;*/
       
       _event_weight_ttH = 1;
+      _event_weight_ttH_FR_QCD_MC = 1;
+      _event_weight_ttH_FR_TT_MC = 1;
+      _triggerSF_weight = 1;
+      _leptonSF_ttH_weight = 1;
+
+
       if(_recolep_sel_charge[0]*_recolep_sel_charge[1]<0)
 	_event_weight_ttH = _recolep_sel_QFrate[0]+_recolep_sel_QFrate[1];
       
       else if(!tight_mvasel){
-	if(!_recolep_sel_ismvasel[0])
+
+	if(!_recolep_sel_ismvasel[0]){
 	  _event_weight_ttH *= _recolep_sel_fakerate[0]/(1-_recolep_sel_fakerate[0]);
-	if(!_recolep_sel_ismvasel[1])
+	  _event_weight_ttH_FR_QCD_MC *= _recolep_sel_fakerate_QCD_MC[0]/(1-_recolep_sel_fakerate_QCD_MC[0]);
+	  _event_weight_ttH_FR_TT_MC *= _recolep_sel_fakerate_ttbar_MC[0]/(1-_recolep_sel_fakerate_ttbar_MC[0]);
+	}
+
+	if(!_recolep_sel_ismvasel[1]){
 	  _event_weight_ttH *= _recolep_sel_fakerate[1]/(1-_recolep_sel_fakerate[1]);
-	if(!_recolep_sel_ismvasel[0] && !_recolep_sel_ismvasel[1])
+	  _event_weight_ttH_FR_QCD_MC *= _recolep_sel_fakerate_QCD_MC[1]/(1-_recolep_sel_fakerate_QCD_MC[1]);
+	  _event_weight_ttH_FR_TT_MC *= _recolep_sel_fakerate_ttbar_MC[1]/(1-_recolep_sel_fakerate_ttbar_MC[1]);
+	}
+
+	if(!_recolep_sel_ismvasel[0] && !_recolep_sel_ismvasel[1]){
 	  _event_weight_ttH *= -1;
+	  _event_weight_ttH_FR_QCD_MC *= -1;
+	  _event_weight_ttH_FR_TT_MC *= -1;
+	}
+
       }
+
+
+      _triggerSF_weight = triggerSF_ttH(_recolep_sel_pdg[0],_recolep_sel_pt[0],
+					_recolep_sel_pdg[1],_recolep_sel_pt[1],
+					2);
+
+      if(tight_mvasel)
+	_leptonSF_ttH_weight = leptonSF_ttH(_recolep_sel_pdg[0],_recolep_sel_pt[0],_recolep_sel_eta[0],2)
+	  * leptonSF_ttH(_recolep_sel_pdg[1],_recolep_sel_pt[1],_recolep_sel_eta[1],2);
+      
 
 
       //2lSS + tauh
@@ -629,6 +691,7 @@ void split_tree(TString filename_in, TString filename_out,
       }
 
 
+
       if(sig_2lSS)
 	tree_2lSS->Fill();
       else if(lepMVA_CR)
@@ -655,6 +718,8 @@ void split_tree(TString filename_in, TString filename_out,
     _recolep_sel_eta.clear();
     _recolep_sel_phi.clear();
     _recolep_sel_fakerate.clear();
+    _recolep_sel_fakerate_QCD_MC.clear();
+    _recolep_sel_fakerate_ttbar_MC.clear();
     _recolep_sel_QFrate.clear(); 
     _recolep_sel_ismvasel.clear();
     _recolep_sel_tightcharge.clear();
@@ -684,6 +749,8 @@ void split_tree(TString filename_in, TString filename_out,
 	  _recolep_sel_eta.push_back(lep1.Eta());
 	  _recolep_sel_phi.push_back(lep1.Phi());
 	  _recolep_sel_fakerate.push_back((*_recolep_fakerate)[i_lep]);
+	  _recolep_sel_fakerate_QCD_MC.push_back((*_recolep_fakerate_QCD_MC)[i_lep]);
+	  _recolep_sel_fakerate_ttbar_MC.push_back((*_recolep_fakerate_ttbar_MC)[i_lep]);
 	  _recolep_sel_QFrate.push_back((*_recolep_QFrate)[i_lep]);
 	  _recolep_sel_ismvasel.push_back((*_recolep_ismvasel)[i_lep]);
 	  _recolep_sel_eleconv_misshits.push_back((*_recolep_eleconv_misshits)[i_lep]);
@@ -720,16 +787,47 @@ void split_tree(TString filename_in, TString filename_out,
 
 
       _event_weight_ttH = 1;
+      _event_weight_ttH_FR_QCD_MC = 1;
+      _event_weight_ttH_FR_TT_MC = 1;
+
       if(!tight_mvasel){
-	if(!_recolep_sel_ismvasel[0])
+
+	if(!_recolep_sel_ismvasel[0]){
 	  _event_weight_ttH *= _recolep_sel_fakerate[0]/(1-_recolep_sel_fakerate[0]);
-	if(!_recolep_sel_ismvasel[1])
+	  _event_weight_ttH_FR_QCD_MC *= _recolep_sel_fakerate_QCD_MC[0]/(1-_recolep_sel_fakerate_QCD_MC[0]);
+	  _event_weight_ttH_FR_TT_MC *= _recolep_sel_fakerate_ttbar_MC[0]/(1-_recolep_sel_fakerate_ttbar_MC[0]);
+	}
+
+	if(!_recolep_sel_ismvasel[1]){
 	  _event_weight_ttH *= _recolep_sel_fakerate[1]/(1-_recolep_sel_fakerate[1]);
-	if(!_recolep_sel_ismvasel[2])
+	  _event_weight_ttH_FR_QCD_MC *= _recolep_sel_fakerate_QCD_MC[1]/(1-_recolep_sel_fakerate_QCD_MC[1]);
+	  _event_weight_ttH_FR_TT_MC *= _recolep_sel_fakerate_ttbar_MC[1]/(1-_recolep_sel_fakerate_ttbar_MC[1]);
+	}
+
+	if(!_recolep_sel_ismvasel[2]){
 	  _event_weight_ttH *= _recolep_sel_fakerate[2]/(1-_recolep_sel_fakerate[2]);
-	if((_recolep_sel_ismvasel[0]+_recolep_sel_ismvasel[1]+_recolep_sel_ismvasel[2])==1) //Two failing leptons
+	  _event_weight_ttH_FR_QCD_MC *= _recolep_sel_fakerate_QCD_MC[2]/(1-_recolep_sel_fakerate_QCD_MC[2]);
+	  _event_weight_ttH_FR_TT_MC *= _recolep_sel_fakerate_ttbar_MC[2]/(1-_recolep_sel_fakerate_ttbar_MC[2]);
+	}
+
+	if((_recolep_sel_ismvasel[0]+_recolep_sel_ismvasel[1]+_recolep_sel_ismvasel[2])==1){ //Two failing leptons
 	  _event_weight_ttH *= -1; 
+	  _event_weight_ttH_FR_QCD_MC *= -1; 
+	  _event_weight_ttH_FR_TT_MC *= -1; 
+	}
+
       }
+
+
+      _triggerSF_weight = triggerSF_ttH(_recolep_sel_pdg[0],_recolep_sel_pt[0],
+					_recolep_sel_pdg[1],_recolep_sel_pt[1],
+					3);
+
+      if(tight_mvasel)
+	_leptonSF_ttH_weight = leptonSF_ttH(_recolep_sel_pdg[0],_recolep_sel_pt[0],_recolep_sel_eta[0],3)
+	  * leptonSF_ttH(_recolep_sel_pdg[1],_recolep_sel_pt[1],_recolep_sel_eta[1],3)
+	  * leptonSF_ttH(_recolep_sel_pdg[1],_recolep_sel_pt[1],_recolep_sel_eta[1],3);
+      
 
 
 

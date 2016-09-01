@@ -22,6 +22,7 @@
 
 #include "trigger_filter.C"
 #include "bTagSF.cc"
+#include "PUReweight.cc"
 
 #include <vector>
 #include <map>
@@ -556,7 +557,7 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_max=(i_split+1)*100;
     if(i_split==66) i_max=6603;
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -576,7 +577,7 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_max=(i_split+1)*100;
     if(i_split==66) i_max=6603;
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -597,7 +598,7 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_max=(i_split+1)*100;
     if(i_split==32) i_max=3201;
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -618,7 +619,7 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_max=(i_split+1)*100;
     if(i_split==32) i_max=3201;
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -642,7 +643,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==83) i_max=8322;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -666,7 +667,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==83) i_max=8322;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -690,7 +691,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==63) i_max=6336;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -715,7 +716,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==63) i_max=6336;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -741,7 +742,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==56) i_max=5662;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -765,7 +766,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==56) i_max=5661;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -790,7 +791,7 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_max=(i_split+1)*100;
     if(i_split==52) i_max=5215;
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -814,7 +815,7 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_max=(i_split+1)*100;
     if(i_split==52) i_max=5215;
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -838,7 +839,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==64) i_max=6474;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -863,7 +864,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==64) i_max=6474;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -888,7 +889,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==79) i_max=7987;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -912,7 +913,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==79) i_max=7987;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -936,7 +937,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==85) i_max=8579;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -960,7 +961,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==85) i_max=8579;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -985,7 +986,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==74) i_max=7447;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -1011,7 +1012,7 @@ void convert_tree(TString sample, int iso_tau=70,
     if(i_split==74) i_max=7447;
 
 
-    for(unsigned int i=i_min;i<i_max;i++){
+    for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
@@ -1030,8 +1031,21 @@ void convert_tree(TString sample, int iso_tau=70,
 
   else if(sample=="sync_ttH_80X"){
     file="syncNtuple_ttH";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/Htautau_framework_files/ttH/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/Htautau_framework_files/ttH/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/";
+
+    if(JEC>0)
+      dir_out+="JECup/";
+    else if(JEC<0)
+      dir_out+="JECdown/";
+    else if(TES>0)
+      dir_out+="TESup/";
+    else if(TES<0)
+      dir_out+="TESdown/";
+    else
+      dir_out+="nominal/";
+
+    dir_out+="ttH/";
     list.push_back(dir_in+"HTauTauAnalysis_ttH_Hnonbb_sync.root");
   }
 
@@ -1054,6 +1068,16 @@ void convert_tree(TString sample, int iso_tau=70,
     file+=Form("_iso%i",iso_tau);
   else
     file+="_"+iso_type;
+
+  if(JEC>0)
+    file+="_JECup";
+  else if(JEC<0)
+    file+="_JECdown";
+
+  if(TES>0)
+    file+="_TESup";
+  else if(TES<0)
+    file+="_TESdown";
   
   file+=".root";
 
@@ -1070,7 +1094,7 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
   Long64_t nentries = tree->GetEntries();
-  nentries=100;
+  //nentries=100;
 
   cout<<"nentries="<<tree->GetEntries()<<endl;
 
@@ -1136,6 +1160,8 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<int>   _recomu_HMothInd;
   vector<int>   _recomu_goodsign;
   vector<float> _recomu_fakerate;
+  vector<float> _recomu_fakerate_QCD_MC;
+  vector<float> _recomu_fakerate_ttbar_MC;
 
   int _n_recoele_presel;
   int _n_recoele_fakeable;
@@ -1172,6 +1198,8 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<int>   _recoele_HMothInd;
   vector<int>   _recoele_goodsign;
   vector<float> _recoele_fakerate;
+  vector<float> _recoele_fakerate_QCD_MC;
+  vector<float> _recoele_fakerate_ttbar_MC;
   vector<float> _recoele_QFrate; 
 
   int _n_recolep_fakeable;
@@ -1188,6 +1216,8 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recolep_phi;
   vector<float> _recolep_leptonMVA;
   vector<float> _recolep_fakerate;
+  vector<float> _recolep_fakerate_QCD_MC;
+  vector<float> _recolep_fakerate_ttbar_MC;
   vector<float> _recolep_QFrate; 
   vector<bool>  _recolep_ismvasel;
   vector<bool>  _recolep_tightcharge;
@@ -1336,6 +1366,9 @@ void convert_tree(TString sample, int iso_tau=70,
   bool _isTrig;
   bool _isTrig_3l;
   float _bTagSF_weight;
+  float _bTagSF_weight_up;
+  float _bTagSF_weight_down;
+  float _PU_weight;
 
   //Gen information
   vector<float> _genpart_pt;
@@ -1363,6 +1396,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<int> _genlep_TauMothInd; //-1 if not from tau
   vector<int> _genlep_TopMothInd; //-1 if not from top
   vector<int> _genlep_WMothInd; //-1 if not from top
+  vector<int> _genlep_ZMothInd;
 
   int _n_gentauh;
   int _n_gentauh10;
@@ -1399,6 +1433,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<int> _gentau_TopMothInd;
   vector<int> _gentau_WMothInd;
   vector<int> _gentau_HMothInd;
+  vector<int> _gentau_ZMothInd;
 
   int _n_genH;
   vector<int> _genH_decayMode; //0 mu+tauh, 1 e+tauh, 2 tauh+tauh, 3 mu+mu, 4 e+e, 5 e+mu
@@ -1505,7 +1540,6 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<int> _gennu_WMothInd; //-1 if not from W
 
 
-
   tree_new->Branch("daughters_pt",&_daughters_pt);
   tree_new->Branch("daughters_eta",&_daughters_eta);
   tree_new->Branch("daughters_phi",&_daughters_phi);
@@ -1549,6 +1583,8 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recomu_HMothInd",&_recomu_HMothInd);
   tree_new->Branch("recomu_goodsign",&_recomu_goodsign);
   tree_new->Branch("recomu_fakerate",&_recomu_fakerate);
+  tree_new->Branch("recomu_fakerate_QCD_MC",&_recomu_fakerate_QCD_MC);
+  tree_new->Branch("recomu_fakerate_ttbar_MC",&_recomu_fakerate_ttbar_MC);
   
   tree_new->Branch("n_recoele_presel",&_n_recoele_presel,"n_recoele_presel/I");
   tree_new->Branch("n_recoele_fakeable",&_n_recoele_fakeable,"n_recoele_fakeable/I");
@@ -1585,6 +1621,8 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoele_HMothInd",&_recoele_HMothInd);
   tree_new->Branch("recoele_goodsign",&_recoele_goodsign);
   tree_new->Branch("recoele_fakerate",&_recoele_fakerate);
+  tree_new->Branch("recoele_fakerate_QCD_MC",&_recoele_fakerate_QCD_MC);
+  tree_new->Branch("recoele_fakerate_ttbar_MC",&_recoele_fakerate_ttbar_MC);
   tree_new->Branch("recoele_QFrate",&_recoele_QFrate);
   
   tree_new->Branch("n_recolep_fakeable",&_n_recolep_fakeable,"n_recolep_fakeable/I");
@@ -1601,6 +1639,9 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recolep_phi",&_recolep_phi);
   tree_new->Branch("recolep_leptonMVA",&_recolep_leptonMVA);
   tree_new->Branch("recolep_fakerate",&_recolep_fakerate);
+  tree_new->Branch("recolep_fakerate_QCD_MC",&_recolep_fakerate_QCD_MC);
+  tree_new->Branch("recolep_fakerate_ttbar_MC",&_recolep_fakerate_ttbar_MC);
+
   tree_new->Branch("recolep_QFrate",&_recolep_QFrate);
   tree_new->Branch("recolep_ismvasel",&_recolep_ismvasel);
   tree_new->Branch("recolep_tightcharge",&_recolep_tightcharge);
@@ -1742,6 +1783,11 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("isTrig",&_isTrig,"isTrig/O");
   tree_new->Branch("isTrig_3l",&_isTrig_3l,"isTrig_3l/O");
   tree_new->Branch("bTagSF_weight",&_bTagSF_weight,"bTagSF_weight/F");
+  tree_new->Branch("bTagSF_weight",&_bTagSF_weight,"bTagSF_weight/F");
+  tree_new->Branch("bTagSF_weight_up",&_bTagSF_weight_up,"bTagSF_weight_up/F");
+  tree_new->Branch("bTagSF_weight_down",&_bTagSF_weight_down,"bTagSF_weight_down/F");
+  tree_new->Branch("PU_weight",&_PU_weight,"PU_weight/F");
+
 
   if(JEC==0 && TES==0){
 
@@ -1770,6 +1816,7 @@ void convert_tree(TString sample, int iso_tau=70,
     tree_new->Branch("genlep_TauMothInd",&_genlep_TauMothInd);
     tree_new->Branch("genlep_TopMothInd",&_genlep_TopMothInd);
     tree_new->Branch("genlep_WMothInd",&_genlep_WMothInd);
+    tree_new->Branch("genlep_ZMothInd",&_genlep_ZMothInd);
     
     tree_new->Branch("n_gentauh",&_n_gentauh,"n_gentauh/I");
     tree_new->Branch("n_gentauh10",&_n_gentauh10,"n_gentauh10/I");
@@ -1806,6 +1853,7 @@ void convert_tree(TString sample, int iso_tau=70,
     tree_new->Branch("gentau_TopMothInd",&_gentau_TopMothInd);
     tree_new->Branch("gentau_WMothInd",&_gentau_WMothInd);
     tree_new->Branch("gentau_HMothInd",&_gentau_HMothInd);
+    tree_new->Branch("gentau_ZMothInd",&_gentau_ZMothInd);
     
     tree_new->Branch("n_genH",&_n_genH,"n_genH/I");
     tree_new->Branch("genH_decayMode",&_genH_decayMode);
@@ -1914,9 +1962,10 @@ void convert_tree(TString sample, int iso_tau=70,
   //Old branches only there in MC
   //Dummy created in data as well
   
+  float _npu = -1.;
   int _PUNumInteractions = -1;
   vector<int> _daughters_genindex;
-  float _MC_weight = -1.;
+  float _MC_weight = -1., _MC_weight_scale_muF0p5 = -1., _MC_weight_scale_muF2 = -1., _MC_weight_scale_muR0p5 = -1., _MC_weight_scale_muR2 = -1.;
   float _lheHt = -1.;
   int _lheNOutPartons = -1;
   int _lheNOutB = -1;
@@ -1930,9 +1979,15 @@ void convert_tree(TString sample, int iso_tau=70,
 
   if(!isMC && JEC==0 && TES==0){
     
+    tree_new->Branch("npu",&_npu,"npu/F");
     tree_new->Branch("PUNumInteractions",&_PUNumInteractions,"PUNumInteractions/I");
     tree_new->Branch("daughters_genindex",&_daughters_genindex);
     tree_new->Branch("MC_weight",&_MC_weight,"MC_weight/F");
+    tree_new->Branch("MC_weight_scale_muF0p5",&_MC_weight_scale_muF0p5,"MC_weight_scale_muF0p5/F");
+    tree_new->Branch("MC_weight_scale_muF2",&_MC_weight_scale_muF2,"MC_weight_scale_muF2/F");
+    tree_new->Branch("MC_weight_scale_muR0p5",&_MC_weight_scale_muR0p5,"MC_weight_scale_muR0p5/F");
+    tree_new->Branch("MC_weight_scale_muR2",&_MC_weight_scale_muR2,"MC_weight_scale_muR2/F");
+
     tree_new->Branch("lheHt",&_lheHt,"lheHt/F");
     tree_new->Branch("lheNOutPartons",&_lheNOutPartons,"lheNOutPartons/I");
     tree_new->Branch("lheNOutB",&_lheNOutB,"lheNOutB/I");
@@ -2001,10 +2056,12 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> *_daughters_py;
   vector<float> *_daughters_pz;
 
+  vector<int> * _daughters_TauUpExists;
   vector<float> *_daughters_e_TauUp;
   vector<float> *_daughters_px_TauUp;
   vector<float> *_daughters_py_TauUp;
   vector<float> *_daughters_pz_TauUp;
+  vector<int> * _daughters_TauDownExists;
   vector<float> *_daughters_e_TauDown;
   vector<float> *_daughters_px_TauDown;
   vector<float> *_daughters_py_TauDown;
@@ -2048,6 +2105,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> *_genpart_e;
   vector<int> *_genpart_pdg;
   vector<int> *_genpart_HMothInd;
+  vector<int> *_genpart_ZMothInd;
   vector<int> *_genpart_TopMothInd;
   vector<int> *_genpart_WMothInd;
   vector<int> *_genpart_bMothInd;
@@ -2084,11 +2142,13 @@ void convert_tree(TString sample, int iso_tau=70,
   tree->SetBranchAddress("daughters_deltaPhiSuperClusterTrackAtVtx",&_daughters_deltaPhiSuperClusterTrackAtVtx);
   tree->SetBranchAddress("daughters_IoEmIoP_ttH",&_daughters_IoEmIoP_ttH);
 
+  tree->SetBranchAddress("daughters_TauUpExists",&_daughters_TauUpExists);
   tree->SetBranchAddress("daughters_px_TauUp",&_daughters_px_TauUp);
   tree->SetBranchAddress("daughters_py_TauUp",&_daughters_py_TauUp);
   tree->SetBranchAddress("daughters_pz_TauUp",&_daughters_pz_TauUp);
   tree->SetBranchAddress("daughters_e_TauUp",&_daughters_e_TauUp);
 
+  tree->SetBranchAddress("daughters_TauDownExists",&_daughters_TauDownExists);
   tree->SetBranchAddress("daughters_px_TauDown",&_daughters_px_TauDown);
   tree->SetBranchAddress("daughters_py_TauDown",&_daughters_py_TauDown);
   tree->SetBranchAddress("daughters_pz_TauDown",&_daughters_pz_TauDown);
@@ -2130,12 +2190,15 @@ void convert_tree(TString sample, int iso_tau=70,
 
   if(isMC){
 
+    tree->SetBranchAddress("npu",&_npu);
+
     tree->SetBranchAddress("genpart_px",&_genpart_px);
     tree->SetBranchAddress("genpart_py",&_genpart_py);
     tree->SetBranchAddress("genpart_pz",&_genpart_pz);
     tree->SetBranchAddress("genpart_e",&_genpart_e);
     tree->SetBranchAddress("genpart_pdg",&_genpart_pdg);
     tree->SetBranchAddress("genpart_HMothInd",&_genpart_HMothInd);
+    tree->SetBranchAddress("genpart_ZMothInd",&_genpart_ZMothInd);
     tree->SetBranchAddress("genpart_TopMothInd",&_genpart_TopMothInd);
     tree->SetBranchAddress("genpart_WMothInd",&_genpart_WMothInd);  
     tree->SetBranchAddress("genpart_bMothInd",&_genpart_bMothInd);    
@@ -2155,7 +2218,6 @@ void convert_tree(TString sample, int iso_tau=70,
   int _RunNumber = -1, _lumi = -1;
 
   float _PFMETCov00=-1., _PFMETCov01=-1., _PFMETCov10=-1., _PFMETCov11=-1.;
-  int _npv=-1;
 
   if(JEC!=0 || TES!=0){
 
@@ -2170,8 +2232,6 @@ void convert_tree(TString sample, int iso_tau=70,
     tree->SetBranchAddress("PFMETCov10",&_PFMETCov10);
     tree->SetBranchAddress("PFMETCov11",&_PFMETCov11);
 
-    tree->SetBranchAddress("npv",&_npv);
-
     tree->SetBranchAddress("MC_weight",&_MC_weight);
     
     tree_new->Branch("EventNumber",&_EventNumber,"EventNumber/l");
@@ -2185,7 +2245,7 @@ void convert_tree(TString sample, int iso_tau=70,
     tree_new->Branch("PFMETCov10",&_PFMETCov10,"PFMETCov10/F");
     tree_new->Branch("PFMETCov11",&_PFMETCov11,"PFMETCov11/F");
 
-    tree_new->Branch("npv",&_npv,"npv/I");
+    tree_new->Branch("npu",&_npu,"npv/I");
 
     tree_new->Branch("MC_weight",&_MC_weight,"MC_weight/F");
 
@@ -2232,6 +2292,17 @@ void convert_tree(TString sample, int iso_tau=70,
   h_fakerate_mu->SetDirectory(0);
   TH2F* h_fakerate_el = (TH2F*)f_fakerate->Get("FR_mva075_el_data_comb");
   h_fakerate_el->SetDirectory(0);
+
+  TH2F* h_fakerate_mu_QCD = (TH2F*)f_fakerate->Get("FR_mva075_mu_QCD");
+  h_fakerate_mu_QCD->SetDirectory(0);
+  TH2F* h_fakerate_el_QCD = (TH2F*)f_fakerate->Get("FR_mva075_el_QCD");
+  h_fakerate_el_QCD->SetDirectory(0);
+
+  TH2F* h_fakerate_mu_TT = (TH2F*)f_fakerate->Get("FR_mva075_mu_TT");
+  h_fakerate_mu_TT->SetDirectory(0);
+  TH2F* h_fakerate_el_TT = (TH2F*)f_fakerate->Get("FR_mva075_el_TT");
+  h_fakerate_el_TT->SetDirectory(0);
+
   f_fakerate->Close();
 
   
@@ -2248,8 +2319,6 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
   int skip_entries = 0;
-
-
 
   if(split>0){
     nentries/=split;
@@ -2307,6 +2376,8 @@ void convert_tree(TString sample, int iso_tau=70,
     _recomu_HMothInd.clear();
     _recomu_goodsign.clear();
     _recomu_fakerate.clear();
+    _recomu_fakerate_QCD_MC.clear();
+    _recomu_fakerate_ttbar_MC.clear();
 
 
     _n_recoele_presel = 0;
@@ -2344,6 +2415,8 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoele_HMothInd.clear();
     _recoele_goodsign.clear();
     _recoele_fakerate.clear();
+    _recoele_fakerate_QCD_MC.clear();
+    _recoele_fakerate_ttbar_MC.clear();
     _recoele_QFrate.clear();
 
     _n_recolep_fakeable = 0;
@@ -2360,6 +2433,8 @@ void convert_tree(TString sample, int iso_tau=70,
     _recolep_phi.clear();
     _recolep_leptonMVA.clear();
     _recolep_fakerate.clear();
+    _recolep_fakerate_QCD_MC.clear();
+    _recolep_fakerate_ttbar_MC.clear();
     _recolep_QFrate.clear(); 
     _recolep_ismvasel.clear();
     _recolep_tightcharge.clear();
@@ -2501,6 +2576,9 @@ void convert_tree(TString sample, int iso_tau=70,
     _isTrig = 0;
     _isTrig_3l = 0;
     _bTagSF_weight = 0;
+    _bTagSF_weight_up = 0;
+    _bTagSF_weight_down = 0;
+    _PU_weight = 0;
 
     _genpart_pt.clear();
     _genpart_eta.clear();
@@ -2527,6 +2605,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _genlep_TauMothInd.clear();
     _genlep_TopMothInd.clear();
     _genlep_WMothInd.clear();
+    _genlep_ZMothInd.clear();
 
     _n_gentauh = 0;
     _n_gentauh10 = 0;
@@ -2563,6 +2642,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _gentau_TopMothInd.clear();
     _gentau_WMothInd.clear();
     _gentau_HMothInd.clear();
+    _gentau_ZMothInd.clear();
 
     _n_genH = 0;
     _genH_decayMode.clear();
@@ -2665,6 +2745,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _gennu_TopMothInd.clear();
     _gennu_WMothInd.clear();
 
+    _npu = 0;
 
     _jets_e = 0;
     _jets_px = 0;
@@ -2697,10 +2778,12 @@ void convert_tree(TString sample, int iso_tau=70,
     _daughters_py = 0;
     _daughters_pz = 0;
 
+    _daughters_TauUpExists = 0;
     _daughters_e_TauUp = 0;
     _daughters_px_TauUp = 0;
     _daughters_py_TauUp = 0;
     _daughters_pz_TauUp = 0;
+    _daughters_TauDownExists = 0;
     _daughters_e_TauDown = 0;
     _daughters_px_TauDown = 0;
     _daughters_py_TauDown = 0;
@@ -2742,6 +2825,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _genpart_e = 0;
     _genpart_pdg = 0;
     _genpart_HMothInd = 0;
+    _genpart_ZMothInd = 0;
     _genpart_TopMothInd = 0;
     _genpart_WMothInd = 0;
     _genpart_bMothInd = 0;
@@ -2761,13 +2845,12 @@ void convert_tree(TString sample, int iso_tau=70,
     _PFMETCov10 = -1.;
     _PFMETCov11 = -1.;
     
-    _npv = -1;
-
     _MC_weight = 0;
 
     int entry_ok = tree->GetEntry(i);
     if(entry_ok<0) continue;
 
+    _PU_weight = puw2016_nTrueInt_13fb(abs(_npu));
 
     _isTrig = pass_trigger(_triggerbit);
     _isTrig_3l = pass_trigger_3l(_triggerbit);
@@ -2927,7 +3010,7 @@ void convert_tree(TString sample, int iso_tau=70,
 	_n_recomu_fakeable++;
 
       float miniIso = lepMVA_miniRelIsoCharged + lepMVA_miniRelIsoNeutral;
-      bool mediumID = ((*_daughters_muonID)[i_daughter]>>2) & 1;
+      bool mediumID = ((*_daughters_muonID)[i_daughter]>>6) & 1;
       float rel_error_trackpt = (*_daughters_rel_error_trackpt)[i_daughter];
 
       _recomu_rel_error_trackpt.push_back(rel_error_trackpt);
@@ -2961,6 +3044,14 @@ void convert_tree(TString sample, int iso_tau=70,
       int bin = h_fakerate_mu->FindBin(min(conept,float(99.)), abs(muon.Eta()));
       float FR = h_fakerate_mu->GetBinContent(bin);
       _recomu_fakerate.push_back(FR);
+
+      bin = h_fakerate_mu_QCD->FindBin(min(conept,float(99.)), abs(muon.Eta()));
+      FR = h_fakerate_mu_QCD->GetBinContent(bin);
+      _recomu_fakerate_QCD_MC.push_back(FR);
+
+      bin = h_fakerate_mu_TT->FindBin(min(conept,float(99.)), abs(muon.Eta()));
+      FR = h_fakerate_mu_TT->GetBinContent(bin);
+      _recomu_fakerate_ttbar_MC.push_back(FR);
 
     }
 
@@ -3210,6 +3301,14 @@ void convert_tree(TString sample, int iso_tau=70,
       float FR = h_fakerate_el->GetBinContent(bin_FR);
       _recoele_fakerate.push_back(FR);
 
+      bin_FR = h_fakerate_el_QCD->FindBin(min(conept,float(99.)), abs(elec.Eta()));
+      FR = h_fakerate_el_QCD->GetBinContent(bin_FR);
+      _recoele_fakerate_QCD_MC.push_back(FR);
+
+      bin_FR = h_fakerate_el_TT->FindBin(min(conept,float(99.)), abs(elec.Eta()));
+      FR = h_fakerate_el_TT->GetBinContent(bin_FR);
+      _recoele_fakerate_ttbar_MC.push_back(FR);
+
       int bin_QF = h_QFrate_el->FindBin(min(elec.Pt(),999.), abs(elec.Eta()));
       float QF = h_QFrate_el->GetBinContent(bin_QF);
       _recoele_QFrate.push_back(QF);     
@@ -3272,11 +3371,14 @@ void convert_tree(TString sample, int iso_tau=70,
 	_recolep_eta.push_back(mu.Eta());
 	_recolep_phi.push_back(mu.Phi());
 	_recolep_leptonMVA.push_back(_recomu_leptonMVA[i_mu]);
-	_recolep_fakerate.push_back(_recomu_fakerate[i_mu]);	
+	_recolep_fakerate.push_back(_recomu_fakerate[i_mu]);
+	_recolep_fakerate_QCD_MC.push_back(_recomu_fakerate_QCD_MC[i_mu]);	
+	_recolep_fakerate_ttbar_MC.push_back(_recomu_fakerate_ttbar_MC[i_mu]);
 	_recolep_QFrate.push_back(0);
 	
 	float rel_error_trackpt = _recomu_rel_error_trackpt[i_mu];
-	_recolep_tightcharge.push_back(rel_error_trackpt<0.2);
+	bool tightcharge = _recomu_ismvasel[i_mu] ? rel_error_trackpt<0.2 : 1;
+	_recolep_tightcharge.push_back(tightcharge);
 	_recolep_eleconv_misshits.push_back(true);	
 	
       }
@@ -3299,10 +3401,14 @@ void convert_tree(TString sample, int iso_tau=70,
 	_recolep_phi.push_back(ele.Phi());
 	_recolep_leptonMVA.push_back(_recoele_leptonMVA[i_ele]);
 	_recolep_fakerate.push_back(_recoele_fakerate[i_ele]);	
+	_recolep_fakerate_QCD_MC.push_back(_recoele_fakerate_QCD_MC[i_ele]);	
+	_recolep_fakerate_ttbar_MC.push_back(_recoele_fakerate_ttbar_MC[i_ele]);	
 	_recolep_QFrate.push_back(_recoele_QFrate[i_ele]);
 
-	_recolep_tightcharge.push_back(_recoele_isChargeConsistent[i_ele]);
-	_recolep_eleconv_misshits.push_back(_recoele_passConversionVeto[i_ele]&&(_recoele_nMissingHits[i_ele]==0));	
+	bool tightcharge = _recoele_ismvasel[i_ele] ? _recoele_isChargeConsistent[i_ele] : 1;
+	bool eleconv_misshits = _recoele_ismvasel[i_ele] ? _recoele_passConversionVeto[i_ele]&&(_recoele_nMissingHits[i_ele]==0) : (_recoele_nMissingHits[i_ele]==0);
+	_recolep_tightcharge.push_back(tightcharge);
+	_recolep_eleconv_misshits.push_back(eleconv_misshits);	
       }
 
     }
@@ -3320,9 +3426,9 @@ void convert_tree(TString sample, int iso_tau=70,
       int PDGId=(*_PDGIdDaughters)[i_daughter];
       TLorentzVector daughter ( (*_daughters_px)[i_daughter] , (*_daughters_py)[i_daughter] , (*_daughters_pz)[i_daughter] , (*_daughters_e)[i_daughter] );
 
-      if(TES>0)
+      if(TES>0 && (*_daughters_TauUpExists)[i_daughter])
 	daughter.SetPxPyPzE( (*_daughters_px_TauUp)[i_daughter] , (*_daughters_py_TauUp)[i_daughter] , (*_daughters_pz_TauUp)[i_daughter] , (*_daughters_e_TauUp)[i_daughter] );
-      else if(TES<0)
+      else if(TES<0 && (*_daughters_TauDownExists)[i_daughter])
 	daughter.SetPxPyPzE( (*_daughters_px_TauDown)[i_daughter] , (*_daughters_py_TauDown)[i_daughter] , (*_daughters_pz_TauDown)[i_daughter] , (*_daughters_e_TauDown)[i_daughter] );
       
       pair<int,TLorentzVector> daughter_pair = make_pair(i_daughter,daughter);
@@ -3591,7 +3697,9 @@ void convert_tree(TString sample, int iso_tau=70,
     }
 
 
-    _bTagSF_weight = bTagSF_computer->getEvtWeight(_recoPFJet_CSVscore, recoPFJets, _recoPFJet_Flavour);
+    _bTagSF_weight = bTagSF_computer->getEvtWeight(_recoPFJet_CSVscore, recoPFJets, _recoPFJet_Flavour, bTagSF::central);
+    _bTagSF_weight_up = bTagSF_computer->getEvtWeight(_recoPFJet_CSVscore, recoPFJets, _recoPFJet_Flavour, bTagSF::up);
+    _bTagSF_weight_down = bTagSF_computer->getEvtWeight(_recoPFJet_CSVscore, recoPFJets, _recoPFJet_Flavour, bTagSF::down);
 
 
 
@@ -3895,6 +4003,7 @@ void convert_tree(TString sample, int iso_tau=70,
 	int HMothInd = (*_genpart_HMothInd)[i_gen];
 	int TopMothInd = (*_genpart_TopMothInd)[i_gen];
 	int WMothInd = (*_genpart_WMothInd)[i_gen];
+	int ZMothInd = (*_genpart_ZMothInd)[i_gen];
 	
 	int flags = (*_genpart_flags)[i_gen];
 	bool isFromHardProcess = (flags >> 8) & 1;
@@ -4186,6 +4295,18 @@ void convert_tree(TString sample, int iso_tau=70,
 	}      
 	_genlep_WMothInd.push_back(i_W_Moth);
 
+	int i_Z_Moth = -1;
+	int i_gen_ZMoth = (*_genpart_ZMothInd)[i_gen];
+	if( i_gen_ZMoth > -1 && i_gen_TauMoth==-1){
+	  for(int i_Z=0; i_Z<_n_genZ; i_Z++){
+	    if( genZ_index[i_Z]==i_gen_WMoth){
+	      i_Z_Moth = i_Z;
+	      break;
+	    }
+	  }
+	}      
+	_genlep_ZMothInd.push_back(i_Z_Moth);
+
 
       }
 
@@ -4272,6 +4393,18 @@ void convert_tree(TString sample, int iso_tau=70,
 	  }
 	}      
 	_gentau_HMothInd.push_back(i_H_Moth);
+
+	int i_Z_Moth = -1;
+	int i_gen_ZMoth = (*_genpart_ZMothInd)[i_gen];
+	if( i_gen_ZMoth > -1 ){
+	  for(int i_Z=0; i_Z<_n_genZ; i_Z++){
+	    if( genZ_index[i_Z]==i_gen_ZMoth){
+	      i_Z_Moth = i_Z;
+	      break;
+	    }
+	  }
+	}      
+	_gentau_ZMothInd.push_back(i_Z_Moth);
 
 
       }

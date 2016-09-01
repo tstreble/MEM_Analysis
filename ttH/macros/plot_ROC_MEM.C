@@ -37,8 +37,8 @@ void plot_ROC(vector<TGraphErrors*> ROC, vector<TString> leg_entry, bool save=fa
     ROC[i]->SetLineWidth(2);
     ROC[i]->SetFillColor(0);
     ROC[i]->SetLineColor(i+1);
-    //if(i>3)
-    if(i>1)
+    if(i>3)
+    //if(i>1)
       ROC[i]->SetLineColor(i+2);
     ROC[i]->SetFillColor(0);
     leg->AddEntry(ROC[i],leg_entry[i]);
@@ -1580,5 +1580,100 @@ void plot_ROC_weights_no_missjet_ttbar_SL(){
 
 
 
+
+
+
+
+void plot_ROC_LR_ttH_vs_ttZ_test_ttZ_23082016(){
+
+
+  vector<TString> file_sig;
+  file_sig.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_ttZ_test_160823.root");
+
+  vector<TString> file_bkg;
+  file_bkg.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/ttZ_split_2lSS_MEM_ttZ_test_160823.root");
+
+
+  vector<TString> cut_num_sig;
+  cut_num_sig.push_back("MC_weight*(category==11 && recolep_sel_pt[0]>25)");
+  vector<TString> cut_denom_sig = cut_num_sig;
+  
+
+  vector<TString> cut_num_bkg;
+  cut_num_bkg.push_back("MC_weight*(category==11 && recolep_sel_pt[0]>25)");
+  vector<TString> cut_denom_bkg=cut_num_bkg;
+
+
+  vector<TGraphErrors*> ROCs;
+  ROCs.push_back(get_ROC_2lSS_MVA_ttV(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20));
+  ROCs.push_back(get_ROC_ttH_weight(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20));
+  ROCs.push_back(get_ROC_ttZ_weight(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20));
+  ROCs.push_back(get_ROC_ttH_vs_ttbar_DL_fakelep_LR_incl(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20,true,1e-17,1e-15));
+  ROCs.push_back(get_ROC_ttH_vs_ttZ_LR_incl(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20,true,1,1));
+
+
+  vector<TString> leg_entry;
+  leg_entry.push_back("2lSS ttH vs ttV MVA");
+  leg_entry.push_back("ttH MEM weight");
+  leg_entry.push_back("ttZ MEM weight");
+  leg_entry.push_back("ttH vs t#bar{t} MEM LR");
+  leg_entry.push_back("ttH vs ttZ MEM LR");
+  
+  TString leg_title="Sig=ttH H#rightarrow#tau#tau/WW/ZZ / Bkg=ttZ";
+
+  TString filename="ROC_MEM_LR_ttH_vs_ttZ_test_ttZ_23082016";
+
+  plot_ROC(ROCs,leg_entry,true,filename,leg_title);
+
+}
+
+
+
+
+
+
+
+void plot_ROC_LR_ttH_vs_ttZ_test_ttZtautau_23082016(){
+
+
+  vector<TString> file_sig;
+  file_sig.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_ttZ_test_160823.root");
+
+  vector<TString> file_bkg;
+  file_bkg.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/ttZ_split_2lSS_MEM_ttZ_test_160823.root");
+
+
+  vector<TString> cut_num_sig;
+  cut_num_sig.push_back("MC_weight*(category==11 && recolep_sel_pt[0]>25)");
+  vector<TString> cut_denom_sig = cut_num_sig;
+  
+
+  vector<TString> cut_num_bkg;
+  cut_num_bkg.push_back("MC_weight*(category==11 && recolep_sel_pt[0]>25 && genpart_pdg==23 && genpart_HZDecayMode<=5)");
+  vector<TString> cut_denom_bkg=cut_num_bkg;
+
+
+  vector<TGraphErrors*> ROCs;
+  ROCs.push_back(get_ROC_2lSS_MVA_ttV(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20));
+  ROCs.push_back(get_ROC_ttH_weight(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20));
+  ROCs.push_back(get_ROC_ttZ_weight(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20));
+  ROCs.push_back(get_ROC_ttH_vs_ttbar_DL_fakelep_LR_incl(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20,true,1e-17,1e-15));
+  ROCs.push_back(get_ROC_ttH_vs_ttZ_LR_incl(file_sig,file_bkg,"T",cut_num_sig,cut_denom_sig,cut_num_bkg,cut_denom_bkg,20,true,1,1));
+
+
+  vector<TString> leg_entry;
+  leg_entry.push_back("2lSS ttH vs ttV MVA");
+  leg_entry.push_back("ttH MEM weight");
+  leg_entry.push_back("ttZ MEM weight");
+  leg_entry.push_back("ttH vs t#bar{t} MEM LR");
+  leg_entry.push_back("ttH vs ttZ MEM LR");
+  
+  TString leg_title="Sig=ttH H#rightarrow#tau#tau/WW/ZZ / Bkg=ttZ Z#rightarrow#tau#tau";
+
+  TString filename="ROC_MEM_LR_ttH_vs_ttZ_test_ttZtautau_23082016";
+
+  plot_ROC(ROCs,leg_entry,true,filename,leg_title);
+
+}
 
 

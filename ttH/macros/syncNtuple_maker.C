@@ -1005,16 +1005,16 @@ void create_syncNtuple(){
 
 void create_syncNtuple_eventbased(){
 
-  TString dir_in="/data_CMS/cms/strebler/ttH_Samples/ntuples_splitted/MiniAODv2_prod_06_2016/";
+  /*TString dir_in="/data_CMS/cms/strebler/ttH_Samples/ntuples_splitted/MiniAODv2_prod_06_2016/";
   TString dir_out="/data_CMS/cms/strebler/ttH_Samples/syncNtuples/MiniAODv2_prod_06_2016/";
-  TString file="syncNtuple_event_ttH_multilep.root";
-
-  /*TString dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/";
-  TString dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/";
   TString file="syncNtuple_event_ttH_multilep.root";*/
 
+  TString dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/";
+  TString dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/syncNtuples/";
+  TString file="syncNtuple_event_ttH_multilep.root";
+
   vector<TString> list;
-  list.push_back(dir_in+"sync_HTauTauTree_split.root");
+  list.push_back(dir_in+"sync_HTauTauTree_split_80X.root");
 
 
   TChain * tree_2lSS = new TChain("HTauTauTree_2lSS");
