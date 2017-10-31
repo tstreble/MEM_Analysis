@@ -28,7 +28,7 @@ vector<float> XS;
 
 //MC
 
-TString filename_ttH = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Hnonbb_split.root";
+TString filename_ttH = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/nominal/ttH/HTauTauTree_ttH_Hnonbb_split.root";
 TString filename_ttW = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/HTauTauTree_ttW_split.root";
 TString filename_ttZ = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/HTauTauTree_ttZ_split.root";
 TString filename_TTLL_lowmass = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/topG/HTauTauTree_TTLL_lowmass_split.root";
@@ -46,7 +46,7 @@ TString filename_ttbar_SLfromT = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/nt
 TString filename_ttbar_SLfromTbar = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromTbar_split.root";
 
 
-TString filename_norm_ttH = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/ntuple_ttH_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
+TString filename_norm_ttH = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/ntuple_ttH_Hnonbb_*_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
 TString filename_norm_ttW = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttW_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
 TString filename_norm_ttZ = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttZ_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
 TString filename_norm_TTLL_lowmass = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_TTLL_lowmass_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
@@ -94,10 +94,10 @@ vector<TString> MC_sample_name_thu_unc;
 
 // MC JEC + TES
 
-TString filename_ttH_JECup = "/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/JECup/ttH/HTauTauTree_ttH_Hnonbb_split_JECup.root";
-TString filename_ttH_JECdown = "/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/JECup/ttH/HTauTauTree_ttH_Hnonbb_split_JECup.root";
-TString filename_ttH_TESup = "/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/TESup/ttH/HTauTauTree_ttH_Hnonbb_split_TESup.root";
-TString filename_ttH_TESdown = "/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/TESdown/ttH/HTauTauTree_ttH_Hnonbb_split_TESdown.root";
+TString filename_ttH_JECup = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/JECup/ttH/HTauTauTree_ttH_Hnonbb_split_JECup.root";
+TString filename_ttH_JECdown = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/JECup/ttH/HTauTauTree_ttH_Hnonbb_split_JECup.root";
+TString filename_ttH_TESup = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TESup/ttH/HTauTauTree_ttH_Hnonbb_split_TESup.root";
+TString filename_ttH_TESdown = "/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TESdown/ttH/HTauTauTree_ttH_Hnonbb_split_TESdown.root";
 
 
 vector<TString> filename_MC_JECup;
@@ -109,13 +109,11 @@ vector<TString> filename_MC_TESdown;
 
 void initialize(){
 
-  filename_ttH="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/nominal/ttH/sync_HTauTauTree_split_80X.root";
-  filename_norm_ttH="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/ttH/syncNtuple_ttH_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
 
-  filename_ttH_JECup="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/JECup/ttH/sync_HTauTauTree_split_80X_JECup.root";
-  filename_ttH_JECdown="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/JECdown/ttH/sync_HTauTauTree_split_80X_JECdown.root";
-  filename_ttH_TESup="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/TESup/ttH/sync_HTauTauTree_split_80X_TESup.root";
-  filename_ttH_TESdown="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_splitted/TESdown/ttH/sync_HTauTauTree_split_80X_TESdown.root";
+  filename_ttH_JECup="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/JECup/ttH/sync_HTauTauTree_split_80X_JECup.root";
+  filename_ttH_JECdown="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/JECdown/ttH/sync_HTauTauTree_split_80X_JECdown.root";
+  filename_ttH_TESup="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TESup/ttH/sync_HTauTauTree_split_80X_TESup.root";
+  filename_ttH_TESdown="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TESdown/ttH/sync_HTauTauTree_split_80X_TESdown.root";
 
 
   XS.push_back(XS_ttH);
@@ -1516,6 +1514,926 @@ void datacard_maker_counting(){
 
 }
 
+
+
+
+
+
+void datacard_maker_counting_tauOS(){
+
+  vector<TH1F*> h;
+  
+
+  TString var="1";
+
+  
+  int nbin = 3;
+  float xmin = 0;
+  float xmax = 3;
+
+
+  //ttH
+
+  TH1F* h_ttH =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Hnonbb_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttH_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/ntuple_ttH_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttH->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH->SetNameTitle("h_ttH","h_ttH");
+  h.push_back(h_ttH);
+
+  
+  TH1F* h_ttH_tautau =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Hnonbb_split.root",
+				  "HTauTauTree_2lSS",
+				  var,
+				  "MC_weight*(category==11 && recolep_sel_pt[0]>25 && genH_decayMode[1]<=5 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+				  nbin,xmin,xmax);
+
+  
+  h_ttH_tautau->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH_tautau->SetNameTitle("h_ttH_tautau","h_ttH_tautau");
+  h.push_back(h_ttH_tautau);
+
+  TH1F* h_ttH_boson =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Hnonbb_split.root",
+				 "HTauTauTree_2lSS",
+				 var,
+				 "MC_weight*(category==11 && recolep_sel_pt[0]>25 && genH_decayMode[1]>5 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+				 nbin,xmin,xmax);
+  
+  
+  h_ttH_boson->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH_boson->SetNameTitle("h_ttH_boson","h_ttH_boson");
+  h.push_back(h_ttH_boson);
+  
+
+  //ttW
+
+  TH1F* h_ttW =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/HTauTauTree_ttW_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttW_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttW_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttW->Scale(luminosity*XS_ttW/h_ttW_norm->Integral());
+  h_ttW->SetNameTitle("h_ttW","h_ttW");
+  h.push_back(h_ttW);
+
+
+
+  //ttZ
+
+  TH1F* h_ttZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/HTauTauTree_ttZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttZ->Scale(luminosity*XS_ttZ/h_ttZ_norm->Integral());
+  h_ttZ->SetNameTitle("h_ttZ","h_ttZ");
+  h.push_back(h_ttZ);
+
+
+
+  //TTLL low mass
+
+  TH1F* h_TTLL_lowmass =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/topG/HTauTauTree_TTLL_lowmass_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_TTLL_lowmass_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/ntuple_TTLL_lowmass_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					 "HTauTauTree",
+					 "1",
+					 "MC_weight",
+					 3,0,2);
+  
+  h_TTLL_lowmass->Scale(luminosity*XS_TTLL_lowmass/h_TTLL_lowmass_norm->Integral());
+  h_TTLL_lowmass->SetNameTitle("h_TTLL_lowmass","h_TTLL_lowmass");
+  h.push_back(h_TTLL_lowmass);
+
+
+
+  //ttG
+
+  TH1F* h_ttG =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/topG/HTauTauTree_ttG_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttG_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/ntuple_ttG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ttG->Scale(luminosity*XS_ttG/h_ttG_norm->Integral());
+  h_ttG->SetNameTitle("h_ttG","h_ttG");
+  h.push_back(h_ttG);
+
+
+  //TTZ = ttZ + TTLL_lowmass + ttG
+  
+  TH1F h_TTZ = *h_ttZ;
+  h_TTZ.Add(h_TTLL_lowmass);
+  h_TTZ.Add(h_ttG);
+  h_TTZ.SetNameTitle("h_TTZ","h_TTZ");
+  h.push_back(&h_TTZ);
+
+
+  //WpWp
+
+  TH1F* h_WpWp =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/HTauTauTree_WpWp_split.root",
+			    "HTauTauTree_2lSS",
+			    var,
+			    "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			    nbin,xmin,xmax);
+
+  TH1F* h_WpWp_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WpWp_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				 "HTauTauTree",
+				 "1",
+				 "MC_weight",
+				 3,0,2);
+    
+  h_WpWp->Scale(luminosity*XS_WpWp/h_WpWp_norm->Integral());
+  h_WpWp->SetNameTitle("h_WpWp","h_WpWp");
+  h.push_back(h_WpWp);
+
+  
+ //WZ
+
+  TH1F* h_WZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Diboson/HTauTauTree_WZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/ntuple_WZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WZ->Scale(luminosity*XS_WZ/h_WZ_norm->Integral());
+  h_WZ->SetNameTitle("h_WZ","h_WZ");
+  h.push_back(h_WZ);
+
+
+  //ZZ
+
+  TH1F* h_ZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Diboson/HTauTauTree_ZZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/ntuple_ZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ZZ->Scale(luminosity*XS_ZZ/h_ZZ_norm->Integral());
+  h_ZZ->SetNameTitle("h_ZZ","h_ZZ");
+  h.push_back(h_ZZ);
+
+
+  //Diboson = WZ + ZZ
+  
+  TH1F h_Diboson = *h_WZ;
+  h_Diboson.Add(h_ZZ);
+  h_Diboson.SetNameTitle("h_Diboson","h_Diboson");
+  h.push_back(&h_Diboson);
+
+
+  //ZZZ
+
+  TH1F* h_ZZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/HTauTauTree_ZZZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ZZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_ZZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ZZZ->Scale(luminosity*XS_ZZZ/h_ZZZ_norm->Integral());
+  h_ZZZ->SetNameTitle("h_ZZZ","h_ZZZ");
+  h.push_back(h_ZZZ);
+
+
+
+  //WZZ
+
+  TH1F* h_WZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/HTauTauTree_WZZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WZZ->Scale(luminosity*XS_WZZ/h_WZZ_norm->Integral());
+  h_WZZ->SetNameTitle("h_WZZ","h_WZZ");
+  h.push_back(h_WZZ);
+
+
+
+  //WWZ
+
+  TH1F* h_WWZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/HTauTauTree_WWZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WWZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WWZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WWZ->Scale(luminosity*XS_WWZ/h_WWZ_norm->Integral());
+  h_WWZ->SetNameTitle("h_WWZ","h_WWZ");
+  h.push_back(h_WWZ);
+
+
+  //tZq
+
+  TH1F* h_tZq =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/HTauTauTree_tZq_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_tZq_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_tZq_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_tZq->Scale(luminosity*XS_tZq/h_tZq_norm->Integral());
+  h_tZq->SetNameTitle("h_tZq","h_tZq");
+  h.push_back(h_tZq);
+
+
+
+  //TTTT
+
+  TH1F* h_TTTT =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTTT/HTauTauTree_TTTT_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_TTTT_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTTT/ntuple_TTTT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				 "HTauTauTree",
+				 "1",
+				 "MC_weight",
+				 3,0,2);
+  
+  h_TTTT->Scale(luminosity*XS_TTTT/h_TTTT_norm->Integral());
+  h_TTTT->SetNameTitle("h_TTTT","h_TTTT");
+  h.push_back(h_TTTT);
+
+  //Rares = ZZZ + WZZ + WWZ + tZq + TTTT
+  TH1F h_Rares = *h_ZZZ;
+  h_Rares.Add(h_WZZ);
+  h_Rares.Add(h_WWZ);
+  h_Rares.Add(h_tZq);
+  h_Rares.Add(h_TTTT);
+  h_Rares.SetNameTitle("h_Rares","h_Rares");
+  h.push_back(&h_Rares);
+
+
+
+  //Fakes
+
+  vector<TString> files_data;
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_DoubleEG_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_DoubleEG_2016C_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_DoubleMu_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_DoubleMu_2016C_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_MuonEG_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_MuonEG_2016C_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleEle_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleEle_2016C_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleMuon_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleMuon_2016C_split_trig_filt.root");
+
+  TH1F* h_fakes =single_plot(files_data,
+			     "HTauTauTree_2lSS_lepMVA_CR",
+			     var,
+			     "event_weight_ttH*(category==41 && recolep_sel_pt[0]>25 && isTrig && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			     nbin,xmin,xmax);
+
+  h_fakes->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_fakes->SetNameTitle("h_fakes","h_fakes");
+
+  h.push_back(h_fakes);
+
+  //Fakes MC
+
+  TH1F* h_fakes_DL_MC =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_DL_split.root",
+				   "HTauTauTree_2lSS_lepMVA_CR",
+				   var,
+				   "MC_weight*event_weight_ttH*(category==41 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+				   nbin,xmin,xmax);
+
+  TH1F* h_fakes_DL_MC_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/ntuple_ttbar_DL_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					"HTauTauTree",
+					"1",
+					"MC_weight",
+					3,0,2);
+    
+  h_fakes_DL_MC->Scale(luminosity*XS_ttbar_DL/h_fakes_DL_MC_norm->Integral());
+  h_fakes_DL_MC->SetNameTitle("h_fakes_DL_MC","h_fakes_DL_MC");
+  h.push_back(h_fakes_DL_MC);
+
+
+  TH1F* h_fakes_SLfromT_MC =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromT_split.root",
+					"HTauTauTree_2lSS_lepMVA_CR",
+					var,
+					"MC_weight*event_weight_ttH*(category==41 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+					nbin,xmin,xmax);
+
+  TH1F* h_fakes_SLfromT_MC_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/ntuple_ttbar_SLfromT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					     "HTauTauTree",
+					     "1",
+					     "MC_weight",
+					     3,0,2);
+    
+  h_fakes_SLfromT_MC->Scale(luminosity*XS_ttbar_SLfromT/h_fakes_SLfromT_MC_norm->Integral());
+  h_fakes_SLfromT_MC->SetNameTitle("h_fakes_SLfromT_MC","h_fakes_SLfromT_MC");
+  h.push_back(h_fakes_SLfromT_MC);
+
+
+  TH1F* h_fakes_SLfromTbar_MC =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromTbar_split.root",
+					"HTauTauTree_2lSS_lepMVA_CR",
+					var,
+					"MC_weight*event_weight_ttH*(category==41 && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+					nbin,xmin,xmax);
+
+  TH1F* h_fakes_SLfromTbar_MC_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/ntuple_ttbar_SLfromTbar_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					     "HTauTauTree",
+					     "1",
+					     "MC_weight",
+					     3,0,2);
+    
+  h_fakes_SLfromTbar_MC->Scale(luminosity*XS_ttbar_SLfromTbar/h_fakes_SLfromTbar_MC_norm->Integral());
+  h_fakes_SLfromTbar_MC->SetNameTitle("h_fakes_SLfromTbar_MC","h_fakes_SLfromTbar_MC");
+  h.push_back(h_fakes_SLfromTbar_MC);
+
+
+  //Fakes MC
+  TH1F h_fakes_MC = *h_fakes_DL_MC;
+  h_fakes_MC.Add(h_fakes_SLfromT_MC);
+  h_fakes_MC.Add(h_fakes_SLfromTbar_MC);
+  h_fakes_MC.SetNameTitle("h_fakes_MC","h_fakes_MC");
+  h.push_back(&h_fakes_MC);
+
+
+  //Charge flips
+
+  TH1F* h_flips =single_plot(files_data,
+			     "HTauTauTree_2lOS_CR",
+			     var,
+			     "event_weight_ttH*(category==-11 && recolep_sel_pt[0]>25 && isTrig && recolep_sel_charge[0]*recotauh_sel_charge[0]<0)",
+			     nbin,xmin,xmax);
+
+  h_flips->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_flips->SetNameTitle("h_flips","h_flips");
+  h.push_back(h_flips);
+
+  
+  //Data
+
+  /*TH1F* h_data_obs =single_plot(files_data,
+				"HTauTauTree_2lSS",
+				var,
+				"(category==11 && recolep_sel_pt[0]>25 && isTrig)",
+				nbin,xmin,xmax);
+
+				h_data_obs->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+
+  h_data_obs->SetNameTitle("h_data_obs","h_data_obs");
+  h.push_back(h_data_obs);*/
+
+  TH1F h_data_obs = *h_ttH;
+  h_data_obs.Add(h_ttW);
+  h_data_obs.Add(&h_TTZ);
+  h_data_obs.Add(h_WpWp);
+  h_data_obs.Add(&h_Diboson);
+  h_data_obs.Add(&h_Rares);
+  h_data_obs.Add(h_fakes);
+  h_data_obs.Add(h_flips);
+
+  h_data_obs.SetNameTitle("h_data_obs","h_data_obs");
+  h.push_back(&h_data_obs);
+
+
+
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/datacards/datacard_counting_tauOS.root";
+
+  TFile* f_new = TFile::Open(file,"RECREATE");
+
+
+  for(unsigned int i=0;i<h.size();i++)
+    h[i]->Write();
+
+  f_new->Close();
+
+
+}
+
+
+
+
+
+
+void datacard_maker_counting_test(){
+
+  vector<TH1F*> h;
+  
+
+  TString var_sig="1";
+  TString var="0";
+
+  
+  int nbin = 4;
+  float xmin = -1;
+  float xmax = 3;
+
+
+  //ttH
+
+  TH1F* h_ttH =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Hnonbb_split.root",
+			   "HTauTauTree_2lSS",
+			   var_sig,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttH_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/ntuple_ttH_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttH->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH->SetNameTitle("h_ttH","h_ttH");
+  h.push_back(h_ttH);
+
+  
+  TH1F* h_ttH_tautau =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Hnonbb_split.root",
+				  "HTauTauTree_2lSS",
+				  var_sig,
+				  "MC_weight*(category==11 && recolep_sel_pt[0]>25 && genH_decayMode[1]<=5)",
+				  nbin,xmin,xmax);
+
+  
+  h_ttH_tautau->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH_tautau->SetNameTitle("h_ttH_tautau","h_ttH_tautau");
+  h.push_back(h_ttH_tautau);
+
+  TH1F* h_ttH_boson =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttH/HTauTauTree_ttH_Hnonbb_split.root",
+				 "HTauTauTree_2lSS",
+				 var_sig,
+				 "MC_weight*(category==11 && recolep_sel_pt[0]>25 && genH_decayMode[1]>5)",
+				 nbin,xmin,xmax);
+  
+  
+  h_ttH_boson->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH_boson->SetNameTitle("h_ttH_boson","h_ttH_boson");
+  h.push_back(h_ttH_boson);
+  
+
+  //ttW
+
+  TH1F* h_ttW =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/HTauTauTree_ttW_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttW_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttW_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttW->Scale(luminosity*XS_ttW/h_ttW_norm->Integral());
+  h_ttW->SetNameTitle("h_ttW","h_ttW");
+  h.push_back(h_ttW);
+
+
+
+  //ttZ
+
+  TH1F* h_ttZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/HTauTauTree_ttZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttZ->Scale(luminosity*XS_ttZ/h_ttZ_norm->Integral());
+  h_ttZ->SetNameTitle("h_ttZ","h_ttZ");
+  h.push_back(h_ttZ);
+
+
+
+  //TTLL low mass
+
+  TH1F* h_TTLL_lowmass =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/topG/HTauTauTree_TTLL_lowmass_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_TTLL_lowmass_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/ntuple_TTLL_lowmass_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					 "HTauTauTree",
+					 "1",
+					 "MC_weight",
+					 3,0,2);
+  
+  h_TTLL_lowmass->Scale(luminosity*XS_TTLL_lowmass/h_TTLL_lowmass_norm->Integral());
+  h_TTLL_lowmass->SetNameTitle("h_TTLL_lowmass","h_TTLL_lowmass");
+  h.push_back(h_TTLL_lowmass);
+
+
+
+  //ttG
+
+  TH1F* h_ttG =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/topG/HTauTauTree_ttG_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttG_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/ntuple_ttG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ttG->Scale(luminosity*XS_ttG/h_ttG_norm->Integral());
+  h_ttG->SetNameTitle("h_ttG","h_ttG");
+  h.push_back(h_ttG);
+
+
+  //TTZ = ttZ + TTLL_lowmass + ttG
+  
+  TH1F h_TTZ = *h_ttZ;
+  h_TTZ.Add(h_TTLL_lowmass);
+  h_TTZ.Add(h_ttG);
+  h_TTZ.SetNameTitle("h_TTZ","h_TTZ");
+  h.push_back(&h_TTZ);
+
+
+  //WpWp
+
+  TH1F* h_WpWp =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/HTauTauTree_WpWp_split.root",
+			    "HTauTauTree_2lSS",
+			    var,
+			    "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			    nbin,xmin,xmax);
+
+  TH1F* h_WpWp_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WpWp_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				 "HTauTauTree",
+				 "1",
+				 "MC_weight",
+				 3,0,2);
+    
+  h_WpWp->Scale(luminosity*XS_WpWp/h_WpWp_norm->Integral());
+  h_WpWp->SetNameTitle("h_WpWp","h_WpWp");
+  h.push_back(h_WpWp);
+
+  
+ //WZ
+
+  TH1F* h_WZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Diboson/HTauTauTree_WZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/ntuple_WZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WZ->Scale(luminosity*XS_WZ/h_WZ_norm->Integral());
+  h_WZ->SetNameTitle("h_WZ","h_WZ");
+  h.push_back(h_WZ);
+
+
+  //ZZ
+
+  TH1F* h_ZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Diboson/HTauTauTree_ZZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/ntuple_ZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ZZ->Scale(luminosity*XS_ZZ/h_ZZ_norm->Integral());
+  h_ZZ->SetNameTitle("h_ZZ","h_ZZ");
+  h.push_back(h_ZZ);
+
+
+  //Diboson = WZ + ZZ
+  
+  TH1F h_Diboson = *h_WZ;
+  h_Diboson.Add(h_ZZ);
+  h_Diboson.SetNameTitle("h_Diboson","h_Diboson");
+  h.push_back(&h_Diboson);
+
+
+  //ZZZ
+
+  TH1F* h_ZZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/HTauTauTree_ZZZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ZZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_ZZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ZZZ->Scale(luminosity*XS_ZZZ/h_ZZZ_norm->Integral());
+  h_ZZZ->SetNameTitle("h_ZZZ","h_ZZZ");
+  h.push_back(h_ZZZ);
+
+
+
+  //WZZ
+
+  TH1F* h_WZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/HTauTauTree_WZZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WZZ->Scale(luminosity*XS_WZZ/h_WZZ_norm->Integral());
+  h_WZZ->SetNameTitle("h_WZZ","h_WZZ");
+  h.push_back(h_WZZ);
+
+
+
+  //WWZ
+
+  TH1F* h_WWZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/Rares_EW/HTauTauTree_WWZ_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WWZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WWZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WWZ->Scale(luminosity*XS_WWZ/h_WWZ_norm->Integral());
+  h_WWZ->SetNameTitle("h_WWZ","h_WWZ");
+  h.push_back(h_WWZ);
+
+
+  //tZq
+
+  TH1F* h_tZq =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/ttV/HTauTauTree_tZq_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_tZq_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_tZq_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_tZq->Scale(luminosity*XS_tZq/h_tZq_norm->Integral());
+  h_tZq->SetNameTitle("h_tZq","h_tZq");
+  h.push_back(h_tZq);
+
+
+
+  //TTTT
+
+  TH1F* h_TTTT =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTTT/HTauTauTree_TTTT_split.root",
+			   "HTauTauTree_2lSS",
+			   var,
+			   "MC_weight*(category==11 && recolep_sel_pt[0]>25)",
+			   nbin,xmin,xmax);
+
+  TH1F* h_TTTT_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTTT/ntuple_TTTT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				 "HTauTauTree",
+				 "1",
+				 "MC_weight",
+				 3,0,2);
+  
+  h_TTTT->Scale(luminosity*XS_TTTT/h_TTTT_norm->Integral());
+  h_TTTT->SetNameTitle("h_TTTT","h_TTTT");
+  h.push_back(h_TTTT);
+
+  //Rares = ZZZ + WZZ + WWZ + tZq + TTTT
+  TH1F h_Rares = *h_ZZZ;
+  h_Rares.Add(h_WZZ);
+  h_Rares.Add(h_WWZ);
+  h_Rares.Add(h_tZq);
+  h_Rares.Add(h_TTTT);
+  h_Rares.SetNameTitle("h_Rares","h_Rares");
+  h.push_back(&h_Rares);
+
+
+
+  //Fakes
+
+  vector<TString> files_data;
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_DoubleEG_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_DoubleEG_2016C_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_DoubleMu_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_DoubleMu_2016C_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_MuonEG_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_MuonEG_2016C_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleEle_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleEle_2016C_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleMuon_2016B_split_trig_filt.root");
+  files_data.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleMuon_2016C_split_trig_filt.root");
+
+  TH1F* h_fakes =single_plot(files_data,
+			     "HTauTauTree_2lSS_lepMVA_CR",
+			     var,
+			     "event_weight_ttH*(category==41 && recolep_sel_pt[0]>25 && isTrig)",
+			     nbin,xmin,xmax);
+
+  h_fakes->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_fakes->SetNameTitle("h_fakes","h_fakes");
+
+  h.push_back(h_fakes);
+
+  //Fakes MC
+
+  TH1F* h_fakes_DL_MC =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_DL_split.root",
+				   "HTauTauTree_2lSS_lepMVA_CR",
+				   var,
+				   "MC_weight*event_weight_ttH*(category==41)",
+				   nbin,xmin,xmax);
+
+  TH1F* h_fakes_DL_MC_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/ntuple_ttbar_DL_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					"HTauTauTree",
+					"1",
+					"MC_weight",
+					3,0,2);
+    
+  h_fakes_DL_MC->Scale(luminosity*XS_ttbar_DL/h_fakes_DL_MC_norm->Integral());
+  h_fakes_DL_MC->SetNameTitle("h_fakes_DL_MC","h_fakes_DL_MC");
+  h.push_back(h_fakes_DL_MC);
+
+
+  TH1F* h_fakes_SLfromT_MC =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromT_split.root",
+					"HTauTauTree_2lSS_lepMVA_CR",
+					var,
+					"MC_weight*event_weight_ttH*(category==41)",
+					nbin,xmin,xmax);
+
+  TH1F* h_fakes_SLfromT_MC_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/ntuple_ttbar_SLfromT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					     "HTauTauTree",
+					     "1",
+					     "MC_weight",
+					     3,0,2);
+    
+  h_fakes_SLfromT_MC->Scale(luminosity*XS_ttbar_SLfromT/h_fakes_SLfromT_MC_norm->Integral());
+  h_fakes_SLfromT_MC->SetNameTitle("h_fakes_SLfromT_MC","h_fakes_SLfromT_MC");
+  h.push_back(h_fakes_SLfromT_MC);
+
+
+  TH1F* h_fakes_SLfromTbar_MC =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_splitted/TTJets/HTauTauTree_ttbar_SLfromTbar_split.root",
+					"HTauTauTree_2lSS_lepMVA_CR",
+					var,
+					"MC_weight*event_weight_ttH*(category==41)",
+					nbin,xmin,xmax);
+
+  TH1F* h_fakes_SLfromTbar_MC_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/ntuple_ttbar_SLfromTbar_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					     "HTauTauTree",
+					     "1",
+					     "MC_weight",
+					     3,0,2);
+    
+  h_fakes_SLfromTbar_MC->Scale(luminosity*XS_ttbar_SLfromTbar/h_fakes_SLfromTbar_MC_norm->Integral());
+  h_fakes_SLfromTbar_MC->SetNameTitle("h_fakes_SLfromTbar_MC","h_fakes_SLfromTbar_MC");
+  h.push_back(h_fakes_SLfromTbar_MC);
+
+
+  //Fakes MC
+  TH1F h_fakes_MC = *h_fakes_DL_MC;
+  h_fakes_MC.Add(h_fakes_SLfromT_MC);
+  h_fakes_MC.Add(h_fakes_SLfromTbar_MC);
+  h_fakes_MC.SetNameTitle("h_fakes_MC","h_fakes_MC");
+  h.push_back(&h_fakes_MC);
+
+
+  //Charge flips
+
+  TH1F* h_flips =single_plot(files_data,
+			     "HTauTauTree_2lOS_CR",
+			     var,
+			     "event_weight_ttH*(category==-11 && recolep_sel_pt[0]>25 && isTrig)",
+			     nbin,xmin,xmax);
+
+  h_flips->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_flips->SetNameTitle("h_flips","h_flips");
+  h.push_back(h_flips);
+
+  
+  //Data
+
+  /*TH1F* h_data_obs =single_plot(files_data,
+				"HTauTauTree_2lSS",
+				var,
+				"(category==11 && recolep_sel_pt[0]>25 && isTrig)",
+				nbin,xmin,xmax);
+
+				h_data_obs->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+
+  h_data_obs->SetNameTitle("h_data_obs","h_data_obs");
+  h.push_back(h_data_obs);*/
+
+  TH1F h_data_obs = *h_ttH;
+  h_data_obs.Add(h_ttW);
+  h_data_obs.Add(&h_TTZ);
+  h_data_obs.Add(h_WpWp);
+  h_data_obs.Add(&h_Diboson);
+  h_data_obs.Add(&h_Rares);
+  h_data_obs.Add(h_fakes);
+  h_data_obs.Add(h_flips);
+
+  h_data_obs.SetNameTitle("h_data_obs","h_data_obs");
+  h.push_back(&h_data_obs);
+
+
+
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/datacards/datacard_counting_test.root";
+
+  TFile* f_new = TFile::Open(file,"RECREATE");
+
+
+  for(unsigned int i=0;i<h.size();i++)
+    h[i]->Write();
+
+  f_new->Close();
+
+
+}
 
 
 
@@ -5351,7 +6269,7 @@ void datacard_maker_MVA_2lSS_allcat_syst(){
     cat_fakes.push_back(30+i);
   }
   
-  TString file="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/datacards/datacard_MVA_2lSS_allcat_syst.root";
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/datacards/datacard_MVA_2lSS_allcat_syst.root";
 
   TFile* f_new = TFile::Open(file,"RECREATE");
   
@@ -5859,4 +6777,846 @@ void datacard_maker_MVA_2lSS_allcat_syst(){
 
 
 
+
+
+
+
+
+void datacard_maker_MEM_LR_nomiss_tau_antilepMVA(){
+
+  vector<TH1F*> h;
+  
+
+  TString var="Integral_ttH/(Integral_ttH+1e-17*(Integral_ttbar_DL_fakelep_tlep+Integral_ttbar_DL_fakelep_ttau))";
+
+  
+  int nbin = 10;
+  float xmin = 0.;
+  float xmax = 1.;
+
+  /*TString var="-log(1-Integral_ttH/(Integral_ttH+1e-17*(Integral_ttbar_DL_fakelep_tlep+Integral_ttbar_DL_fakelep_ttau)))*((Integral_ttbar_DL_fakelep_tlep+Integral_ttbar_DL_fakelep_ttau)>0) + 40*((Integral_ttbar_DL_fakelep_tlep+Integral_ttbar_DL_fakelep_ttau)==0 && Integral_ttH>0) - ((Integral_ttbar_DL_fakelep_tlep+Integral_ttbar_DL_fakelep_ttau)==0 && Integral_ttH==0)";
+
+  int nbin = 43;
+  float xmin = -2.;
+  float xmax = 41.;*/
+
+
+  //ttH
+  vector<TString> files_ttH;
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_160713.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_2_160718.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_3_160719.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_4_160719.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_5_160720.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_6_160720.root");
+
+
+  TH1F* h_ttH =single_plot(files_ttH,
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttH_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/ntuple_ttH_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttH->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH->SetNameTitle("h_ttH","h_ttH");
+  h.push_back(h_ttH);
+
+
+  TH1F* h_ttH_tautau =single_plot(files_ttH,
+				  "T",
+				  var,
+				  "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0] && genH_decayMode[1]<=5)",
+				  nbin,xmin,xmax);
+
+  
+  h_ttH_tautau->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH_tautau->SetNameTitle("h_ttH_tautau","h_ttH_tautau");
+  h.push_back(h_ttH_tautau);
+
+  TH1F* h_ttH_boson =single_plot(files_ttH,
+				 "T",
+				 var,
+				 "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0] && genH_decayMode[1]>5)",
+				 nbin,xmin,xmax);
+  
+  
+  h_ttH_boson->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH_boson->SetNameTitle("h_ttH_boson","h_ttH_boson");
+  h.push_back(h_ttH_boson);
+
+
+  //ttW
+
+  TH1F* h_ttW =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/ttW_split_2lSS_MEM_160708.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttW_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttW_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttW->Scale(luminosity*XS_ttW/h_ttW_norm->Integral());
+  h_ttW->SetNameTitle("h_ttW","h_ttW");
+  h.push_back(h_ttW);
+
+
+
+  //ttZ
+
+  TH1F* h_ttZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/ttZ_split_2lSS_MEM_160720.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttZ->Scale(luminosity*XS_ttZ/h_ttZ_norm->Integral());
+  h_ttZ->SetNameTitle("h_ttZ","h_ttZ");
+  h.push_back(h_ttZ);
+
+
+
+  //TTLL low mass
+
+  TH1F* h_TTLL_lowmass =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/TTLL_lowmass_split_2lSS_MEM_160720.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_TTLL_lowmass_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/ntuple_TTLL_lowmass_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					 "HTauTauTree",
+					 "1",
+					 "MC_weight",
+					 3,0,2);
+  
+  h_TTLL_lowmass->Scale(luminosity*XS_TTLL_lowmass/h_TTLL_lowmass_norm->Integral());
+  h_TTLL_lowmass->SetNameTitle("h_TTLL_lowmass","h_TTLL_lowmass");
+  h.push_back(h_TTLL_lowmass);
+
+
+
+  //ttG
+
+  TH1F* h_ttG =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttG/ttG_split_2lSS_MEM_160720.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttG_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/ntuple_ttG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ttG->Scale(luminosity*XS_ttG/h_ttG_norm->Integral());
+  h_ttG->SetNameTitle("h_ttG","h_ttG");
+  h.push_back(h_ttG);
+
+
+  //TTZ = ttZ + TTLL_lowmass + ttG
+  
+  TH1F h_TTZ = *h_ttZ;
+  h_TTZ.Add(h_TTLL_lowmass);
+  h_TTZ.Add(h_ttG);
+  h_TTZ.SetNameTitle("h_TTZ","h_TTZ");
+  h.push_back(&h_TTZ);  
+
+
+
+  //WpWp
+
+  TH1F* h_WpWp =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Rares_EW/WpWp_2lSS_MEM_160719.root",
+			    "T",
+			    var,
+			    "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			    nbin,xmin,xmax);
+
+  TH1F* h_WpWp_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WpWp_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				 "HTauTauTree",
+				 "1",
+				 "MC_weight",
+				 3,0,2);
+    
+  h_WpWp->Scale(luminosity*XS_WpWp/h_WpWp_norm->Integral());
+  h_WpWp->SetNameTitle("h_WpWp","h_WpWp");
+  h.push_back(h_WpWp);
+
+  
+  //WZ
+
+  TH1F* h_WZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Diboson/WZ_split_2lSS_MEM_160805.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/ntuple_WZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WZ->Scale(luminosity*XS_WZ/h_WZ_norm->Integral());
+  h_WZ->SetNameTitle("h_WZ","h_WZ");
+  h.push_back(h_WZ);
+
+
+  //ZZ
+
+  TH1F* h_ZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Diboson/ZZ_split_2lSS_MEM_160804.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/ntuple_ZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ZZ->Scale(luminosity*XS_ZZ/h_ZZ_norm->Integral());
+  h_ZZ->SetNameTitle("h_ZZ","h_ZZ");
+  h.push_back(h_ZZ);
+
+  //Diboson = WZ + ZZ
+  
+  TH1F h_Diboson = *h_WZ;
+  h_Diboson.Add(h_ZZ);
+  h_Diboson.SetNameTitle("h_Diboson","h_Diboson");
+  h.push_back(&h_Diboson);
+
+  //ZZZ
+
+  TH1F* h_ZZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Rares_EW/ZZZ_2lSS_MEM_160719.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ZZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_ZZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ZZZ->Scale(luminosity*XS_ZZZ/h_ZZZ_norm->Integral());
+  h_ZZZ->SetNameTitle("h_ZZZ","h_ZZZ");
+  h.push_back(h_ZZZ);
+
+
+
+  //WZZ
+
+  TH1F* h_WZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Rares_EW/WZZ_2lSS_MEM_160719.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WZZ->Scale(luminosity*XS_WZZ/h_WZZ_norm->Integral());
+  h_WZZ->SetNameTitle("h_WZZ","h_WZZ");
+  h.push_back(h_WZZ);
+
+
+
+  //WWZ
+
+  TH1F* h_WWZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Rares_EW/WWZ_2lSS_MEM_160719.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WWZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WWZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WWZ->Scale(luminosity*XS_WWZ/h_WWZ_norm->Integral());
+  h_WWZ->SetNameTitle("h_WWZ","h_WWZ");
+  h.push_back(h_WWZ);
+
+
+  //tZq
+
+  TH1F* h_tZq =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/tZq_split_2lSS_MEM_160722.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_tZq_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_tZq_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_tZq->Scale(luminosity*XS_tZq/h_tZq_norm->Integral());
+  h_tZq->SetNameTitle("h_tZq","h_tZq");
+  h.push_back(h_tZq);
+
+
+
+  //TTTT
+
+  TH1F* h_TTTT =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/TTTT/TTTT_split_2lSS_MEM_160722.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_TTTT_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTTT/ntuple_TTTT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				 "HTauTauTree",
+				 "1",
+				 "MC_weight",
+				 3,0,2);
+  
+  h_TTTT->Scale(luminosity*XS_TTTT/h_TTTT_norm->Integral());
+  h_TTTT->SetNameTitle("h_TTTT","h_TTTT");
+  h.push_back(h_TTTT);
+
+  //Rares = ZZZ + WZZ + WWZ + tZq + TTTT
+  TH1F h_Rares = *h_ZZZ;
+  h_Rares.Add(h_WZZ);
+  h_Rares.Add(h_WWZ);
+  h_Rares.Add(h_tZq);
+  h_Rares.Add(h_TTTT);
+  h_Rares.SetNameTitle("h_Rares","h_Rares");
+  h.push_back(&h_Rares);
+
+  //Fakes
+
+  vector<TString> files_data_fakes;
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleEG_2016B_split_2lSS_lepMVA_CR_MEM_160805_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleEG_2016C_split_2lSS_lepMVA_CR_MEM_160805_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleMu_2016B_split_2lSS_lepMVA_CR_MEM_160810_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleMu_2016C_split_2lSS_lepMVA_CR_MEM_160810_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/MuonEG_2016B_split_2lSS_lepMVA_CR_MEM_160804_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/MuonEG_2016C_split_2lSS_lepMVA_CR_MEM_160804_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleEle_2016B_split_2lSS_lepMVA_CR_MEM_160810_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleEle_2016C_split_2lSS_lepMVA_CR_MEM_160805_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016B_split_2lSS_lepMVA_CR_MEM_160810_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016C_split_2lSS_lepMVA_CR_MEM_160805_trig_filt.root");
+
+
+  TH1F* h_fakes =single_plot(files_data_fakes,
+			     "T",
+			     var,
+			     "event_weight_ttH*(category==41 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0] && isTrig)",
+			     nbin,xmin,xmax);
+
+  h_fakes->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_fakes->SetNameTitle("h_fakes","h_fakes");
+
+  h.push_back(h_fakes);
+
+
+  //Charge flips
+
+
+  vector<TString> files_data_flips;
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleEG_2016B_split_2lOS_CR_MEM_160805_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleEG_2016C_split_2lOS_CR_MEM_160805_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleMu_2016B_split_2lOS_CR_MEM_160810_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleMu_2016C_split_2lOS_CR_MEM_160810_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/MuonEG_2016B_split_2lOS_CR_MEM_160804_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/MuonEG_2016C_split_2lOS_CR_MEM_160804_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleEle_2016B_split_2lOS_CR_MEM_160810_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleEle_2016C_split_2lOS_CR_MEM_160805_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016B_split_2lOS_CR_MEM_160810_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016C_split_2lOS_CR_MEM_160805_trig_filt.root");
+
+
+
+  TH1F* h_flips =single_plot(files_data_flips,
+			     "T",
+			     var,
+			     "event_weight_ttH*(category==-11 && integration_type==0 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0] && isTrig)",
+			     nbin,xmin,xmax);
+
+  h_flips->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_flips->SetNameTitle("h_flips","h_flips");
+  h.push_back(h_flips);
+
+
+//Data
+
+  /*TH1F* h_data_obs =single_plot(files_data,
+				"HTauTauTree_2lSS",
+				var,
+				"(category==11 && recolep_sel_pt[0]>25 && isTrig)",
+				nbin,xmin,xmax);
+
+  h_data_obs->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_data_obs->SetNameTitle("h_data_obs","h_data_obs");
+  h.push_back(h_data_obs);*/
+
+  TH1F h_data_obs = *h_ttH;
+  h_data_obs.Add(h_ttW);
+  h_data_obs.Add(&h_TTZ);
+  h_data_obs.Add(h_WpWp);
+  h_data_obs.Add(&h_Diboson);
+  h_data_obs.Add(&h_Rares);
+  h_data_obs.Add(h_fakes);
+  h_data_obs.Add(h_flips);
+
+  h_data_obs.SetNameTitle("h_data_obs","h_data_obs");
+  h.push_back(&h_data_obs);
+  
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/datacards/datacard_MEM_LR_nomiss_tau_antilepMVA.root";
+
+  TFile* f_new = TFile::Open(file,"RECREATE");
+
+
+  for(unsigned int i=0;i<h.size();i++)
+    h[i]->Write();
+
+  f_new->Close();
+
+
+}
+
+
+
+
+
+
+
+
+void datacard_maker_MEM_LR_missingjet_tau_antilepMVA(){
+
+  vector<TH1F*> h;
+  
+
+  TString var="Integral_ttH/(Integral_ttH+1e-15*(Integral_ttbar_DL_fakelep_tlep+Integral_ttbar_DL_fakelep_ttau))";
+
+  
+  int nbin = 10;
+  float xmin = 0.;
+  float xmax = 1.;
+
+
+  //ttH
+  vector<TString> files_ttH;
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_160713.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_2_160718.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_3_160719.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_4_160719.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_5_160720.root");
+  files_ttH.push_back("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttH/ttH_Hnonbb_split_2lSS_MEM_6_160720.root");
+
+
+  TH1F* h_ttH =single_plot(files_ttH,
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttH_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/ntuple_ttH_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttH->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH->SetNameTitle("h_ttH","h_ttH");
+  h.push_back(h_ttH);
+
+ TH1F* h_ttH_tautau =single_plot(files_ttH,
+				  "T",
+				  var,
+				  "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0] && genH_decayMode[1]<=5)",
+				  nbin,xmin,xmax);
+
+  
+  h_ttH_tautau->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH_tautau->SetNameTitle("h_ttH_tautau","h_ttH_tautau");
+  h.push_back(h_ttH_tautau);
+
+  TH1F* h_ttH_boson =single_plot(files_ttH,
+				 "T",
+				 var,
+				 "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0] && genH_decayMode[1]>5)",
+				 nbin,xmin,xmax);
+  
+  
+  h_ttH_boson->Scale(luminosity*XS_ttH/h_ttH_norm->Integral());
+  h_ttH_boson->SetNameTitle("h_ttH_boson","h_ttH_boson");
+  h.push_back(h_ttH_boson);
+
+
+  //ttW
+
+  TH1F* h_ttW =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/ttW_split_2lSS_MEM_160708.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttW_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttW_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttW->Scale(luminosity*XS_ttW/h_ttW_norm->Integral());
+  h_ttW->SetNameTitle("h_ttW","h_ttW");
+  h.push_back(h_ttW);
+
+
+
+  //ttZ
+
+  TH1F* h_ttZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/ttZ_split_2lSS_MEM_160720.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_ttZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+  
+  h_ttZ->Scale(luminosity*XS_ttZ/h_ttZ_norm->Integral());
+  h_ttZ->SetNameTitle("h_ttZ","h_ttZ");
+  h.push_back(h_ttZ);
+
+
+
+  //TTLL low mass
+
+  TH1F* h_TTLL_lowmass =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/TTLL_lowmass_split_2lSS_MEM_160720.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_TTLL_lowmass_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/ntuple_TTLL_lowmass_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+					 "HTauTauTree",
+					 "1",
+					 "MC_weight",
+					 3,0,2);
+  
+  h_TTLL_lowmass->Scale(luminosity*XS_TTLL_lowmass/h_TTLL_lowmass_norm->Integral());
+  h_TTLL_lowmass->SetNameTitle("h_TTLL_lowmass","h_TTLL_lowmass");
+  h.push_back(h_TTLL_lowmass);
+
+
+
+  //ttG
+
+  TH1F* h_ttG =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttG/ttG_split_2lSS_MEM_160720.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ttG_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/topG/ntuple_ttG_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ttG->Scale(luminosity*XS_ttG/h_ttG_norm->Integral());
+  h_ttG->SetNameTitle("h_ttG","h_ttG");
+  h.push_back(h_ttG);
+
+
+  //TTZ = ttZ + TTLL_lowmass + ttG
+  
+  TH1F h_TTZ = *h_ttZ;
+  h_TTZ.Add(h_TTLL_lowmass);
+  h_TTZ.Add(h_ttG);
+  h_TTZ.SetNameTitle("h_TTZ","h_TTZ");
+  h.push_back(&h_TTZ);  
+  
+
+  //WpWp
+
+  TH1F* h_WpWp =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Rares_EW/WpWp_2lSS_MEM_160719.root",
+			    "T",
+			    var,
+			    "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			    nbin,xmin,xmax);
+
+  TH1F* h_WpWp_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WpWp_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				 "HTauTauTree",
+				 "1",
+				 "MC_weight",
+				 3,0,2);
+    
+  h_WpWp->Scale(luminosity*XS_WpWp/h_WpWp_norm->Integral());
+  h_WpWp->SetNameTitle("h_WpWp","h_WpWp");
+  h.push_back(h_WpWp);
+
+
+  //WZ
+  
+  TH1F* h_WZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Diboson/WZ_split_2lSS_MEM_160805.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/ntuple_WZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WZ->Scale(luminosity*XS_WZ/h_WZ_norm->Integral());
+  h_WZ->SetNameTitle("h_WZ","h_WZ");
+  h.push_back(h_WZ);
+
+
+  //ZZ
+
+  TH1F* h_ZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Diboson/ZZ_split_2lSS_MEM_160804.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Diboson/ntuple_ZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ZZ->Scale(luminosity*XS_ZZ/h_ZZ_norm->Integral());
+  h_ZZ->SetNameTitle("h_ZZ","h_ZZ");
+  h.push_back(h_ZZ);
+
+  //Diboson = WZ + ZZ
+  
+  TH1F h_Diboson = *h_WZ;
+  h_Diboson.Add(h_ZZ);
+  h_Diboson.SetNameTitle("h_Diboson","h_Diboson");
+  h.push_back(&h_Diboson);
+
+  //ZZZ
+
+  TH1F* h_ZZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Rares_EW/ZZZ_2lSS_MEM_160719.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_ZZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_ZZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_ZZZ->Scale(luminosity*XS_ZZZ/h_ZZZ_norm->Integral());
+  h_ZZZ->SetNameTitle("h_ZZZ","h_ZZZ");
+  h.push_back(h_ZZZ);
+
+
+
+  //WZZ
+
+  TH1F* h_WZZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Rares_EW/WZZ_2lSS_MEM_160719.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WZZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WZZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WZZ->Scale(luminosity*XS_WZZ/h_WZZ_norm->Integral());
+  h_WZZ->SetNameTitle("h_WZZ","h_WZZ");
+  h.push_back(h_WZZ);
+
+
+
+  //WWZ
+
+  TH1F* h_WWZ =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/Rares_EW/WWZ_2lSS_MEM_160719.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_WWZ_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Rares_EW/ntuple_WWZ_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_WWZ->Scale(luminosity*XS_WWZ/h_WWZ_norm->Integral());
+  h_WWZ->SetNameTitle("h_WWZ","h_WWZ");
+  h.push_back(h_WWZ);
+
+
+  //tZq
+
+  TH1F* h_tZq =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/ttV/tZq_split_2lSS_MEM_160722.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_tZq_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/ntuple_tZq_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				"HTauTauTree",
+				"1",
+				"MC_weight",
+				3,0,2);
+    
+  h_tZq->Scale(luminosity*XS_tZq/h_tZq_norm->Integral());
+  h_tZq->SetNameTitle("h_tZq","h_tZq");
+  h.push_back(h_tZq);
+
+
+
+  //TTTT
+
+  TH1F* h_TTTT =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_MEM/TTTT/TTTT_split_2lSS_MEM_160722.root",
+			   "T",
+			   var,
+			   "MC_weight*(category==11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0])",
+			   nbin,xmin,xmax);
+
+  TH1F* h_TTTT_norm =single_plot("/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTTT/ntuple_TTTT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root",
+				 "HTauTauTree",
+				 "1",
+				 "MC_weight",
+				 3,0,2);
+  
+  h_TTTT->Scale(luminosity*XS_TTTT/h_TTTT_norm->Integral());
+  h_TTTT->SetNameTitle("h_TTTT","h_TTTT");
+  h.push_back(h_TTTT);
+
+  //Rares = ZZZ + WZZ + WWZ + tZq + TTTT
+  TH1F h_Rares = *h_ZZZ;
+  h_Rares.Add(h_WZZ);
+  h_Rares.Add(h_WWZ);
+  h_Rares.Add(h_tZq);
+  h_Rares.Add(h_TTTT);
+  h_Rares.SetNameTitle("h_Rares","h_Rares");
+  h.push_back(&h_Rares);
+
+
+  //Fakes
+
+  vector<TString> files_data_fakes;
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleEG_2016B_split_2lSS_lepMVA_CR_MEM_160805_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleEG_2016C_split_2lSS_lepMVA_CR_MEM_160805_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleMu_2016B_split_2lSS_lepMVA_CR_MEM_160810_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleMu_2016C_split_2lSS_lepMVA_CR_MEM_160810_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/MuonEG_2016B_split_2lSS_lepMVA_CR_MEM_160804_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/MuonEG_2016C_split_2lSS_lepMVA_CR_MEM_160804_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleEle_2016B_split_2lSS_lepMVA_CR_MEM_160810_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleEle_2016C_split_2lSS_lepMVA_CR_MEM_160805_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016B_split_2lSS_lepMVA_CR_MEM_160810_trig_filt.root");
+  files_data_fakes.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016C_split_2lSS_lepMVA_CR_MEM_160805_trig_filt.root");
+
+
+
+  TH1F* h_fakes =single_plot(files_data_fakes,
+			     "T",
+			     var,
+			     "event_weight_ttH*(category==41 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0] && isTrig)",
+			     nbin,xmin,xmax);
+
+  h_fakes->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_fakes->SetNameTitle("h_fakes","h_fakes");
+
+  h.push_back(h_fakes);
+
+
+  //Charge flips
+
+
+  vector<TString> files_data_flips;
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleEG_2016B_split_2lOS_CR_MEM_160805_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleEG_2016C_split_2lOS_CR_MEM_160805_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleMu_2016B_split_2lOS_CR_MEM_160810_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/DoubleMu_2016C_split_2lOS_CR_MEM_160810_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/MuonEG_2016B_split_2lOS_CR_MEM_160804_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/MuonEG_2016C_split_2lOS_CR_MEM_160804_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleEle_2016B_split_2lOS_CR_MEM_160810_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleEle_2016C_split_2lOS_CR_MEM_160805_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016B_split_2lOS_CR_MEM_160810_trig_filt.root");
+  files_data_flips.push_back("/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016C_split_2lOS_CR_MEM_160805_trig_filt.root");
+
+
+  TH1F* h_flips =single_plot(files_data_flips,
+			     "T",
+			     var,
+			     "event_weight_ttH*(category==-11 && integration_type==1 && recolep_sel_pt[0]>25 && recotauh_againstElectronVLooseMVA6[0] && recotauh_againstMuonLoose3[0] && isTrig)",
+			     nbin,xmin,xmax);
+
+  h_flips->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_flips->SetNameTitle("h_flips","h_flips");
+  h.push_back(h_flips);
+
+
+//Data
+
+  /*TH1F* h_data_obs =single_plot(files_data,
+				"HTauTauTree_2lSS",
+				var,
+				"(category==11 && recolep_sel_pt[0]>25 && isTrig)",
+				nbin,xmin,xmax);
+
+  h_data_obs->Scale(luminosity/8538.); //Data files for 8.5 fb-1
+  h_data_obs->SetNameTitle("h_data_obs","h_data_obs");
+  h.push_back(h_data_obs);*/
+
+  TH1F h_data_obs = *h_ttH;
+  h_data_obs.Add(h_ttW);
+  h_data_obs.Add(&h_TTZ);
+  h_data_obs.Add(h_WpWp);
+  h_data_obs.Add(&h_Diboson);
+  h_data_obs.Add(&h_Rares);
+  h_data_obs.Add(h_fakes);
+  h_data_obs.Add(h_flips);
+
+  h_data_obs.SetNameTitle("h_data_obs","h_data_obs");
+  h.push_back(&h_data_obs);
+  
+  TString file="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/datacards/datacard_MEM_LR_missingjet_tau_antilepMVA.root";
+
+  TFile* f_new = TFile::Open(file,"RECREATE");
+
+
+  for(unsigned int i=0;i<h.size();i++)
+    h[i]->Write();
+
+  f_new->Close();
+
+
+}
 

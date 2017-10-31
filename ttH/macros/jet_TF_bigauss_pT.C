@@ -17,6 +17,7 @@
 #include <TLatex.h>
 #include <TGraphErrors.h>
 
+
 using namespace std;
 
 
@@ -168,11 +169,12 @@ void plot_deltapT_nodRveto(){
 
 void plot_pT_bin_nodRveto(bool low_pT){
 
-  TString file_TTJets="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/TTJets_pfMET_prod_24072015/ntuple_TTJets_dRveto_gen.root";
+  //TString file_TTJets="/data_CMS/cms/strebler/TTJets_Samples/ntuples_converted/TTJets_pfMET_prod_24072015/ntuple_TTJets_dRveto_gen.root";
+  TString file_TTJets="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/ntuple_ttbar_SLfromT_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
 
-  TString var_pT="recoPFJet30_pt";
-  TString var_deltapT="recoPFJet30_pt-genpart_pt[recoPFJet30_i_closest_genpart]";
-  TString cut="recoPFJet30_dR_closest_genpart<0.4 && (abs(genpart_pdg[recoPFJet30_i_closest_genpart])<5) && abs(recoPFJet30_eta)<1.5 && genpart_pt[recoPFJet30_i_closest_genpart]>20";  
+  TString var_pT="recoPFJet_pt";
+  TString var_deltapT="recoPFJet_pt-genpart_pt[recoPFJet_i_closest_genpart]";
+  TString cut="recoPFJet_dR_closest_genpart<0.4 && (abs(genpart_pdg[recoPFJet_i_closest_genpart])<5) && abs(recoPFJet_eta)<1.5 && genpart_pt[recoPFJet_i_closest_genpart]>20";  
 
   vector<TString> pT_cut;
   vector<TString> leg_entry;
@@ -180,16 +182,16 @@ void plot_pT_bin_nodRveto(bool low_pT){
 
   if(low_pT){
     for(int i=40; i<120; i+=20){
-      pT_cut.push_back(Form("&& genpart_pt[recoPFJet30_i_closest_genpart]>%i && genpart_pt[recoPFJet30_i_closest_genpart]<%i",i,i+5));
+      pT_cut.push_back(Form("&& genpart_pt[recoPFJet_i_closest_genpart]>%i && genpart_pt[recoPFJet_i_closest_genpart]<%i",i,i+5));
       leg_entry.push_back(Form("%i<p_{T}(gen)<%i GeV",i,i+5));
       pT_mean_bin.push_back(i+2.5);
     }
   }
   else{
-    for(int i=120; i<250; i+=30){
+    for(int i=60; i<250; i+=30){
     //for(int i=120; i<180; i+=20){
 
-      pT_cut.push_back(Form("&& genpart_pt[recoPFJet30_i_closest_genpart]>%i && genpart_pt[recoPFJet30_i_closest_genpart]<%i",i,i+10));
+      pT_cut.push_back(Form("&& genpart_pt[recoPFJet_i_closest_genpart]>%i && genpart_pt[recoPFJet_i_closest_genpart]<%i",i,i+10));
       leg_entry.push_back(Form("%i<p_{T}(gen)<%i GeV",i,i+10));
       pT_mean_bin.push_back(i+5);
     }
@@ -236,8 +238,10 @@ void plot_pT_bin_nodRveto(bool low_pT){
   h_pT[0]->GetXaxis()->SetTitleOffset(1.1);
   h_pT[0]->GetYaxis()->SetTitle(Form("Fraction of events / %.2f GeV",binning(h_pT[0])));
   h_pT[0]->GetYaxis()->SetTitleOffset(1.7);
-  h_pT[0]->SetTitle("Light jet p_{T} resolution tt+jets sample");
+  //h_pT[0]->SetTitle("Light jet p_{T} resolution tt+jets sample");
+  h_pT[0]->SetTitle("");
 
+  
 
   h_pT[0]->Draw();
   for(unsigned int i=1; i<h_pT.size();i++){
@@ -247,7 +251,7 @@ void plot_pT_bin_nodRveto(bool low_pT){
   leg->Draw("same");
 
 
-  vector<TF1*> fit;
+  /*vector<TF1*> fit;
   for(int i=0;i<pT_cut.size();i++){
     TF1* f=new TF1("f","4/([1]*sqrt(2*pi))*exp(-0.5*((x-[0])/[1])**2)",30,360);
     fit.push_back(f);
@@ -258,7 +262,7 @@ void plot_pT_bin_nodRveto(bool low_pT){
     fit[i]->SetLineColor(h_pT[i]->GetLineColor());
     fit[i]->SetLineStyle(7);
     fit[i]->Draw("same");
-  }
+    }*/
 
   vector<TF1*> fit_double;
   for(int i=0;i<pT_cut.size();i++){
@@ -285,6 +289,11 @@ void plot_pT_bin_nodRveto(bool low_pT){
 
 
   }
+
+
+  TLatex *texl = new TLatex(1,1.02*h_pT[0]->GetMaximum(),"CMS Preliminary, Simulation #sqrt{s}=13 TeV");
+  texl->SetTextSize(0.03);
+  texl->Draw("same");
 
 
   TString filename="jet_bigauss_pTbin_barrel_nodRveto";

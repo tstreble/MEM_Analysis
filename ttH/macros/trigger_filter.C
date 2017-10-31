@@ -13,6 +13,8 @@ vector<TString> triggerlist_sample;
 vector<TString> triggerlist_veto;
 vector<TString> triggerlist_sample_3l;
 vector<TString> triggerlist_veto_3l;
+vector<TString> triggerlist_sample_1l;
+vector<TString> triggerlist_veto_1l;
 
 
 void print_triggers(){
@@ -34,6 +36,14 @@ void print_triggers(){
   for(unsigned int j=0;j<triggerlist_sample_3l.size();j++)	
     cout<<triggerlist_sample_3l[j]<<endl;
 
+  cout<<"Vetoed triggers 1l"<<endl;
+  for(unsigned int j=0;j<triggerlist_veto_1l.size();j++)	
+    cout<<triggerlist_veto_1l[j]<<endl;
+
+  cout<<"Allowed triggers 1l"<<endl;
+  for(unsigned int j=0;j<triggerlist_sample_1l.size();j++)	
+    cout<<triggerlist_sample_1l[j]<<endl;
+
 }
 
 
@@ -45,6 +55,8 @@ void produce_triggerlist(TString sample, bool isMC, TH1F* hCounter){
   triggerlist_veto.clear();
   triggerlist_sample_3l.clear();
   triggerlist_veto_3l.clear();
+  triggerlist_sample_1l.clear();
+  triggerlist_veto_1l.clear();
 
 
   for(int itr=1;itr<=hCounter->GetNbinsX();itr++){
@@ -59,15 +71,29 @@ void produce_triggerlist(TString sample, bool isMC, TH1F* hCounter){
     triggerlist_sample.push_back("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
     triggerlist_sample.push_back("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v");
     triggerlist_sample.push_back("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v");
-    triggerlist_sample.push_back("HLT_IsoMu22_v");
-    triggerlist_sample.push_back("HLT_IsoTkMu22_v");
-    triggerlist_sample.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
+    //triggerlist_sample.push_back("HLT_IsoMu22_v");
+    //triggerlist_sample.push_back("HLT_IsoTkMu22_v");
+    triggerlist_sample.push_back("HLT_IsoMu24_v");
+    triggerlist_sample.push_back("HLT_IsoTkMu24_v");
+    triggerlist_sample.push_back("HLT_IsoMu22_eta2p1_v");
+    triggerlist_sample.push_back("HLT_IsoTkMu22_eta2p1_v");
+    //triggerlist_sample.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
+    triggerlist_sample.push_back("HLT_Ele27_WPTight_Gsf_v");
 
     triggerlist_sample_3l = triggerlist_sample;
     triggerlist_sample_3l.push_back("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v");
     triggerlist_sample_3l.push_back("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v");
     triggerlist_sample_3l.push_back("HLT_TripleMu_12_10_5_v");
     triggerlist_sample_3l.push_back("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v");
+
+    //triggerlist_sample_1l.push_back("HLT_IsoMu22_v");
+    //triggerlist_sample_1l.push_back("HLT_IsoTkMu22_v");
+    triggerlist_sample_1l.push_back("HLT_IsoMu24_v");
+    triggerlist_sample_1l.push_back("HLT_IsoTkMu24_v");
+    triggerlist_sample_1l.push_back("HLT_IsoMu22_eta2p1_v");
+    triggerlist_sample_1l.push_back("HLT_IsoTkMu22_eta2p1_v");
+    //triggerlist_sample_1l.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
+    triggerlist_sample_1l.push_back("HLT_Ele27_WPTight_Gsf_v");
 
     print_triggers();
     return;
@@ -138,34 +164,66 @@ void produce_triggerlist(TString sample, bool isMC, TH1F* hCounter){
     
     
     if(sample.Contains("SingleMu")){
-      triggerlist_sample.push_back("HLT_IsoMu22_v");
-      triggerlist_sample.push_back("HLT_IsoTkMu22_v");
-
+      //triggerlist_sample.push_back("HLT_IsoMu22_v");
+      //triggerlist_sample.push_back("HLT_IsoTkMu22_v");
+      triggerlist_sample.push_back("HLT_IsoMu24_v");
+      triggerlist_sample.push_back("HLT_IsoTkMu24_v");
+      triggerlist_sample.push_back("HLT_IsoMu22_eta2p1_v");
+      triggerlist_sample.push_back("HLT_IsoTkMu22_eta2p1_v");
       triggerlist_sample_3l = triggerlist_sample;
+
+      triggerlist_sample_1l = triggerlist_sample;
 
       print_triggers();
       return;
     }
     else{
-      triggerlist_veto.push_back("HLT_IsoMu22_v");
+      /*triggerlist_veto.push_back("HLT_IsoMu22_v");
       triggerlist_veto.push_back("HLT_IsoTkMu22_v");
 
       triggerlist_veto_3l.push_back("HLT_IsoMu22_v");
       triggerlist_veto_3l.push_back("HLT_IsoTkMu22_v");
+
+      triggerlist_veto_1l.push_back("HLT_IsoMu22_v");
+      triggerlist_veto_1l.push_back("HLT_IsoTkMu22_v");*/
+      triggerlist_veto.push_back("HLT_IsoMu24_v");
+      triggerlist_veto.push_back("HLT_IsoTkMu24_v");
+      triggerlist_veto.push_back("HLT_IsoMu22_eta2p1_v");
+      triggerlist_veto.push_back("HLT_IsoTkMu22_eta2p1_v");
+
+      triggerlist_veto_3l.push_back("HLT_IsoMu24_v");
+      triggerlist_veto_3l.push_back("HLT_IsoTkMu24_v");
+      triggerlist_veto_3l.push_back("HLT_IsoMu22_eta2p1_v");
+      triggerlist_veto_3l.push_back("HLT_IsoTkMu22_eta2p1_v");
+
+      triggerlist_veto_1l.push_back("HLT_IsoMu24_v");
+      triggerlist_veto_1l.push_back("HLT_IsoTkMu24_v");
+      triggerlist_veto_1l.push_back("HLT_IsoMu22_eta2p1_v");
+      triggerlist_veto_1l.push_back("HLT_IsoTkMu22_eta2p1_v");
+
+      
     }
     
     
     if(sample.Contains("SingleEle")){
-      triggerlist_sample.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
+      //triggerlist_sample.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
+      triggerlist_sample.push_back("HLT_Ele27_WPTight_Gsf_v");
 
       triggerlist_sample_3l = triggerlist_sample;
+
+      triggerlist_sample_1l = triggerlist_sample;
 
       print_triggers();
       return;
     }
     else{
-      triggerlist_veto.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
+      /*triggerlist_veto.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
       triggerlist_veto_3l.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");
+      triggerlist_veto_1l.push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");*/
+      triggerlist_veto.push_back("HLT_Ele27_WPTight_Gsf_v");
+      triggerlist_veto_3l.push_back("HLT_Ele27_WPTight_Gsf_v");
+      triggerlist_veto_1l.push_back("HLT_Ele27_WPTight_Gsf_v");
+      
     }
     
   }
@@ -178,7 +236,9 @@ void produce_triggerlist(TString sample, bool isMC, TH1F* hCounter){
 
 void produce_triggerlist(TString sample, bool isMC){
 
-  TString filename="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleMuon/DoubleMu_2016B_02_08_16/160802_163122/0000/HTauTauAnalysis_1.root";
+  //TString filename="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/ttHToNonbb_M125_13TeV_powheg_pythia8/ttH_11_11_16/161111_095210/0000/HTauTauAnalysis_1.root";
+  //TString filename="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_Moriond17/ttHToNonbb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/ttH_13_12_16/161213_175450/0000/HTauTauAnalysis_1.root";
+TString filename="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_Moriond17_2/ttHToNonbb_M125_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/ttH_25_01_16/170124_235258/0000/HTauTauAnalysis_1.root";
 
   TFile* f = TFile::Open(filename);
   TH1F* hCounter = (TH1F*)f->Get("HTauTauTree/Counters");
@@ -208,20 +268,19 @@ int FindTriggerNumber(TString triggername){
 
 
 
-bool IsTriggerFired(int triggerbit, int triggernumber){ 
-  if(triggernumber>=0 && triggernumber<triggerlist.size()) return triggerbit & (1 << triggernumber);
+bool IsTriggerFired(Long64_t triggerbit, int triggernumber){ 
+  if(triggernumber>=0 && triggernumber<triggerlist.size()) return triggerbit & (long(1) << triggernumber);
   return false;
 }
 
 
-bool IsTriggerFired(int triggerbit, TString triggername){
+bool IsTriggerFired(Long64_t triggerbit, TString triggername){
   return IsTriggerFired(triggerbit,FindTriggerNumber(triggername));
 }
 
 
 
 bool pass_trigger(Long64_t triggerbit){
-
   for(unsigned int i=0;i<triggerlist_veto.size();i++){  
     if(IsTriggerFired(triggerbit,triggerlist_veto[i])){
       return false;
@@ -261,9 +320,32 @@ bool pass_trigger_3l(Long64_t triggerbit){
 
 
 
-void add_trigger_filter(TString file_in, TString file_out, vector<TString> treename){
 
-  produce_triggerlist(file_in,false);
+
+bool pass_trigger_1l(Long64_t triggerbit){
+
+  for(unsigned int i=0;i<triggerlist_veto_1l.size();i++){  
+    if(IsTriggerFired(triggerbit,triggerlist_veto_1l[i])){
+      return false;
+    }
+  }
+
+  for(unsigned int i=0;i<triggerlist_sample_1l.size();i++){
+    if(IsTriggerFired(triggerbit,triggerlist_sample_1l[i])){
+      return true;
+    }
+  }
+
+  return false;
+
+}
+
+
+
+
+void add_trigger_filter(TString file_in, TString file_out, vector<TString> treename, bool isMC){
+
+  produce_triggerlist(file_in,isMC);
 
 
   TFile* f_new = TFile::Open(file_out);
@@ -282,16 +364,22 @@ void add_trigger_filter(TString file_in, TString file_out, vector<TString> treen
     Long64_t nentries = tree->GetEntries();
     cout<<"nentries="<<tree->GetEntries()<<endl;
         
+    //Old branches
+    Long64_t _triggerbit;
+    tree->SetBranchAddress("triggerbit",&_triggerbit);
    
     TTree* tree_new=tree->GetTree()->CloneTree(0);
     
     //New branches
-    bool _isTrig;
-    tree_new->Branch("isTrig",&_isTrig,"isTrig/O");
+    bool _isTrig_1l_v2;
+    bool _isTrig_v2;
+    bool _isTrig_3l_v2;
+
     
-    //Old branches
-    Long64_t _triggerbit;
-    tree->SetBranchAddress("triggerbit",&_triggerbit);
+    tree_new->Branch("isTrig_1l_v2",&_isTrig_1l_v2,"isTrig_1l_v2/O");
+    tree_new->Branch("isTrig_v2",&_isTrig_v2,"isTrig_v2/O");
+    tree_new->Branch("isTrig_3l_v2",&_isTrig_3l_v2,"isTrig_3l_v2/O");
+
     
     for(int i=0;i<nentries;i++){
       
@@ -300,12 +388,16 @@ void add_trigger_filter(TString file_in, TString file_out, vector<TString> treen
       
       _triggerbit = 0;
       
-      _isTrig = 0;
+      _isTrig_1l_v2 = 0;
+      _isTrig_v2 = 0;
+      _isTrig_3l_v2 = 0;
       
       int entry_ok = tree->GetEntry(i);      
 
+      _isTrig_1l_v2 = pass_trigger_1l(_triggerbit);
+      _isTrig_v2 = pass_trigger(_triggerbit);
+      _isTrig_3l_v2 = pass_trigger_3l(_triggerbit);
 
-      _isTrig = pass_trigger(_triggerbit);
       
       tree_new->Fill();
       
@@ -394,26 +486,3 @@ void add_trigger_filter_fromSecondaryFile(TString file_in, TString file_out, TSt
 
 
 
-
-
-void test(){
-
-  TString file_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016B_split_2lOS_CR_MEM_160810.root";
-  TString file_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_MEM/Data/SingleMuon_2016B_split_2lOS_CR_MEM_160810_trig_filt.root";
-  TString treename="T";
-
-  TString SecondaryFile="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleMuon_2016B_split_trig_filt.root";
-  TString SecondaryTree="HTauTauTree_2lOS_CR";
-
-  /*TString file_in="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleMuon_2016C_split.root";
-  TString file_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_splitted/Data/HTauTauTree_SingleMuon_2016C_split_trig_filt.root";
-
-  vector<TString> treename;
-  treename.push_back("HTauTauTree_2lSS");
-  treename.push_back("HTauTauTree_2lOS_CR");
-  treename.push_back("HTauTauTree_2lSS_lepMVA_CR");*/
-  
-  add_trigger_filter_fromSecondaryFile(file_in,file_out,treename,SecondaryFile,SecondaryTree);
-  //add_trigger_filter(file_in,file_out,treename);
-
-}

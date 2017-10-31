@@ -5,16 +5,30 @@
 
 using namespace std;
 
+
 void test(){
 
-
-  TChain *treeA = new TChain("HTauTauTree/HTauTauTree");
-  treeA->Add("/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/MiniAODv2_prod_12_2015/files/HTauTauAnalysis_1.root");
-
-  cout<<"treeA->GetEntries()="<<treeA->GetEntries()<<endl;
+  //TChain* tree=new TChain("HTauTauTree/HTauTauTree");
+  TString dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_Moriond17_2/DoubleMuon/DoubleMu_2016B_04_02_17/170204_210418/";
 
 
-  TFile* f= TFile::Open("/data_CMS/cms/strebler/ttH_Samples/Htautau_framework_files/ttH_HToTauTau_pfMET_prod_07072015/HTauTauAnalysis_1.root");
-  cout<<"f->GetVersion()="<<f->GetVersion()<<endl;
+  //TChain* tree=new TChain("HTauTauTree/HTauTauTree");
+
+  for(unsigned int i=1;i<8257;i++){
+
+    int i_dir = i/1000;
+    TString file = dir_in + Form("000%i/",i_dir) + Form("HTauTauAnalysis_%i.root",i);
+    cout<<file<<endl;
+    TChain* tree=new TChain("HTauTauTree/HTauTauTree");
+    tree->Add(file);
+    cout<<tree->GetEntries()<<endl;
+    int n=tree->GetEntries("RunNumber==274387 && lumi==343 && EventNumber==582971095");
+    cout<<n<<endl;
+    if(n>0) return;
+    delete tree;
+
+  }
+    
+
 
 }

@@ -34,8 +34,8 @@ using namespace std;
 void skim_tree(){
 
 
-  TString file_in = "/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttH/ntuple_ttH_Htautau_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
-  TString file_out = "/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_skimmed/ttH/ntuple_ttH_Htautau_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
+  TString file_in = "/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/ttH/ntuple_ttH_Hnonbb_*_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root";
+  TString file_out = "/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/ttH/ntuple_ttH_Hnonbb_byLooseIsolationMVArun2v1DBdR03oldDMwLT_skimmed.root";
 
 
   TChain * tree = new TChain("HTauTauTree");

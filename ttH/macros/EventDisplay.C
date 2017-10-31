@@ -32,6 +32,12 @@ void event_display(TString filename, TString treename, int event_number, bool dr
   vector<float> *_genH_py = 0;
   vector<float> *_genH_pz = 0;
 
+  vector<float> *_genZ_e = 0;
+  vector<float> *_genZ_px = 0;
+  vector<float> *_genZ_py = 0;
+  vector<float> *_genZ_pz = 0;
+  vector<int> *_genZ_decayMode = 0;
+
   vector<float> *_genW_e = 0;
   vector<float> *_genW_px = 0;
   vector<float> *_genW_py = 0;
@@ -57,6 +63,7 @@ void event_display(TString filename, TString treename, int event_number, bool dr
 
   vector<int> *_gentau_flags = 0;
   vector<int> *_gentau_HMothInd = 0;
+  vector<int> *_gentau_ZMothInd = 0;
   vector<int> *_gentau_WMothInd = 0;
   vector<int> *_gentau_TopMothInd = 0;
   vector<int> *_gentau_decayMode = 0;
@@ -68,6 +75,7 @@ void event_display(TString filename, TString treename, int event_number, bool dr
   vector<int> *_genlep_TopMothInd = 0;
   vector<int> *_genlep_WMothInd = 0;
   vector<int> *_genlep_TauMothInd = 0;
+  vector<int> *_genlep_ZMothInd = 0;
   vector<int> *_genlep_flags = 0;
   vector<int> *_genlep_pdg = 0;
   
@@ -106,6 +114,13 @@ void event_display(TString filename, TString treename, int event_number, bool dr
   tree->SetBranchAddress("genH_py",&_genH_py);
   tree->SetBranchAddress("genH_pz",&_genH_pz);
 
+  /*tree->SetBranchAddress("genZ_e",&_genZ_e);
+  tree->SetBranchAddress("genZ_px",&_genZ_px);
+  tree->SetBranchAddress("genZ_py",&_genZ_py);
+  tree->SetBranchAddress("genZ_pz",&_genZ_pz);
+  tree->SetBranchAddress("genZ_decayMode",&_genZ_decayMode);*/
+
+
   tree->SetBranchAddress("genW_e",&_genW_e);
   tree->SetBranchAddress("genW_px",&_genW_px);
   tree->SetBranchAddress("genW_py",&_genW_py);
@@ -131,6 +146,7 @@ void event_display(TString filename, TString treename, int event_number, bool dr
   tree->SetBranchAddress("gentau_flags",&_gentau_flags);
   tree->SetBranchAddress("gentau_HMothInd",&_gentau_HMothInd);
   tree->SetBranchAddress("gentau_WMothInd",&_gentau_WMothInd);
+  //tree->SetBranchAddress("gentau_ZMothInd",&_gentau_ZMothInd);
   tree->SetBranchAddress("gentau_TopMothInd",&_gentau_TopMothInd);
   tree->SetBranchAddress("gentau_decayMode",&_gentau_decayMode);
 
@@ -138,6 +154,7 @@ void event_display(TString filename, TString treename, int event_number, bool dr
   tree->SetBranchAddress("genlep_px",&_genlep_px);
   tree->SetBranchAddress("genlep_py",&_genlep_py);
   tree->SetBranchAddress("genlep_pz",&_genlep_pz);
+  //tree->SetBranchAddress("genlep_ZMothInd",&_genlep_ZMothInd);
   tree->SetBranchAddress("genlep_WMothInd",&_genlep_WMothInd);
   tree->SetBranchAddress("genlep_TopMothInd",&_genlep_TopMothInd);
   tree->SetBranchAddress("genlep_TauMothInd",&_genlep_TauMothInd);
@@ -175,6 +192,7 @@ void event_display(TString filename, TString treename, int event_number, bool dr
   vector<TGraphErrors*> gentop;
   vector<TGraphErrors*> genW;
   vector<TGraphErrors*> genHiggs;
+  vector<TGraphErrors*> genZ;
   vector<TGraphErrors*> genb;
   vector<TGraphErrors*> genq;
   vector<TGraphErrors*> genlep;
@@ -310,8 +328,10 @@ void event_display(TString filename, TString treename, int event_number, bool dr
 	  bool isFromHardProcess = ( (*_gentau_flags)[itau] >> 8 ) & 1;
 	  int TopMothInd = (*_gentau_TopMothInd)[itau];
 	  int decayMode = (*_gentau_decayMode)[itau];
+	  bool isLastCopy = ( (*_gentau_flags)[itau] >> 13 ) & 1;
 
-	  if( !( TopMothInd == i_top && isFromHardProcess ) )
+
+	  if( !( TopMothInd == i_top && isFromHardProcess && isLastCopy) )
 	    continue;
 	  
 	  if(decayMode==0 || decayMode==1){
@@ -335,9 +355,10 @@ void event_display(TString filename, TString treename, int event_number, bool dr
 
 	      int flag_Mother = (*_gentau_flags)[(*_gentauh_TauMothInd)[itauh]];
 	      bool isMotherFromHardProcess = (flag_Mother >> 8) & 1;
+	      bool isMotherLastCopy = (flag_Mother >> 13) & 1;
 	      int TauMothInd = (*_gentauh_TauMothInd)[itauh];
 	      
-	      if( TauMothInd == itau && isMotherFromHardProcess )
+	      if( TauMothInd == itau && isMotherFromHardProcess && isMotherLastCopy)
 		ipi = itauh;
 	  
 	    } 
@@ -433,8 +454,10 @@ void event_display(TString filename, TString treename, int event_number, bool dr
 	bool isFromHardProcess = ( (*_gentau_flags)[itau] >> 8 ) & 1;
 	int WMothInd = (*_gentau_WMothInd)[itau];
 	int decayMode = (*_gentau_decayMode)[itau];
+	bool isLastCopy = ( (*_gentau_flags)[itau] >> 13 ) & 1;
+	  
 	
-	if( !( WMothInd==i_W && isFromHardProcess ) )
+	if( !( WMothInd==i_W && isFromHardProcess && isLastCopy) )
 	  continue;
 	
 	if(decayMode==0 || decayMode==1){
@@ -460,9 +483,10 @@ void event_display(TString filename, TString treename, int event_number, bool dr
 	    
 	    int flag_Mother = (*_gentau_flags)[(*_gentauh_TauMothInd)[itauh]];
 	    bool isMotherFromHardProcess = (flag_Mother >> 8) & 1;
+	    bool isMotherLastCopy = (flag_Mother >> 13) & 1;
 	    int TauMothInd = (*_gentauh_TauMothInd)[itauh];
 	    
-	    if( TauMothInd == itau && isMotherFromHardProcess )
+	    if( TauMothInd == itau && isMotherFromHardProcess && isMotherLastCopy)
 	      ipi = itauh;
 	    
 	  } 
@@ -576,8 +600,9 @@ void event_display(TString filename, TString treename, int event_number, bool dr
       bool isFromHardProcess = ( (*_gentau_flags)[itau] >> 8 ) & 1;
       int HMothInd = (*_gentau_HMothInd)[itau];
       int decayMode = (*_gentau_decayMode)[itau];
+      bool isLastCopy = ( (*_gentau_flags)[itau] >> 13 ) & 1;
 
-      if( !( HMothInd==1 && isFromHardProcess ) )
+      if( !( HMothInd==1 && isFromHardProcess && isLastCopy) )
 	continue;
      
       if(decayMode==0 || decayMode==1){
@@ -622,9 +647,10 @@ void event_display(TString filename, TString treename, int event_number, bool dr
 
 	  int flag_Mother = (*_gentau_flags)[(*_gentauh_TauMothInd)[itauh]];
 	  bool isMotherFromHardProcess = (flag_Mother >> 8) & 1;
+	  bool isMotherLastCopy = (flag_Mother >> 13) & 1;
 	  int TauMothInd = (*_gentauh_TauMothInd)[itauh];
 	  
-	  if( TauMothInd == itau && isMotherFromHardProcess )
+	  if( TauMothInd == itau && isMotherFromHardProcess && isMotherLastCopy)
 	    ipi = itauh;
 	  
 	} 
@@ -650,6 +676,137 @@ void event_display(TString filename, TString treename, int event_number, bool dr
 
 
   }
+
+
+  /*for(unsigned int i_Z=0;i_Z<(*_genZ_e).size();i_Z++){
+
+    TLorentzVector Z_tlv( (*_genZ_px)[i_Z], (*_genZ_py)[i_Z], (*_genZ_pz)[i_Z], (*_genZ_e)[i_Z]);
+
+
+    TGraphErrors* Z_gr = new TGraphErrors();
+    Z_gr->SetPoint(0,Z_tlv.Eta(),Z_tlv.Phi());
+    Z_gr->SetMarkerStyle(30);
+    Z_gr->SetMarkerColor(i_Z+genHiggs.size()+genW.size()+(*_gentop_e).size()+2);
+    Z_gr->SetMarkerSize(2);
+    genZ.push_back(Z_gr);
+
+    if((*_genZ_decayMode)[i_Z]<=5){
+
+      for(int itau=0; itau<(*_gentau_flags).size(); itau++){
+	
+	bool isFromHardProcess = ( (*_gentau_flags)[itau] >> 8 ) & 1;
+	int ZMothInd = (*_gentau_ZMothInd)[itau];
+	int decayMode = (*_gentau_decayMode)[itau];
+	
+	if( !( ZMothInd==i_Z && isFromHardProcess ) )
+	  continue;
+	
+
+	if(decayMode==0 || decayMode==1){
+	  
+	  int ilep_tau = -1;
+	  
+	  for(int ilep=0; ilep<(*_genlep_e).size(); ilep++){
+	    
+	    bool isDirectTauDecayProduct = ( (*_genlep_flags)[ilep] >> 4) & 1;
+	    bool isHardProcessTauDecayProduct = ( (*_genlep_flags)[ilep] >> 9) & 1;
+	    int TauMothInd = (*_genlep_TauMothInd)[ilep];
+	    
+	    if( TauMothInd == itau && isDirectTauDecayProduct && isHardProcessTauDecayProduct )
+	      ilep_tau = ilep;
+	    
+	  }
+	  
+	  
+	  TLorentzVector ltau_tlv((*_genlep_px)[ilep_tau], (*_genlep_py)[ilep_tau], (*_genlep_pz)[ilep_tau], (*_genlep_e)[ilep_tau]);
+	  
+	  TGraphErrors* ltau_gr = new TGraphErrors();
+	  ltau_gr->SetPoint(0,ltau_tlv.Eta(),ltau_tlv.Phi());
+	  if(abs((*_genlep_pdg)[ilep_tau])==11)
+	    ltau_gr->SetMarkerStyle(26);
+	  else if(abs((*_genlep_pdg)[ilep_tau])==13)
+	    ltau_gr->SetMarkerStyle(32);      
+	  ltau_gr->SetMarkerColor(i_Z+genHiggs.size()+(*_gentop_e).size()+2);
+	  ltau_gr->SetMarkerSize(2);
+	  genlep.push_back(ltau_gr);
+	  
+	  TLatex *ltau_pt = new TLatex(ltau_tlv.Eta()+0.15,ltau_tlv.Phi()+0.15,Form("%.0f GeV",ltau_tlv.Pt()));
+	  ltau_pt->SetTextSize(0.03);
+	  genpt.push_back(ltau_pt);   
+	  
+	}
+	
+	else{
+	  
+	  int ipi=-1;
+	  
+	  for(int itauh=0; itauh<(*_gentauh_e).size(); itauh++){
+	    
+	    int flag_Mother = (*_gentau_flags)[(*_gentauh_TauMothInd)[itauh]];
+	    bool isMotherFromHardProcess = (flag_Mother >> 8) & 1;
+	    int TauMothInd = (*_gentauh_TauMothInd)[itauh];
+	    
+	    if( TauMothInd == itau && isMotherFromHardProcess )
+	      ipi = itauh;
+	    
+	  } 
+	  
+	  TLorentzVector tauh_tlv((*_gentauh_px)[ipi], (*_gentauh_py)[ipi], (*_gentauh_pz)[ipi], (*_gentauh_e)[ipi]);
+	  
+	  
+	  TGraphErrors* tauh_gr = new TGraphErrors();
+	  tauh_gr->SetPoint(0,tauh_tlv.Eta(),tauh_tlv.Phi());
+	  tauh_gr->SetMarkerStyle(27);      
+	  tauh_gr->SetMarkerColor(i_Z+genHiggs.size()+(*_gentop_e).size()+2);
+	  tauh_gr->SetMarkerSize(2);
+	  gentauh.push_back(tauh_gr);
+	  
+	  TLatex *tauh_pt = new TLatex(tauh_tlv.Eta()+0.1,tauh_tlv.Phi()+0.1,Form("%.0f GeV",tauh_tlv.Pt()));
+	tauh_pt->SetTextSize(0.03);
+	genpt.push_back(tauh_pt);   
+	
+	}
+	
+	
+      }
+
+    }
+
+
+    else if((*_genZ_decayMode)[i_Z]==6 || (*_genZ_decayMode)[i_Z]==7){
+
+      for(int ilep=0; ilep<(*_genlep_e).size(); ilep++){
+	
+	bool isFromHardProcess = ( (*_genlep_flags)[ilep] >> 8 ) & 1;
+	int ZMothInd = (*_genlep_ZMothInd)[ilep];
+	
+	if( !( ZMothInd==i_Z && isFromHardProcess ) )
+	  continue;
+	
+
+	TLorentzVector lZ_tlv((*_genlep_px)[ilep], (*_genlep_py)[ilep], (*_genlep_pz)[ilep], (*_genlep_e)[ilep]);
+	  
+	TGraphErrors* lZ_gr = new TGraphErrors();
+	lZ_gr->SetPoint(0,lZ_tlv.Eta(),lZ_tlv.Phi());
+	if(abs((*_genlep_pdg)[ilep])==11)
+	  lZ_gr->SetMarkerStyle(26);
+	else if(abs((*_genlep_pdg)[ilep])==13)
+	  lZ_gr->SetMarkerStyle(32);      
+	lZ_gr->SetMarkerColor(i_Z+genHiggs.size()+(*_gentop_e).size()+2);
+	lZ_gr->SetMarkerSize(2);
+	genlep.push_back(lZ_gr);
+	
+	TLatex *lZ_pt = new TLatex(lZ_tlv.Eta()+0.15,lZ_tlv.Phi()+0.15,Form("%.0f GeV",lZ_tlv.Pt()));
+	lZ_pt->SetTextSize(0.03);
+	genpt.push_back(lZ_pt);
+
+
+      }
+
+    }
+
+
+    }*/
 
 
 
@@ -725,6 +882,9 @@ void event_display(TString filename, TString treename, int event_number, bool dr
   for(unsigned int i=0; i<genHiggs.size(); i++)
     genHiggs[i]->Draw("P");
 
+  for(unsigned int i=0; i<genZ.size(); i++)
+    genZ[i]->Draw("P");
+
   for(unsigned int i=0; i<genW.size(); i++)
     genW[i]->Draw("P");
 
@@ -787,6 +947,14 @@ void event_display(TString filename, TString treename, int event_number, bool dr
       H_gr->SetLineColor(0);
       H_gr->SetMarkerSize(2);
       leg->AddEntry(H_gr,"gen. H");
+    }
+    if(genZ.size()>0){
+      TGraphErrors* Z_gr = new TGraphErrors();
+      Z_gr->SetMarkerStyle(30);
+      Z_gr->SetFillColor(0);
+      Z_gr->SetLineColor(0);
+      Z_gr->SetMarkerSize(2);
+      leg->AddEntry(Z_gr,"gen. Z");
     }
     if(genb.size()>0){
       TGraphErrors* b_gr = new TGraphErrors();

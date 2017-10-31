@@ -247,12 +247,68 @@ TMVA::Reader* Book_3l_TT_MVAReader(std::string basePath, std::string weightFileN
 
 
 
+float Jet_lepdrmin;
+float Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags;
+float Jet_qg;
+float Jet_lepdrmax;
+float Jet_pt;
+
+
+TMVA::Reader* Book_Hj_BDT_MVAReader(std::string basePath, std::string weightFileName)
+{
+
+    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+
+    reader->AddVariable("Jet_lepdrmin", &Jet_lepdrmin      );
+    reader->AddVariable("Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags", &Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags      );
+    reader->AddVariable("Jet_qg", &Jet_qg      );
+    reader->AddVariable("Jet_lepdrmax", &Jet_lepdrmax      );
+    reader->AddVariable("Jet_pt", &Jet_pt      );
+
+    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
+
+    return reader;
+}
+
+
+float bdtJetPair_minlepmass;
+float bdtJetPair_sumbdt;
+float bdtJetPair_dr;
+float bdtJetPair_minjdr;
+float bdtJetPair_mass;
+float bdtJetPair_minjOvermaxjdr;
+
+TMVA::Reader* Book_Hjj_BDT_MVAReader(std::string basePath, std::string weightFileName)
+{
+
+    TMVA::Reader* reader = new TMVA::Reader("!Color:!Silent");
+
+    reader->AddVariable("bdtJetPair_minlepmass", &bdtJetPair_minlepmass      );
+    reader->AddVariable("bdtJetPair_sumbdt", &bdtJetPair_sumbdt      );
+    reader->AddVariable("bdtJetPair_dr", &bdtJetPair_dr      );
+    reader->AddVariable("bdtJetPair_minjdr", &bdtJetPair_minjdr      );
+    reader->AddVariable("bdtJetPair_mass", &bdtJetPair_mass      );
+    reader->AddVariable("bdtJetPair_minjOvermaxjdr", &bdtJetPair_minjOvermaxjdr      );
+
+    reader->BookMVA("BDTG method", basePath+"/"+weightFileName);
+
+    return reader;
+}
+
+
+
+
+
+
+
+
 
 void convert_tree(TString sample, int iso_tau=70,
 		  TString iso_type="", bool conept_sorting=false,
 		  int split=0, int i_split=0,
 		  bool isMC=true,
-		  int JEC=0, int TES=0){
+		  int JEC=0, int TES=0,
+		  bool toptag=false){
 
   TString dir_in;
   TString dir_out;
@@ -261,26 +317,161 @@ void convert_tree(TString sample, int iso_tau=70,
 
   vector<TString> list;
 
-  if(sample=="ttH_Htautau"){
-    file="ntuple_ttH_Htautau";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/ttH/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttH/";
-    list.push_back(dir_in+"HTauTauAnalysis_ttH_Htautau.root");
+
+  if(sample=="ttH_Hnonbb_80X_reHLT"){
+
+    file="ntuple_ttH_Hnonbb";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_10_2016/ntuples_converted/";
+
+    if(JEC>0)
+      dir_out+="JECup/";
+    else if(JEC<0)
+      dir_out+="JECdown/";
+    else if(TES>0)
+      dir_out+="TESup/";
+    else if(TES<0)
+      dir_out+="TESdown/";
+    else
+      dir_out+="nominal/";
+
+    dir_out+="ttH/";
+
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/ttHJetToNonbb_M125_13TeV_amcatnloFXFX_madspin_pythia8_mWCutfix/ttHJet_nonbb_08_10_16/161008_095731/";
+
+    int i_dir=i_split/10;
+    dir_in+=Form("000%i/",i_dir);
+
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==10) i_max=1010;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
   }
 
-  else if(sample=="ttH_Hnonbb"){
-    file="ntuple_ttH_Hnonbb";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/ttH/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttH/";
-    list.push_back(dir_in+"HTauTauAnalysis_ttH_Hnonbb.root");
+
+
+  else if(sample=="ttZ_80X_reHLT"){
+
+    file="ntuple_ttZ";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/";
+
+    if(JEC>0)
+      dir_out+="JECup/";
+    else if(JEC<0)
+      dir_out+="JECdown/";
+    else if(TES>0)
+      dir_out+="TESup/";
+    else if(TES<0)
+      dir_out+="TESdown/";
+    else
+      dir_out+="nominal/";
+
+    dir_out+="ttV/";
+
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8/ttZ_03_09_16/160902_093225/";
+
+    int i_dir=i_split/10;
+    dir_in+=Form("000%i/",i_dir);
+
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==2) i_max=206;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
   }
 
-  else if(sample=="ttH_Hnonbb_80X"){
-    file="ntuple_ttH_Hnonbb";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/Htautau_framework_files/ttH/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttH/";
-    list.push_back(dir_in+"HTauTauAnalysis_ttH_Hnonbb.root");
+
+
+
+
+  else if(sample=="ttW_80X_reHLT"){
+
+    file="ntuple_ttW";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/";
+
+    if(JEC>0)
+      dir_out+="JECup/";
+    else if(JEC<0)
+      dir_out+="JECdown/";
+    else if(TES>0)
+      dir_out+="TESup/";
+    else if(TES<0)
+      dir_out+="TESdown/";
+    else
+      dir_out+="nominal/";
+
+    dir_out+="ttV/";
+
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/ttW_03_09_16/160902_093151/";
+
+    int i_dir=i_split/10;
+    dir_in+=Form("000%i/",i_dir);
+
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==0) i_max=28;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
   }
+
+
+
+
+  else if(sample=="ttW_ext_80X_reHLT"){
+
+    file="ntuple_ttW_ext";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/";
+
+    if(JEC>0)
+      dir_out+="JECup/";
+    else if(JEC<0)
+      dir_out+="JECdown/";
+    else if(TES>0)
+      dir_out+="TESup/";
+    else if(TES<0)
+      dir_out+="TESdown/";
+    else
+      dir_out+="nominal/";
+
+    dir_out+="ttV/";
+
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8/ttW_ext_14_09_16/160915_165512/";
+
+    int i_dir=i_split/10;
+    dir_in+=Form("000%i/",i_dir);
+
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==2) i_max=220;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
+  }
+
+
 
 
   else if(sample=="ttbar_DL"){
@@ -290,12 +481,61 @@ void convert_tree(TString sample, int iso_tau=70,
     list.push_back(dir_in+"HTauTauAnalysis_ttbar_DL.root");
   }
 
-  else if(sample=="ttbar_DL_80X"){
+  /*else if(sample=="ttbar_DL_80X"){
     file="ntuple_ttbar_DL";
     dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/Htautau_framework_files/TTJets/";
     dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/TTJets/";
     list.push_back(dir_in+"HTauTauAnalysis_ttbar_DL.root");
+    }*/
+
+  else if(sample=="ttbar_DL_80X"){
+
+    file="ntuple_ttbar_DL";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/TTJets/";
+
+
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/TJets_DL_20_09_16/160920_102826/";
+
+    int i_dir=i_split/10;
+    dir_in+=Form("000%i/",i_dir);
+
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==6) i_max=613;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
   }
+
+  else if(sample=="ttbar_DL_ext_80X"){
+
+    file="ntuple_ttbar_DL_ext";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/TTJets_new";
+
+
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/TTJets_DiLept_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/TJets_DL_ext_20_09_16/160920_102647/";
+
+    int i_dir=i_split/10;
+    dir_in+=Form("000%i/",i_dir);
+
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==24) i_max=2480;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
+  }
+
 
   else if(sample=="ttbar_SLfromT"){
     file="ntuple_ttbar_SLfromT";
@@ -325,33 +565,7 @@ void convert_tree(TString sample, int iso_tau=70,
     list.push_back(dir_in+"HTauTauAnalysis_ttbar_SLfromTbar.root");
   }
 
-  else if(sample=="ttZ"){
-    file="ntuple_ttZ";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttV/";
-    list.push_back(dir_in+"HTauTauAnalysis_ttZ.root");
-  }
 
-  else if(sample=="ttZ_80X"){
-    file="ntuple_ttZ";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/Htautau_framework_files/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/";
-    list.push_back(dir_in+"HTauTauAnalysis_ttZ.root");
-  }
-
-  else if(sample=="ttW"){
-    file="ntuple_ttW";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/Htautau_framework_files/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_76X_06_2016/ntuples_converted/ttV/";
-    list.push_back(dir_in+"HTauTauAnalysis_ttW.root");
-  }
-
-  else if(sample=="ttW_80X"){
-    file="ntuple_ttW";
-    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/Htautau_framework_files/ttV/";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/ttV/";
-    list.push_back(dir_in+"HTauTauAnalysis_ttW.root");
-  }
 
   else if(sample=="TTLL_lowmass"){
     file="ntuple_TTLL_lowmass";
@@ -544,193 +758,13 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
 
-  else if(sample=="MuonEG_2016B"){
-
-    file="MuonEG_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/MuonEG/MuonEG_2016B_20_07_16/160720_092348/";
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==66) i_max=6603;
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-  }
-
-  else if(sample=="MuonEG_2016B_082016"){
-
-    file="MuonEG_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/MuonEG/MuonEG_2016B_02_08_16/160802_163244/";
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==66) i_max=6603;
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-  }
 
 
-  else if(sample=="MuonEG_2016C"){
+ else if(sample=="DoubleEG_2016B_80X_reHLT"){
 
-    file="MuonEG_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/MuonEG/MuonEG_2016C_20_07_16/160720_092810/";
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==32) i_max=3201;
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-  }
-
-
-  else if(sample=="MuonEG_2016C_082016"){
-
-    file="MuonEG_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/MuonEG/MuonEG_2016C_02_08_16/160802_163321/";
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==32) i_max=3201;
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-  }
-
-
-
-  else if(sample=="DoubleMu_2016B"){
-
-    file="DoubleMu_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleMuon/DoubleMu_2016B_20_07_16/160720_093950/";
-
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==83) i_max=8322;
-
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-
-  }
-
-
-  else if(sample=="DoubleMu_2016B_082016"){
-
-    file="DoubleMu_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleMuon/DoubleMu_2016B_02_08_16/160802_163122/";
-
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==83) i_max=8322;
-
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-
-  }
-
-
- else if(sample=="DoubleMu_2016C"){
-
-    file="DoubleMu_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleMuon/DoubleMu_2016C_20_07_16/160720_091839/";
-
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==63) i_max=6336;
-
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-
-  }
-
-
-
- else if(sample=="DoubleMu_2016C_082016"){
-
-    file="DoubleMu_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleMuon/DoubleMu_2016C_02_08_16/160802_163202/";
-
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==63) i_max=6336;
-
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-
-  }
-
-
-
- else if(sample=="DoubleEG_2016B"){
-
-    file="DoubleEG_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleEG/DoubleEG_2016B_20_07_16/160720_094415/";
+    file="ntuple_DoubleEG_2016B";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/DoubleEG/DoubleEG_2016B_03_09_16/160902_093734/";
 
     int i_dir=i_split/10;
 
@@ -739,31 +773,7 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_min=i_split*100;
     if(i_split==0) i_min++;
     int i_max=(i_split+1)*100;
-    if(i_split==56) i_max=5662;
-
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-  }
-
-
- else if(sample=="DoubleEG_2016B_082016"){
-
-    file="DoubleEG_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleEG/DoubleEG_2016B_02_08_16/160802_162850/";
-
-    int i_dir=i_split/10;
-
-    dir_in+=Form("000%i/",i_dir);
-    
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==56) i_max=5661;
+    if(i_split==71) i_max=7191;
 
 
     for(int i=i_min;i<i_max;i++){
@@ -776,11 +786,11 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
 
- else if(sample=="DoubleEG_2016C"){
+ else if(sample=="DoubleEG_2016C_80X_reHLT"){
 
-    file="DoubleEG_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleEG/DoubleEG_2016C_20_07_16/160720_094742/";
+    file="ntuple_DoubleEG_2016C";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/DoubleEG/DoubleEG_2016C_02_09_16/160902_091215/";
 
     int i_dir=i_split/10;
 
@@ -791,6 +801,7 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_max=(i_split+1)*100;
     if(i_split==52) i_max=5215;
 
+
     for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
@@ -800,11 +811,11 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
 
- else if(sample=="DoubleEG_2016C_082016"){
+ else if(sample=="DoubleEG_2016D_80X_reHLT"){
 
-    file="DoubleEG_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/DoubleEG/DoubleEG_2016C_02_08_16/160802_163034/";
+    file="ntuple_DoubleEG_2016D";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/DoubleEG/DoubleEG_2016D_02_09_16/160902_091835/";
 
     int i_dir=i_split/10;
 
@@ -813,7 +824,8 @@ void convert_tree(TString sample, int iso_tau=70,
     int i_min=i_split*100;
     if(i_split==0) i_min++;
     int i_max=(i_split+1)*100;
-    if(i_split==52) i_max=5215;
+    if(i_split==57) i_max=5755;
+
 
     for(int i=i_min;i<i_max;i++){
       cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
@@ -824,19 +836,20 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
 
- else if(sample=="SingleMuon_2016B"){
+ else if(sample=="DoubleMu_2016B_80X_reHLT"){
 
-    file="SingleMuon_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/SingleMuon/SingleMuon_2016B_20_07_16/160720_094918/";
+    file="ntuple_DoubleMu_2016B";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/DoubleMuon/DoubleMu_2016B_02_09_16/160902_094923/";
 
     int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
 
+    dir_in+=Form("000%i/",i_dir);
+    
     int i_min=i_split*100;
     if(i_split==0) i_min++;
     int i_max=(i_split+1)*100;
-    if(i_split==64) i_max=6474;
+    if(i_split==39) i_max=3997;
 
 
     for(int i=i_min;i<i_max;i++){
@@ -844,24 +857,24 @@ void convert_tree(TString sample, int iso_tau=70,
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
 
-
-
   }
 
 
- else if(sample=="SingleMuon_2016B_082016"){
 
-    file="SingleMuon_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/SingleMuon/SingleMuon_2016B_02_08_16/160802_163953/";
+ else if(sample=="DoubleMu_2016C_80X_reHLT"){
+
+    file="ntuple_DoubleMu_2016C";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/DoubleMuon/DoubleMu_2016C_02_09_16/160902_095423/";
 
     int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
 
+    dir_in+=Form("000%i/",i_dir);
+    
     int i_min=i_split*100;
     if(i_split==0) i_min++;
     int i_max=(i_split+1)*100;
-    if(i_split==64) i_max=6474;
+    if(i_split==28) i_max=2899;
 
 
     for(int i=i_min;i<i_max;i++){
@@ -869,20 +882,152 @@ void convert_tree(TString sample, int iso_tau=70,
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
 
+  }
 
+
+
+
+ else if(sample=="DoubleMu_2016D_80X_reHLT"){
+
+    file="ntuple_DoubleMu_2016D";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/DoubleMuon/DoubleMu_2016D_02_09_16/160902_095616/";
+
+    int i_dir=i_split/10;
+
+    dir_in+=Form("000%i/",i_dir);
+    
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==35) i_max=3525;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
 
   }
 
 
- else if(sample=="SingleMuon_2016C"){
 
-    file="SingleMuon_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/SingleMuon/SingleMuon_2016C_20_07_16/160720_113358/";
+
+
+ else if(sample=="MuonEG_2016B_80X_reHLT"){
+
+    file="ntuple_MuonEG_2016B";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/MuonEG/MuonEG_2016B_02_09_16/160902_100230/";
 
     int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
 
+    dir_in+=Form("000%i/",i_dir);
+    
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==15) i_max=1567;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
+  }
+
+
+
+
+ else if(sample=="MuonEG_2016C_80X_reHLT"){
+
+    file="ntuple_MuonEG_2016C";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/MuonEG/MuonEG_2016C_02_09_16/160902_100348/";
+
+    int i_dir=i_split/10;
+
+    dir_in+=Form("000%i/",i_dir);
+    
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==15) i_max=1530;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
+  }
+
+
+
+
+
+ else if(sample=="MuonEG_2016D_80X_reHLT"){
+
+    file="ntuple_MuonEG_2016D";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/MuonEG/MuonEG_2016D_02_09_16/160902_101424/";
+
+    int i_dir=i_split/10;
+
+    dir_in+=Form("000%i/",i_dir);
+    
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==23) i_max=2389;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
+  }
+
+
+  
+ else if(sample=="SingleMu_2016B_80X_reHLT"){
+
+    file="ntuple_SingleMu_2016B";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/SingleMuon/SingleMu_2016B_02_09_16/160902_102840/";
+
+    int i_dir=i_split/10;
+
+    dir_in+=Form("000%i/",i_dir);
+    
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==82) i_max=8289;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
+  }
+
+
+
+  
+ else if(sample=="SingleMu_2016C_80X_reHLT"){
+
+    file="ntuple_SingleMu_2016C";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/SingleMuon/SingleMu_2016C_02_09_16/160902_102959/";
+
+    int i_dir=i_split/10;
+
+    dir_in+=Form("000%i/",i_dir);
+    
     int i_min=i_split*100;
     if(i_split==0) i_min++;
     int i_max=(i_split+1)*100;
@@ -894,23 +1039,24 @@ void convert_tree(TString sample, int iso_tau=70,
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
 
-
   }
 
 
- else if(sample=="SingleMuon_2016C_082016"){
 
-    file="SingleMuon_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/SingleMuon/SingleMuon_2016C_02_08_16/160802_164122/";
+ else if(sample=="SingleMu_2016D_80X_reHLT"){
+
+    file="ntuple_SingleMu_2016D";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/SingleMuon/SingleMu_2016D_02_09_16/160902_115402/";
 
     int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
 
+    dir_in+=Form("000%i/",i_dir);
+    
     int i_min=i_split*100;
     if(i_split==0) i_min++;
     int i_max=(i_split+1)*100;
-    if(i_split==79) i_max=7987;
+    if(i_split==52) i_max=5256;
 
 
     for(int i=i_min;i<i_max;i++){
@@ -918,98 +1064,26 @@ void convert_tree(TString sample, int iso_tau=70,
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
 
-
-  }
-
-
- else if(sample=="SingleEle_2016B"){
-
-    file="SingleEle_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/SingleElectron/SingleEle_2016B_20_07_16/160720_113453/";
-
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==85) i_max=8579;
-
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-
-  }
-
-
- else if(sample=="SingleEle_2016B_082016"){
-
-    file="SingleEle_2016B";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/SingleElectron/SingleEle_2016B_02_08_16/160802_163552/";
-
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==85) i_max=8579;
-
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
-
-
   }
 
 
 
- else if(sample=="SingleEle_2016C"){
-
-    file="SingleEle_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_06_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/SingleElectron/SingleEle_2016C_20_07_16/160720_101249/";
-
-    int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
-
-    int i_min=i_split*100;
-    if(i_split==0) i_min++;
-    int i_max=(i_split+1)*100;
-    if(i_split==74) i_max=7447;
-
-
-    for(int i=i_min;i<i_max;i++){
-      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
-      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
-    }
 
   
+ else if(sample=="SingleEle_2016B_80X_reHLT"){
 
-  }
-
-
-
- else if(sample=="SingleEle_2016C_082016"){
-
-    file="SingleEle_2016C";
-    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_08_2016/ntuples_converted/Data_prod/";
-    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X/SingleElectron/SingleEle_2016C_02_08_16/160802_163711/";
+    file="ntuple_SingleEle_2016B";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/SingleElectron/SingleEle_2016B_02_09_16/160902_103747/";
 
     int i_dir=i_split/10;
-    dir_in+=Form("000%i/",i_dir);
 
+    dir_in+=Form("000%i/",i_dir);
+    
     int i_min=i_split*100;
     if(i_split==0) i_min++;
     int i_max=(i_split+1)*100;
-    if(i_split==74) i_max=7447;
+    if(i_split==62) i_max=6270;
 
 
     for(int i=i_min;i<i_max;i++){
@@ -1017,9 +1091,60 @@ void convert_tree(TString sample, int iso_tau=70,
       list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
     }
 
+  }
+
+
   
+ else if(sample=="SingleEle_2016C_80X_reHLT"){
+
+    file="ntuple_SingleEle_2016C";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/SingleElectron/SingleEle_2016C_02_09_16/160902_103907/";
+
+    int i_dir=i_split/10;
+
+    dir_in+=Form("000%i/",i_dir);
+    
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==54) i_max=5467;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
 
   }
+
+
+
+
+  
+ else if(sample=="SingleEle_2016D_80X_reHLT"){
+
+    file="ntuple_SingleEle_2016D";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/nominal/Data/";
+    dir_in="root://polgrid4.in2p3.fr//store/user/tstreble/ttH_prod_80X_reHLT/SingleElectron/SingleEle_2016D_02_09_16/160902_104015/";
+
+    int i_dir=i_split/10;
+
+    dir_in+=Form("000%i/",i_dir);
+    
+    int i_min=i_split*100;
+    if(i_split==0) i_min++;
+    int i_max=(i_split+1)*100;
+    if(i_split==39) i_max=3904;
+
+
+    for(int i=i_min;i<i_max;i++){
+      cout<<dir_in+Form("HTauTauAnalysis_%i.root",i)<<endl;
+      list.push_back(dir_in+Form("HTauTauAnalysis_%i.root",i));
+    }
+
+  }
+
 
 
   else if(sample=="sync_ttH"){
@@ -1030,7 +1155,49 @@ void convert_tree(TString sample, int iso_tau=70,
   }
 
   else if(sample=="sync_ttH_80X"){
-    file="syncNtuple_ttH";
+    file="syncNtuple_ttH_multilep";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_10_2016/Htautau_framework_files/ttH/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_11_2016/ntuples_converted/";
+
+    if(JEC>0)
+      dir_out+="JECup/";
+    else if(JEC<0)
+      dir_out+="JECdown/";
+    else if(TES>0)
+      dir_out+="TESup/";
+    else if(TES<0)
+      dir_out+="TESdown/";
+    else
+      dir_out+="nominal/";
+
+    dir_out+="ttH/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttH_Hnonbb_sync_ttH_multilep.root");
+  }
+
+
+  else if(sample=="sync_ttW_80X"){
+    file="syncNtuple_ttW_multilep";
+    dir_in="/data_CMS/cms/strebler/ttH_prod_80X_11_2016/Htautau_framework_files/";
+    dir_out="/data_CMS/cms/strebler/ttH_prod_80X_11_2016/ntuples_converted/";
+
+    if(JEC>0)
+      dir_out+="JECup/";
+    else if(JEC<0)
+      dir_out+="JECdown/";
+    else if(TES>0)
+      dir_out+="TESup/";
+    else if(TES<0)
+      dir_out+="TESdown/";
+    else
+      dir_out+="nominal/";
+
+    dir_out+="ttV/";
+    list.push_back(dir_in+"HTauTauAnalysis_ttW_multilep.root");
+  }
+
+
+  else if(sample=="sync_ttH_80X_ttHtautau"){
+    file="syncNtuple_ttH_tautau";
     dir_in="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/Htautau_framework_files/ttH/";
     dir_out="/data_CMS/cms/strebler/ttH_prod_80X_09_2016/ntuples_converted/";
 
@@ -1046,9 +1213,8 @@ void convert_tree(TString sample, int iso_tau=70,
       dir_out+="nominal/";
 
     dir_out+="ttH/";
-    list.push_back(dir_in+"HTauTauAnalysis_ttH_Hnonbb_sync.root");
+    list.push_back(dir_in+"HTauTauAnalysis_ttH_Hnonbb_sync_ttHtautau.root");
   }
-
 
   else if(sample=="sync_ttjets"){
     file="syncNtuple_ttjets";
@@ -1061,13 +1227,15 @@ void convert_tree(TString sample, int iso_tau=70,
 
 
 
-  if(i_split>0 || !isMC)
-    file+=Form("_%i",i_split);
+  file+=Form("_%i",i_split);
 
   if(iso_type=="")
     file+=Form("_iso%i",iso_tau);
   else
     file+="_"+iso_type;
+
+  if(toptag)
+    file+="_toptag";
 
   if(JEC>0)
     file+="_JECup";
@@ -1270,6 +1438,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_phi;
   vector<float> _recoPFJet_CSVscore;
   vector<float> _recoPFJet_jecUnc;
+  vector<float> _recoPFJet_QGdiscr;
 
   vector<int> _recoPFJet_Flavour;
   vector<int> _recoPFJet_i_closest_genpart;
@@ -1278,6 +1447,23 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_dR_2nd_closest_genpart;
   vector<int> _recoPFJet_i_closest_tau;
   vector<float> _recoPFJet_dR_closest_tau;
+
+  //Hj BDT variables
+  vector<float> _recoPFJet_mindR_lep;
+  vector<float> _recoPFJet_maxdR_lep;
+  vector<float> _recoPFJet_HjBDT;
+
+  vector<int> _recoPFJet_pair_ijet1;
+  vector<int> _recoPFJet_pair_ijet2;
+  vector<float> _recoPFJet_pair_Mjjlep;
+  vector<float> _recoPFJet_pair_SumHjBDT;
+  vector<float> _recoPFJet_pair_dRjj;
+  vector<float> _recoPFJet_pair_Mjj;
+  vector<float> _recoPFJet_pair_min_dRjj_jets;
+  vector<float> _recoPFJet_pair_max_dRjj_jets;
+  vector<float> _recoPFJet_pair_ratio_dRjj_jets;
+  vector<float> _recoPFJet_pair_HjjBDT;
+
 
   vector<float> _recoPFJet_CSVsort_e;
   vector<float> _recoPFJet_CSVsort_pt;
@@ -1337,6 +1523,56 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> _recoPFJet_untag_Wtag_CSVscore;
   vector<float> _recoPFJet_untag_Wtag_jecUnc;
   vector<int> _recoPFJet_untag_Wtag_Flavour; 
+
+  
+  //Top tag
+  float _recoPFJet_best_deltaM_Top_W;
+  
+  float _recoPFJet_toptag_best_btag_e;
+  float _recoPFJet_toptag_best_btag_px;
+  float _recoPFJet_toptag_best_btag_py;
+  float _recoPFJet_toptag_best_btag_pz;
+  float _recoPFJet_toptag_best_btag_pt;
+  float _recoPFJet_toptag_best_btag_eta;
+  float _recoPFJet_toptag_best_btag_phi;
+  float _recoPFJet_toptag_best_btag_CSVscore;
+  float _recoPFJet_toptag_best_btag_jecUnc;
+  int _recoPFJet_toptag_best_btag_Flavour;
+
+  float _recoPFJet_toptag_best_untag1_e;
+  float _recoPFJet_toptag_best_untag1_px;
+  float _recoPFJet_toptag_best_untag1_py;
+  float _recoPFJet_toptag_best_untag1_pz;
+  float _recoPFJet_toptag_best_untag1_pt;
+  float _recoPFJet_toptag_best_untag1_eta;
+  float _recoPFJet_toptag_best_untag1_phi;
+  float _recoPFJet_toptag_best_untag1_CSVscore;
+  float _recoPFJet_toptag_best_untag1_jecUnc;
+  int _recoPFJet_toptag_best_untag1_Flavour;
+
+  float _recoPFJet_toptag_best_untag2_e;
+  float _recoPFJet_toptag_best_untag2_px;
+  float _recoPFJet_toptag_best_untag2_py;
+  float _recoPFJet_toptag_best_untag2_pz;
+  float _recoPFJet_toptag_best_untag2_pt;
+  float _recoPFJet_toptag_best_untag2_eta;
+  float _recoPFJet_toptag_best_untag2_phi;
+  float _recoPFJet_toptag_best_untag2_CSVscore;
+  float _recoPFJet_toptag_best_untag2_jecUnc;
+  int _recoPFJet_toptag_best_untag2_Flavour;
+
+  float _recoPFJet_toptag_other_btag_e;
+  float _recoPFJet_toptag_other_btag_px;
+  float _recoPFJet_toptag_other_btag_py;
+  float _recoPFJet_toptag_other_btag_pz;
+  float _recoPFJet_toptag_other_btag_pt;
+  float _recoPFJet_toptag_other_btag_eta;
+  float _recoPFJet_toptag_other_btag_phi;
+  float _recoPFJet_toptag_other_btag_CSVscore;
+  float _recoPFJet_toptag_other_btag_jecUnc;
+  int _recoPFJet_toptag_other_btag_Flavour;
+  
+
 
   vector<float> _mtop_had_perm;
   vector<float> _mblep_perm;
@@ -1694,7 +1930,24 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_phi",&_recoPFJet_phi);
   tree_new->Branch("recoPFJet_CSVscore",&_recoPFJet_CSVscore);
   tree_new->Branch("recoPFJet_jecUnc",&_recoPFJet_jecUnc);
-  
+  tree_new->Branch("recoPFJet_QGdiscr",&_recoPFJet_QGdiscr);
+
+  tree_new->Branch("recoPFJet_mindR_lep",&_recoPFJet_mindR_lep);
+  tree_new->Branch("recoPFJet_maxdR_lep",&_recoPFJet_maxdR_lep);
+  tree_new->Branch("recoPFJet_HjBDT",&_recoPFJet_HjBDT);
+
+  tree_new->Branch("recoPFJet_pair_ijet1",&_recoPFJet_pair_ijet1);
+  tree_new->Branch("recoPFJet_pair_ijet2",&_recoPFJet_pair_ijet2);
+  tree_new->Branch("recoPFJet_pair_Mjjlep",&_recoPFJet_pair_Mjjlep);
+  tree_new->Branch("recoPFJet_pair_SumHjBDT",&_recoPFJet_pair_SumHjBDT);
+  tree_new->Branch("recoPFJet_pair_dRjj",&_recoPFJet_pair_dRjj);
+  tree_new->Branch("recoPFJet_pair_Mjj",&_recoPFJet_pair_Mjj);
+  tree_new->Branch("recoPFJet_pair_min_dRjj_jets",&_recoPFJet_pair_min_dRjj_jets);
+  tree_new->Branch("recoPFJet_pair_max_dRjj_jets",&_recoPFJet_pair_max_dRjj_jets);
+  tree_new->Branch("recoPFJet_pair_ratio_dRjj_jets",&_recoPFJet_pair_ratio_dRjj_jets);
+  tree_new->Branch("recoPFJet_pair_HjjBDT",&_recoPFJet_pair_HjjBDT);
+
+
   tree_new->Branch("recoPFJet_Flavour",&_recoPFJet_Flavour);
   tree_new->Branch("recoPFJet_i_closest_genpart",&_recoPFJet_i_closest_genpart);
   tree_new->Branch("recoPFJet_dR_closest_genpart",&_recoPFJet_dR_closest_genpart);
@@ -1756,7 +2009,58 @@ void convert_tree(TString sample, int iso_tau=70,
   tree_new->Branch("recoPFJet_untag_Wtag_CSVscore",&_recoPFJet_untag_Wtag_CSVscore);
   tree_new->Branch("recoPFJet_untag_Wtag_jecUnc",&_recoPFJet_untag_Wtag_jecUnc);
   tree_new->Branch("recoPFJet_untag_Wtag_Flavour",&_recoPFJet_untag_Wtag_Flavour);
-  
+
+
+  if(toptag){
+    
+    tree_new->Branch("recoPFJet_best_deltaM_Top_W",&_recoPFJet_best_deltaM_Top_W,"recoPFJet_best_deltaM_Top_W/F");
+    
+    tree_new->Branch("recoPFJet_toptag_best_btag_e",&_recoPFJet_toptag_best_btag_e,"recoPFJet_toptag_best_btag_e/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_px",&_recoPFJet_toptag_best_btag_px,"recoPFJet_toptag_best_btag_px/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_py",&_recoPFJet_toptag_best_btag_py,"recoPFJet_toptag_best_btag_py/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_pz",&_recoPFJet_toptag_best_btag_pz,"recoPFJet_toptag_best_btag_pz/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_pt",&_recoPFJet_toptag_best_btag_pt,"recoPFJet_toptag_best_btag_pt/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_eta",&_recoPFJet_toptag_best_btag_eta,"recoPFJet_toptag_best_btag_eta/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_phi",&_recoPFJet_toptag_best_btag_phi,"recoPFJet_toptag_best_btag_phi/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_CSVscore",&_recoPFJet_toptag_best_btag_CSVscore,"recoPFJet_toptag_best_btag_CSVscore/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_jecUnc",&_recoPFJet_toptag_best_btag_jecUnc,"recoPFJet_toptag_best_btag_jecUnc/F");
+    tree_new->Branch("recoPFJet_toptag_best_btag_Flavour",&_recoPFJet_toptag_best_btag_Flavour,"recoPFJet_toptag_best_btag_Flavour/I");
+    
+    tree_new->Branch("recoPFJet_toptag_best_untag1_e",&_recoPFJet_toptag_best_untag1_e,"recoPFJet_toptag_best_untag1_e/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_px",&_recoPFJet_toptag_best_untag1_px,"recoPFJet_toptag_best_untag1_px/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_py",&_recoPFJet_toptag_best_untag1_py,"recoPFJet_toptag_best_untag1_py/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_pz",&_recoPFJet_toptag_best_untag1_pz,"recoPFJet_toptag_best_untag1_pz/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_pt",&_recoPFJet_toptag_best_untag1_pt,"recoPFJet_toptag_best_untag1_pt/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_eta",&_recoPFJet_toptag_best_untag1_eta,"recoPFJet_toptag_best_untag1_eta/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_phi",&_recoPFJet_toptag_best_untag1_phi,"recoPFJet_toptag_best_untag1_phi/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_CSVscore",&_recoPFJet_toptag_best_untag1_CSVscore,"recoPFJet_toptag_best_untag1_CSVscore/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_jecUnc",&_recoPFJet_toptag_best_untag1_jecUnc,"recoPFJet_toptag_best_untag1_jecUnc/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag1_Flavour",&_recoPFJet_toptag_best_untag1_Flavour,"recoPFJet_toptag_best_untag1_Flavour/I");
+    
+    tree_new->Branch("recoPFJet_toptag_best_untag2_e",&_recoPFJet_toptag_best_untag2_e,"recoPFJet_toptag_best_untag2_e/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_px",&_recoPFJet_toptag_best_untag2_px,"recoPFJet_toptag_best_untag2_px/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_py",&_recoPFJet_toptag_best_untag2_py,"recoPFJet_toptag_best_untag2_py/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_pz",&_recoPFJet_toptag_best_untag2_pz,"recoPFJet_toptag_best_untag2_pz/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_pt",&_recoPFJet_toptag_best_untag2_pt,"recoPFJet_toptag_best_untag2_pt/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_eta",&_recoPFJet_toptag_best_untag2_eta,"recoPFJet_toptag_best_untag2_eta/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_phi",&_recoPFJet_toptag_best_untag2_phi,"recoPFJet_toptag_best_untag2_phi/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_CSVscore",&_recoPFJet_toptag_best_untag2_CSVscore,"recoPFJet_toptag_best_untag2_CSVscore/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_jecUnc",&_recoPFJet_toptag_best_untag2_jecUnc,"recoPFJet_toptag_best_untag2_jecUnc/F");
+    tree_new->Branch("recoPFJet_toptag_best_untag2_Flavour",&_recoPFJet_toptag_best_untag2_Flavour,"recoPFJet_toptag_best_untag2_Flavour/I");
+    
+    tree_new->Branch("recoPFJet_toptag_other_btag_e",&_recoPFJet_toptag_other_btag_e,"recoPFJet_toptag_other_btag_e/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_px",&_recoPFJet_toptag_other_btag_px,"recoPFJet_toptag_other_btag_px/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_py",&_recoPFJet_toptag_other_btag_py,"recoPFJet_toptag_other_btag_py/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_pz",&_recoPFJet_toptag_other_btag_pz,"recoPFJet_toptag_other_btag_pz/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_pt",&_recoPFJet_toptag_other_btag_pt,"recoPFJet_toptag_other_btag_pt/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_eta",&_recoPFJet_toptag_other_btag_eta,"recoPFJet_toptag_other_btag_eta/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_phi",&_recoPFJet_toptag_other_btag_phi,"recoPFJet_toptag_other_btag_phi/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_CSVscore",&_recoPFJet_toptag_other_btag_CSVscore,"recoPFJet_toptag_other_btag_CSVscore/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_jecUnc",&_recoPFJet_toptag_other_btag_jecUnc,"recoPFJet_toptag_other_btag_jecUnc/F");
+    tree_new->Branch("recoPFJet_toptag_other_btag_Flavour",&_recoPFJet_toptag_other_btag_Flavour,"recoPFJet_toptag_other_btag_Flavour/I");
+    
+  }
+    
   tree_new->Branch("mtop_had_perm",&_mtop_had_perm);
   tree_new->Branch("mblep_perm",&_mblep_perm);
   tree_new->Branch("mleptauh_perm",&_mleptauh_perm);
@@ -2034,6 +2338,8 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<float> *_jets_PUJetID;
   vector<int> *_PFjetID;
   vector<float> *_bCSVscore;
+  vector<float> *_jets_QGdiscr;
+
 
   vector<float> *_dxy;
   vector<float> *_dz;
@@ -2046,6 +2352,7 @@ void convert_tree(TString sample, int iso_tau=70,
   vector<bool> *_daughters_passConversionVeto;
   vector<float> *_daughters_SCeta;
   vector<float> *_daughters_IetaIeta;
+  vector<float> *_daughters_full5x5_IetaIeta;
   vector<float> *_daughters_hOverE;
   vector<float> *_daughters_deltaEtaSuperClusterTrackAtVtx;
   vector<float> *_daughters_deltaPhiSuperClusterTrackAtVtx;
@@ -2125,7 +2432,8 @@ void convert_tree(TString sample, int iso_tau=70,
   tree->SetBranchAddress("jets_PUJetID",&_jets_PUJetID);
   tree->SetBranchAddress("PFjetID",&_PFjetID);
   tree->SetBranchAddress("bCSVscore",&_bCSVscore);
-  
+  tree->SetBranchAddress("jets_QGdiscr",&_jets_QGdiscr);
+
   tree->SetBranchAddress("dxy",&_dxy);
   tree->SetBranchAddress("dz",&_dz);
   tree->SetBranchAddress("dxy_innerTrack",&_dxy_innerTrack);
@@ -2137,6 +2445,7 @@ void convert_tree(TString sample, int iso_tau=70,
   tree->SetBranchAddress("daughters_passConversionVeto",&_daughters_passConversionVeto);
   tree->SetBranchAddress("daughters_SCeta",&_daughters_SCeta);
   tree->SetBranchAddress("daughters_IetaIeta",&_daughters_IetaIeta);
+  tree->SetBranchAddress("daughters_full5x5_IetaIeta",&_daughters_full5x5_IetaIeta);
   tree->SetBranchAddress("daughters_hOverE",&_daughters_hOverE);
   tree->SetBranchAddress("daughters_deltaEtaSuperClusterTrackAtVtx",&_daughters_deltaEtaSuperClusterTrackAtVtx);
   tree->SetBranchAddress("daughters_deltaPhiSuperClusterTrackAtVtx",&_daughters_deltaPhiSuperClusterTrackAtVtx);
@@ -2286,6 +2595,9 @@ void convert_tree(TString sample, int iso_tau=70,
   TMVA::Reader* MVA_3l_TTV_reader = Book_3l_TTV_MVAReader("3lMVA_weights","/3l_ttV_BDTG.weights.xml");
   TMVA::Reader* MVA_3l_TT_reader = Book_3l_TT_MVAReader("3lMVA_weights","/3l_ttbar_BDTG.weights.xml");
 
+  TMVA::Reader* Hj_BDT_reader = Book_Hj_BDT_MVAReader("Hjj_BDT_weights","/Hj_csv_BDTG.weights.xml");
+  TMVA::Reader* Hjj_BDT_reader = Book_Hjj_BDT_MVAReader("Hjj_BDT_weights","/Hjj_csv_BDTG.weights.xml");
+
   
   TFile* f_fakerate = TFile::Open("fake_rate_weights/FR_data_ttH_mva.root");
   TH2F* h_fakerate_mu = (TH2F*)f_fakerate->Get("FR_mva075_mu_data_comb");
@@ -2327,7 +2639,7 @@ void convert_tree(TString sample, int iso_tau=70,
 
   cout<<"nentries="<<nentries<<endl;
 
-
+	//skip_entries=9817; nentries = 1;
   for (int i=skip_entries;i<skip_entries+nentries;i++) {
     
     if(i%10000==0)
@@ -2487,7 +2799,8 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_phi.clear();
     _recoPFJet_CSVscore.clear(); 
     _recoPFJet_jecUnc.clear();    
- 
+    _recoPFJet_QGdiscr.clear();    
+
     _recoPFJet_Flavour.clear(); 
     _recoPFJet_i_closest_genpart.clear();
     _recoPFJet_dR_closest_genpart.clear();
@@ -2496,6 +2809,21 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_i_closest_tau.clear();
     _recoPFJet_dR_closest_tau.clear();
 
+    _recoPFJet_mindR_lep.clear();
+    _recoPFJet_maxdR_lep.clear();
+    _recoPFJet_HjBDT.clear();
+    
+    _recoPFJet_pair_ijet1.clear();
+    _recoPFJet_pair_ijet2.clear();
+    _recoPFJet_pair_Mjjlep.clear();
+    _recoPFJet_pair_SumHjBDT.clear();
+    _recoPFJet_pair_dRjj.clear();
+    _recoPFJet_pair_Mjj.clear();
+    _recoPFJet_pair_min_dRjj_jets.clear();
+    _recoPFJet_pair_max_dRjj_jets.clear();
+    _recoPFJet_pair_ratio_dRjj_jets.clear();
+    _recoPFJet_pair_HjjBDT.clear();
+    
     _recoPFJet_CSVsort_e.clear();
     _recoPFJet_CSVsort_pt.clear();
     _recoPFJet_CSVsort_px.clear();
@@ -2538,7 +2866,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_untag_Flavour.clear();
 
     _n_pair_Wtag_recoPFJet_untag = 0;
-    _recoPFJet_untag_best_mW = 0;
+    _recoPFJet_untag_best_mW = -1;
     _recoPFJet_untag_Wtag_e.clear();
     _recoPFJet_untag_Wtag_pt.clear();
     _recoPFJet_untag_Wtag_px.clear();
@@ -2549,6 +2877,53 @@ void convert_tree(TString sample, int iso_tau=70,
     _recoPFJet_untag_Wtag_CSVscore.clear();    
     _recoPFJet_untag_Wtag_jecUnc.clear();    
     _recoPFJet_untag_Wtag_Flavour.clear();    
+
+    _recoPFJet_best_deltaM_Top_W = 0;
+   
+    _recoPFJet_toptag_best_btag_e = 0;
+    _recoPFJet_toptag_best_btag_px = 0;
+    _recoPFJet_toptag_best_btag_py = 0;
+    _recoPFJet_toptag_best_btag_pz = 0;
+    _recoPFJet_toptag_best_btag_pt = 0;
+    _recoPFJet_toptag_best_btag_eta = 0;
+    _recoPFJet_toptag_best_btag_phi = 0;
+    _recoPFJet_toptag_best_btag_CSVscore = 0;
+    _recoPFJet_toptag_best_btag_jecUnc = 0;
+    _recoPFJet_toptag_best_btag_Flavour = 0;
+
+    _recoPFJet_toptag_best_untag1_e = 0;
+    _recoPFJet_toptag_best_untag1_px = 0;
+    _recoPFJet_toptag_best_untag1_py = 0;
+    _recoPFJet_toptag_best_untag1_pz = 0;
+    _recoPFJet_toptag_best_untag1_pt = 0;
+    _recoPFJet_toptag_best_untag1_eta = 0;
+    _recoPFJet_toptag_best_untag1_phi = 0;
+    _recoPFJet_toptag_best_untag1_CSVscore = 0;
+    _recoPFJet_toptag_best_untag1_jecUnc = 0;
+    _recoPFJet_toptag_best_untag1_Flavour = 0;
+
+    _recoPFJet_toptag_best_untag2_e = 0;
+    _recoPFJet_toptag_best_untag2_px = 0;
+    _recoPFJet_toptag_best_untag2_py = 0;
+    _recoPFJet_toptag_best_untag2_pz = 0;
+    _recoPFJet_toptag_best_untag2_pt = 0;
+    _recoPFJet_toptag_best_untag2_eta = 0;
+    _recoPFJet_toptag_best_untag2_phi = 0;
+    _recoPFJet_toptag_best_untag2_CSVscore = 0;
+    _recoPFJet_toptag_best_untag2_jecUnc = 0;
+    _recoPFJet_toptag_best_untag2_Flavour = 0;
+
+    _recoPFJet_toptag_other_btag_e = 0;
+    _recoPFJet_toptag_other_btag_px = 0;
+    _recoPFJet_toptag_other_btag_py = 0;
+    _recoPFJet_toptag_other_btag_pz = 0;
+    _recoPFJet_toptag_other_btag_pt = 0;
+    _recoPFJet_toptag_other_btag_eta = 0;
+    _recoPFJet_toptag_other_btag_phi = 0;
+    _recoPFJet_toptag_other_btag_CSVscore = 0;
+    _recoPFJet_toptag_other_btag_jecUnc = 0;
+    _recoPFJet_toptag_other_btag_Flavour = 0;
+
 
     _mtop_had_perm.clear();
     _mblep_perm.clear();
@@ -2756,6 +3131,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _jets_PUJetID = 0;
     _PFjetID = 0;
     _bCSVscore = 0;
+    _jets_QGdiscr = 0;
 
     _dxy = 0;
     _dz = 0;
@@ -2768,6 +3144,7 @@ void convert_tree(TString sample, int iso_tau=70,
     _daughters_passConversionVeto = 0;
     _daughters_SCeta = 0;
     _daughters_IetaIeta = 0;
+    _daughters_full5x5_IetaIeta = 0;
     _daughters_hOverE = 0;
     _daughters_deltaEtaSuperClusterTrackAtVtx = 0;
     _daughters_deltaPhiSuperClusterTrackAtVtx = 0;
@@ -3010,7 +3387,8 @@ void convert_tree(TString sample, int iso_tau=70,
 	_n_recomu_fakeable++;
 
       float miniIso = lepMVA_miniRelIsoCharged + lepMVA_miniRelIsoNeutral;
-      bool mediumID = ((*_daughters_muonID)[i_daughter]>>6) & 1;
+      //bool mediumID = ((*_daughters_muonID)[i_daughter]>>6) & 1;
+      bool mediumID = ((*_daughters_muonID)[i_daughter]>>2) & 1;
       float rel_error_trackpt = (*_daughters_rel_error_trackpt)[i_daughter];
 
       _recomu_rel_error_trackpt.push_back(rel_error_trackpt);
@@ -3223,7 +3601,8 @@ void convert_tree(TString sample, int iso_tau=70,
       else{
 	
 	float SCeta = (*_daughters_SCeta)[i_daughter];
-	float sigma_IetaIeta = (*_daughters_IetaIeta)[i_daughter];
+	//float sigma_IetaIeta = (*_daughters_IetaIeta)[i_daughter];
+	float sigma_IetaIeta = (*_daughters_full5x5_IetaIeta)[i_daughter];
 	float hOverE = (*_daughters_hOverE)[i_daughter];
 	float deltaEta_in = (*_daughters_deltaEtaSuperClusterTrackAtVtx)[i_daughter];
 	float deltaPhi_in = (*_daughters_deltaPhiSuperClusterTrackAtVtx)[i_daughter];
@@ -3462,7 +3841,8 @@ void convert_tree(TString sample, int iso_tau=70,
 	  
 	  TLorentzVector lep=reco_mus[i_lep].second;
 	  float dR_lep_tau=lep.DeltaR(daughter);
-	  if(dR_lep_tau<0.4){
+	  //if(dR_lep_tau<0.4){
+	  if(dR_lep_tau<0.3){
 	    dR_veto=true;
 	    break;
 	  }
@@ -3472,7 +3852,8 @@ void convert_tree(TString sample, int iso_tau=70,
 	  
 	  TLorentzVector lep=reco_eles[i_lep].second;
 	  float dR_lep_tau=lep.DeltaR(daughter);
-	  if(dR_lep_tau<0.4){
+	  //if(dR_lep_tau<0.4){
+	  if(dR_lep_tau<0.3){
 	    dR_veto=true;
 	    break;
 	  }
@@ -3652,6 +4033,7 @@ void convert_tree(TString sample, int iso_tau=70,
       _recoPFJet_CSVscore.push_back(  (*_bCSVscore)[i_jet] );
       _recoPFJet_jecUnc.push_back(  (*_jets_jecUnc)[i_jet] );
       _recoPFJet_Flavour.push_back(  (*_jets_Flavour)[i_jet] );
+      _recoPFJet_QGdiscr.push_back(  (*_jets_QGdiscr)[i_jet] );
 
       int imin = -1;
       float dRmin = 100000;
@@ -3694,12 +4076,105 @@ void convert_tree(TString sample, int iso_tau=70,
       _recoPFJet_i_closest_tau.push_back(pair_tauh.first);
       _recoPFJet_dR_closest_tau.push_back(pair_tauh.second);  
 
+
+      float mindR_lep=-1.;
+      float maxdR_lep=-1.;
+
+      for(unsigned int i_lep=0; i_lep<min(int(reco_leptons.size()),2); i_lep++){
+
+	TLorentzVector lep = reco_leptons[i_lep].second;
+	float dR = jet.DeltaR(lep);
+	if(mindR_lep<0 || dR < mindR_lep)
+	  mindR_lep = dR;
+	if(maxdR_lep<0 || dR > maxdR_lep)
+	  maxdR_lep = dR;
+
+      }
+
+      _recoPFJet_mindR_lep.push_back(mindR_lep);
+      _recoPFJet_maxdR_lep.push_back(maxdR_lep);
+
+      Jet_lepdrmin = mindR_lep;
+      Jet_pfCombinedInclusiveSecondaryVertexV2BJetTags = _recoPFJet_CSVscore[i_PFJet];
+      Jet_qg = _recoPFJet_QGdiscr[i_PFJet];      
+      Jet_lepdrmax = maxdR_lep;      
+      Jet_pt = _recoPFJet_pt[i_PFJet];
+
+      _recoPFJet_HjBDT.push_back( Hj_BDT_reader->EvaluateMVA("BDTG method") );
+     
     }
 
 
     _bTagSF_weight = bTagSF_computer->getEvtWeight(_recoPFJet_CSVscore, recoPFJets, _recoPFJet_Flavour, bTagSF::central);
     _bTagSF_weight_up = bTagSF_computer->getEvtWeight(_recoPFJet_CSVscore, recoPFJets, _recoPFJet_Flavour, bTagSF::up);
     _bTagSF_weight_down = bTagSF_computer->getEvtWeight(_recoPFJet_CSVscore, recoPFJets, _recoPFJet_Flavour, bTagSF::down);
+
+    for(unsigned int i_PFJet=0; i_PFJet<recoPFJets.size(); i_PFJet++){
+
+      TLorentzVector jet1 = recoPFJets[i_PFJet];
+
+      for(unsigned int i_PFJet2=i_PFJet+1; i_PFJet2<recoPFJets.size(); i_PFJet2++){
+	TLorentzVector jet2 = recoPFJets[i_PFJet2];
+
+	_recoPFJet_pair_ijet1.push_back(i_PFJet);
+	_recoPFJet_pair_ijet2.push_back(i_PFJet2);
+	
+	TLorentzVector j1j2 = jet1 + jet2;
+	
+	TLorentzVector closest_lep;
+	float mindR_lep=-1.;
+	for(unsigned int i_lep=0; i_lep<min(int(reco_leptons.size()),2); i_lep++){
+
+	  TLorentzVector lep = reco_leptons[i_lep].second;
+	  float dR = j1j2.DeltaR(lep);
+	  if(mindR_lep<0 || dR < mindR_lep){
+	    mindR_lep = dR;
+	    closest_lep = lep;
+	  }
+	}
+
+	_recoPFJet_pair_Mjjlep.push_back( (j1j2+closest_lep).M() );
+	float sumHjBDT = _recoPFJet_HjBDT[i_PFJet] + _recoPFJet_HjBDT[i_PFJet2];
+	_recoPFJet_pair_SumHjBDT.push_back(sumHjBDT);
+	_recoPFJet_pair_dRjj.push_back(jet1.DeltaR(jet2));
+	_recoPFJet_pair_Mjj.push_back(j1j2.M());
+	
+
+	float mindR_jet=-1.;
+	float maxdR_jet=-1.;
+
+	for(unsigned int i_PFJet3=0; i_PFJet3<recoPFJets.size(); i_PFJet3++){
+
+	  if(i_PFJet3==i_PFJet || i_PFJet3==i_PFJet2) continue;
+	  TLorentzVector jet3 = recoPFJets[i_PFJet3];
+	  float dR = j1j2.DeltaR(jet3);
+
+	  if(mindR_jet<0 || dR < mindR_jet)
+	    mindR_jet = dR;
+	  if(maxdR_jet<0 || dR > maxdR_jet)
+	    maxdR_jet = dR;
+
+	}
+
+	_recoPFJet_pair_min_dRjj_jets.push_back(mindR_jet);
+	_recoPFJet_pair_max_dRjj_jets.push_back(maxdR_jet);
+	_recoPFJet_pair_ratio_dRjj_jets.push_back(mindR_jet/maxdR_jet);
+
+	bdtJetPair_minlepmass = (j1j2+closest_lep).M();	
+	bdtJetPair_sumbdt = sumHjBDT;
+	bdtJetPair_dr = jet1.DeltaR(jet2);
+	bdtJetPair_minjdr = mindR_jet;
+	bdtJetPair_mass = j1j2.M();
+	bdtJetPair_minjOvermaxjdr = mindR_jet/maxdR_jet;
+
+	_recoPFJet_pair_HjjBDT.push_back( Hjj_BDT_reader->EvaluateMVA("BDTG method") );
+      
+
+      }
+	
+
+
+    }
 
 
 
@@ -3787,7 +4262,7 @@ void convert_tree(TString sample, int iso_tau=70,
 	    _n_pair_Wtag_recoPFJet_untag++;
 
 
-	  if( abs( mjj - mW ) < abs( _recoPFJet_untag_best_mW - mW ) ){
+	  if( _recoPFJet_untag_best_mW<0 || (abs( mjj - mW ) < abs( _recoPFJet_untag_best_mW - mW )) ){
 	    
 	    _recoPFJet_untag_best_mW = mjj;
 	    
@@ -3826,6 +4301,144 @@ void convert_tree(TString sample, int iso_tau=70,
 
     }
     
+
+
+    if(toptag){
+
+      //Top tag
+      
+      double mW=80.4;
+      double mTop=173.2;
+
+      if(_recoPFJet_e.size()>3 && _n_recoPFJet_btag_loose>0){	
+	
+	double deltaM_Top_W = -1;
+      
+	vector<unsigned int> index_TopTag;
+	index_TopTag.push_back(0);
+	index_TopTag.push_back(0);
+	index_TopTag.push_back(0);
+	index_TopTag.push_back(0);
+
+
+	for(unsigned int i_jet1=0; i_jet1<_recoPFJet_e.size(); i_jet1++){
+	  TLorentzVector jet1 ( _recoPFJet_px[i_jet1], _recoPFJet_py[i_jet1], _recoPFJet_pz[i_jet1], _recoPFJet_e[i_jet1] );
+	  
+	  if( _recoPFJet_CSVscore[i_jet1]<0.46 ) continue;
+	  
+	  for(unsigned int i_jet2=0; i_jet2<_recoPFJet_e.size()-1; i_jet2++){
+	    
+	    if(i_jet2==i_jet1) continue;
+	    
+	    TLorentzVector jet2 ( _recoPFJet_px[i_jet2], _recoPFJet_py[i_jet2], _recoPFJet_pz[i_jet2], _recoPFJet_e[i_jet2] );
+	    
+	    for(unsigned int i_jet3=i_jet2+1; i_jet3<_recoPFJet_e.size(); i_jet3++){
+	      
+	      if(i_jet3==i_jet1) continue;
+
+	      TLorentzVector jet3 ( _recoPFJet_px[i_jet3], _recoPFJet_py[i_jet3], _recoPFJet_pz[i_jet3], _recoPFJet_e[i_jet3] );
+
+	      
+	      float mjj=(jet2+jet3).M();
+	      float mjjj=(jet1+jet2+jet3).M();
+	      float deltaM = fabs(mjjj-mTop) + fabs(mjj-mW);
+	      
+	      if( deltaM_Top_W<0 || deltaM<deltaM_Top_W){
+		
+		deltaM_Top_W = deltaM;
+
+		index_TopTag[0] = i_jet1;
+		index_TopTag[1] = i_jet2;
+		index_TopTag[2] = i_jet3;
+		
+	      }
+
+	    }
+	    	  
+	  }
+	  
+	}
+
+      
+	float max_CSV = -1;
+
+	for(unsigned int i_jet4=0; i_jet4<_recoPFJet_e.size(); i_jet4++){
+
+	  if(i_jet4==index_TopTag[0] || i_jet4==index_TopTag[1] || i_jet4==index_TopTag[2]) continue;
+
+	  if(_recoPFJet_CSVscore[i_jet4]>max_CSV){
+
+	    max_CSV = _recoPFJet_CSVscore[i_jet4];
+	    index_TopTag[3] = i_jet4;
+
+	  }
+
+	}
+
+
+	_recoPFJet_best_deltaM_Top_W = deltaM_Top_W;
+	
+	int i_jet1=index_TopTag[0];
+	int i_jet2=index_TopTag[1];
+	int i_jet3=index_TopTag[2];
+	int i_jet4=index_TopTag[3];      
+	
+	TLorentzVector jet1(_recoPFJet_px[i_jet1],_recoPFJet_py[i_jet1],_recoPFJet_pz[i_jet1],_recoPFJet_e[i_jet1]);
+	TLorentzVector jet2(_recoPFJet_px[i_jet2],_recoPFJet_py[i_jet2],_recoPFJet_pz[i_jet2],_recoPFJet_e[i_jet2]);
+	TLorentzVector jet3(_recoPFJet_px[i_jet3],_recoPFJet_py[i_jet3],_recoPFJet_pz[i_jet3],_recoPFJet_e[i_jet3]);
+	TLorentzVector jet4(_recoPFJet_px[i_jet4],_recoPFJet_py[i_jet4],_recoPFJet_pz[i_jet4],_recoPFJet_e[i_jet4]);
+	
+	_recoPFJet_toptag_best_btag_e = jet1.E();;
+	_recoPFJet_toptag_best_btag_px = jet1.Px();
+	_recoPFJet_toptag_best_btag_py = jet1.Py();
+	_recoPFJet_toptag_best_btag_pz = jet1.Pz();
+	_recoPFJet_toptag_best_btag_pt = jet1.Pt();
+	_recoPFJet_toptag_best_btag_eta = jet1.Eta();
+	_recoPFJet_toptag_best_btag_phi = jet1.Phi();
+	_recoPFJet_toptag_best_btag_CSVscore = _recoPFJet_CSVscore[i_jet1];
+	_recoPFJet_toptag_best_btag_jecUnc = _recoPFJet_jecUnc[i_jet1];
+	_recoPFJet_toptag_best_btag_Flavour = _recoPFJet_Flavour[i_jet1];
+	
+	_recoPFJet_toptag_best_untag1_e = jet2.E();;
+	_recoPFJet_toptag_best_untag1_px = jet2.Px();
+	_recoPFJet_toptag_best_untag1_py = jet2.Py();
+	_recoPFJet_toptag_best_untag1_pz = jet2.Pz();
+	_recoPFJet_toptag_best_untag1_pt = jet2.Pt();
+	_recoPFJet_toptag_best_untag1_eta = jet2.Eta();
+	_recoPFJet_toptag_best_untag1_phi = jet2.Phi();
+	_recoPFJet_toptag_best_untag1_CSVscore = _recoPFJet_CSVscore[i_jet2];
+	_recoPFJet_toptag_best_untag1_jecUnc = _recoPFJet_jecUnc[i_jet2];
+	_recoPFJet_toptag_best_untag1_Flavour = _recoPFJet_Flavour[i_jet2];
+	
+	_recoPFJet_toptag_best_untag2_e = jet3.E();;
+	_recoPFJet_toptag_best_untag2_px = jet3.Px();
+	_recoPFJet_toptag_best_untag2_py = jet3.Py();
+	_recoPFJet_toptag_best_untag2_pz = jet3.Pz();
+	_recoPFJet_toptag_best_untag2_pt = jet3.Pt();
+	_recoPFJet_toptag_best_untag2_eta = jet3.Eta();
+	_recoPFJet_toptag_best_untag2_phi = jet3.Phi();
+	_recoPFJet_toptag_best_untag2_CSVscore = _recoPFJet_CSVscore[i_jet3];
+	_recoPFJet_toptag_best_untag2_jecUnc = _recoPFJet_jecUnc[i_jet3];
+	_recoPFJet_toptag_best_untag2_Flavour = _recoPFJet_Flavour[i_jet3];
+	
+	_recoPFJet_toptag_other_btag_e = jet4.E();;
+	_recoPFJet_toptag_other_btag_px = jet4.Px();
+	_recoPFJet_toptag_other_btag_py = jet4.Py();
+	_recoPFJet_toptag_other_btag_pz = jet4.Pz();
+	_recoPFJet_toptag_other_btag_pt = jet4.Pt();
+	_recoPFJet_toptag_other_btag_eta = jet4.Eta();
+	_recoPFJet_toptag_other_btag_phi = jet4.Phi();
+	_recoPFJet_toptag_other_btag_CSVscore = _recoPFJet_CSVscore[i_jet4];
+	_recoPFJet_toptag_other_btag_jecUnc = _recoPFJet_jecUnc[i_jet4];
+	_recoPFJet_toptag_other_btag_Flavour = _recoPFJet_Flavour[i_jet4];
+	
+      }
+
+    }
+
+
+
+
 
 
     //////////////////////////////////////////////
@@ -3956,7 +4569,7 @@ void convert_tree(TString sample, int iso_tau=70,
       mindr_lep2_jet = _mindR_lep1_recoPFjet;
       LepGood_conePt0 = _lep0_conept;
       LepGood_conePt1 = _lep1_conept;
-      LepGood_conePt2 = _lep1_conept;
+      LepGood_conePt2 = _lep2_conept;
       met = min(_PFMET,float(400.));
       avg_dr_jet = _avg_dr_jet;
       
@@ -4299,7 +4912,7 @@ void convert_tree(TString sample, int iso_tau=70,
 	int i_gen_ZMoth = (*_genpart_ZMothInd)[i_gen];
 	if( i_gen_ZMoth > -1 && i_gen_TauMoth==-1){
 	  for(int i_Z=0; i_Z<_n_genZ; i_Z++){
-	    if( genZ_index[i_Z]==i_gen_WMoth){
+	    if( genZ_index[i_Z]==i_gen_ZMoth){
 	      i_Z_Moth = i_Z;
 	      break;
 	    }

@@ -13,10 +13,11 @@
 #include <TMath.h>
 
 #include <TSystem.h>
-
+#include <TROOT.h>
 using namespace std;
 
 //gSystem->Load("/home/llr/cms/strebler/MG5_aMC_v2_2_1/ExRootAnalysis/libExRootAnalysis.so") before compilation in Root
+
 
 float binning(TH1F* h){
 
@@ -33,10 +34,12 @@ TH1F* single_plot(TString file, TString tree_name, TString var, TString cut, int
   tree->Add(file);
 
   TH1F* g=new TH1F("g","g",nbin,min,max);
-  g->Sumw2();
+  //g->Sumw2();
+  g->SetBinErrorOption(TH1::kPoisson);
 
   tree->Draw(var+">>g",cut,"goff");
 
+  delete tree;
   return g;
 
 }
@@ -50,10 +53,15 @@ TH1F* single_plot(vector<TString> files, TString tree_name, TString var, TString
     tree->Add(files[i]);
 
   TH1F* g=new TH1F("g","g",nbin,min,max);
-  g->Sumw2();
+  g=new TH1F("g","g",nbin,min,max);
+
+  //g->Sumw2();
+  g->SetBinErrorOption(TH1::kPoisson);
 
   tree->Draw(var+">>g",cut,"goff");
+  delete tree;
 
+//cout<<"tree deleted"<<endl;
   return g;
 
 }
@@ -65,7 +73,8 @@ TH1F* single_plot(vector<TString> files, TString tree_name, TString var, vector<
 
 
   TH1F* g=new TH1F("g","g",nbin,min,max);
-  g->Sumw2();
+  //g->Sumw2();
+  g->SetBinErrorOption(TH1::kPoisson);
 
   for(unsigned int i=0; i<files.size(); i++){
     g->Add(single_plot(files[i],tree_name,var,cut[i],nbin,min,max));
@@ -84,7 +93,8 @@ TH1D* single_plot_d(vector<TString> files, TString tree_name, TString var, TStri
     tree->Add(files[i]);
 
   TH1D* g=new TH1D("g","g",nbin,min,max);
-  g->Sumw2();
+  //g->Sumw2();
+  g->SetBinErrorOption(TH1::kPoisson);
 
   tree->Draw(var+">>g",cut,"goff");
 
@@ -101,9 +111,34 @@ TH1F* single_plot(TString file, TString tree_name, TString var, TString cut, int
   tree->Add(file);
 
   TH1F* g=new TH1F("g","g",nbin,x);
-  g->Sumw2();
+  //g->Sumw2();
+  g->SetBinErrorOption(TH1::kPoisson);
 
   tree->Draw(var+">>g",cut,"goff");
+  delete tree;
+
+
+
+  return g;
+
+}
+
+
+
+
+
+TH1F* single_plot(vector<TString> files, TString tree_name, TString var, TString cut, int nbin, double* x){
+
+  TChain * tree = new TChain(tree_name);
+  for(unsigned int i=0;i<files.size();i++)
+    tree->Add(files[i]);
+
+  TH1F* g=new TH1F("g","g",nbin,x);
+  //g->Sumw2();
+  g->SetBinErrorOption(TH1::kPoisson);
+
+  tree->Draw(var+">>g",cut,"goff");
+
 
   return g;
 
@@ -185,3 +220,76 @@ std::vector<TH1F*> sort_histo(std::vector<TH1F*> h){
 }
 
 
+
+
+
+
+
+TH1F* single_plot(TString hname, vector<TString> files, TString tree_name, TString var, TString cut, int nbin, float min, float max){
+
+  TChain * tree = new TChain(tree_name);
+  for(unsigned int i=0; i<files.size(); i++)
+    tree->Add(files[i]);
+
+  TH1F* g=new TH1F(hname,hname,nbin,min,max);
+
+  //g->Sumw2();
+  g->SetBinErrorOption(TH1::kPoisson);
+
+  tree->Draw(var+">>"+hname,cut,"goff");
+  return g;
+
+}
+
+
+
+
+
+
+void makeBinContentsPositive(TH1* histogram, bool verbosity=false)
+{
+  if ( verbosity ) {
+    std::cout << "<makeBinContentsPositive>:" << std::endl;
+    std::cout << " integral(" << histogram->GetName() << ") = " << histogram->Integral() << std::endl;
+  }
+  double integral_original = histogram->Integral();
+  if ( integral_original < 0. ) integral_original = 0.;
+  /*if ( verbosity ) {
+    std::cout << " integral_original = " << integral_original << std::endl;
+    }*/
+  int numBins = histogram->GetNbinsX();
+  for ( int iBin = 0; iBin <= (numBins + 1); ++iBin ) {
+    double binContent_original = histogram->GetBinContent(iBin);
+    double binError2_original = pow(histogram->GetBinError(iBin),2);
+    if ( binContent_original < 0. ) {
+      double binContent_modified = 0.;
+      double binError2_modified = binError2_original + pow(binContent_original - binContent_modified,2);
+      assert(binError2_modified >= 0.);
+      if ( verbosity ) {
+	std::cout << "bin #" << iBin << " (x =  " << histogram->GetBinCenter(iBin) << "): binContent = " << binContent_original << " +/- " << TMath::Sqrt(binError2_original)
+          << " --> setting it to binContent = " << binContent_modified << " +/- " << TMath::Sqrt(binError2_modified) << std::endl;
+      }
+      histogram->SetBinContent(iBin, binContent_modified);
+      histogram->SetBinError(iBin, TMath::Sqrt(binError2_modified));
+    }
+  }
+  double integral_modified = histogram->Integral();
+  if ( integral_modified < 0. ) integral_modified = 0.;
+  /*if ( verbosity ) {
+    std::cout << " integral_modified = " << integral_modified << std::endl;
+    }*/
+  if ( integral_modified > 0. ) {
+    double sf = integral_original/integral_modified;
+    /*if ( verbosity ) {
+      std::cout << "--> scaling histogram by factor = " << sf << std::endl;
+      }*/
+    histogram->Scale(sf);
+  } else {
+    for ( int iBin = 0; iBin <= (numBins + 1); ++iBin ) {
+      histogram->SetBinContent(iBin, 0.);
+    }
+  }
+  /*if ( verbosity ) {
+    std::cout << " integral(" << histogram->GetName() << ") = " << histogram->Integral() << std::endl;
+    }*/
+}

@@ -58,7 +58,7 @@ void plot_lepfake_pt_genb_bin(){
 
   h[0]->SetMaximum(1.25*h[0]->GetMaximum());
   h[0]->GetXaxis()->SetTitle("p_{T}(reco. lep.)");
-  h[0]->GetYaxis()->SetTitle(Form("Fraction of events / %.2f [GeV]",binning(h[0])));
+  h[0]->GetYaxis()->SetTitle(Form("Fraction of leptons / %.2f [GeV]",binning(h[0])));
   h[0]->GetYaxis()->SetTitleOffset(1.7);
   h[0]->SetTitle("");
 
@@ -69,6 +69,10 @@ void plot_lepfake_pt_genb_bin(){
   
   leg->Draw("same");
 
+
+  TLatex *texl = new TLatex(1,1.01*h[0]->GetMaximum(),"CMS Preliminary, Simulation #sqrt{s}=13 TeV");
+  texl->SetTextSize(0.03);
+  texl->Draw("same");
 
   TString filename="lepfake_pt_genb_bin";
   c->SaveAs("../plots/pdf/"+filename+".pdf");
@@ -334,7 +338,7 @@ void plot_mean_fit(){
   c->SetLeftMargin(0.15);
 
   mean->GetYaxis()->SetRangeUser(0,350);
-  mean->GetXaxis()->SetTitle("E_{b} [GeV]");
+  mean->GetXaxis()->SetTitle("p_T(b) [GeV]");
   mean->GetYaxis()->SetTitle("#mu [GeV]");
   mean->GetYaxis()->SetTitleOffset(1.6);
   mean->SetTitle("Fake lepton TF mean");
@@ -382,7 +386,7 @@ void plot_sigma_fit(){
   c->SetLeftMargin(0.15);
 
   sigma->GetYaxis()->SetRangeUser(0,100);
-  sigma->GetXaxis()->SetTitle("E_{b} [GeV]");
+  sigma->GetXaxis()->SetTitle("p_{T}(b) [GeV]");
   sigma->GetYaxis()->SetTitle("#sigma [GeV]");
   sigma->GetYaxis()->SetTitleOffset(1.6);
   sigma->SetTitle("Fake lepton TF width");
