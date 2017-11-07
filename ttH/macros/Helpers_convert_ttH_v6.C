@@ -6587,7 +6587,7 @@ void convert_tree(TString sample, int iso_tau=0,
 	      if(flags&1) genMatchInd = 1;
 	      else if((flags>>5)&1) genMatchInd = 3;
 	    }
-	    else if(apdg==11){
+	    else if(apdg==13){
 	      if(flags&1) genMatchInd = 2;
 	      else if((flags>>5)&1) genMatchInd = 4;
 	    }
