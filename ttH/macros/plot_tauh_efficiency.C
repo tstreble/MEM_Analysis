@@ -29,10 +29,8 @@ void plot_isoMVA_eff_pt(){
 
 
   vector<TString> ttH_files;
-  ttH_files.push_back("/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/ntuple_ttH_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  /*ttH_files.push_back("/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/ntuple_ttH_ext1_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  ttH_files.push_back("/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/ntuple_ttH_ext2_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
-  ttH_files.push_back("/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/ntuple_ttH_ext3_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");*/
+  //ttH_files.push_back("/data_CMS/cms/strebler/ttH_Samples/ntuples_converted/MiniAODv2_prod_03_2016/ntuple_ttH_dRveto_gen_byLooseIsolationMVArun2v1DBdR03oldDMwLT.root");
+  ttH_files.push_back("/data_CMS/cms/strebler/ttH_prod_80X_12_2016/ntuples_converted/nominal/ttH/ntuple_ttH_Hnonbb_*.root");
 
   vector<TH1F*> h_gen;
   h_gen.push_back(single_plot(ttH_files,"HTauTauTree","genpart_pt","MC_weight*(abs(genpart_pdg)>1000 && genpart_pt>30 && abs(genpart_eta)<2.3)",22,20,240));

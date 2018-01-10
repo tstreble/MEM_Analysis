@@ -12,43 +12,43 @@ bTagSF::bTagSF(std::string SFfilename, std::string effFileName) :
     
     m_calib("CSVv2", SFfilename.c_str()) ,
     m_reader {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "comb", "central"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "comb", "central"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "comb", "central")} ,
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "comb", "central"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "comb", "central"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "comb", "central")} ,
     m_reader_up {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "comb", "up"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "comb", "up"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "comb", "up")} ,
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "comb", "up"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "comb", "up"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "comb", "up")} ,
     m_reader_do {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "comb", "down"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "comb", "down"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "comb", "down")} ,
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "comb", "down"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "comb", "down"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "comb", "down")} ,
     
     m_reader_c {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "comb", "central"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "comb", "central"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "comb", "central")} ,
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "comb", "central"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "comb", "central"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "comb", "central")} ,
     m_reader_c_up {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "comb", "up"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "comb", "up"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "comb", "up")} ,
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "comb", "up"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "comb", "up"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "comb", "up")} ,
     m_reader_c_do {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "comb", "down"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "comb", "down"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "comb", "down")} ,
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "comb", "down"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "comb", "down"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "comb", "down")} ,
 
     m_reader_udsg {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "incl", "central"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "incl", "central"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "incl", "central")} ,
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "incl", "central"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "incl", "central"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "incl", "central")} ,
     m_reader_udsg_up {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "incl", "up"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "incl", "up"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "incl", "up")} ,
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "incl", "up"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "incl", "up"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "incl", "up")} ,
     m_reader_udsg_do {
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_LOOSE,  "incl", "down"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_MEDIUM, "incl", "down"),
-    BTagCalibrationReader(&m_calib , BTagEntry::OP_TIGHT,  "incl", "down")} 
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_LOOSE,  "incl", "down"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_MEDIUM, "incl", "down"),
+    BTagCalibrationReaderStandalone(&m_calib , BTagEntry::OP_TIGHT,  "incl", "down")} 
 {
     // // [b, c, udsg] [central, up, down] [loose, medium, tight]        = & _up//down [loose, medium, tight]
 
@@ -138,34 +138,37 @@ float bTagSF::getSF (WP wpt, SFsyst syst, int jetFlavor, float pt, float eta)
         myFlavIndex = 2;
     }
 
-    SF = m_readers[myFlavIndex][mySystIndex][myWPIndex] -> eval(flav, eta, pt);
+    float pt_SF = pt;
+    if(flav == BTagEntry::FLAV_B || flav == BTagEntry::FLAV_C){
+      if(pt<30.)
+	pt_SF = 30.001;
+      else if(pt>670.)
+	pt_SF = 669.999;
+    }
 
-    // if (syst == central)
-    //     SF = m_reader[(int)wpt].eval(flav, eta, pt);   
-    // else if (syst == up)
-    //     SF = m_reader_up[(int)wpt].eval(flav, eta, pt);
-    // else if (syst == down)
-    //         SF = m_reader_do[(int)wpt].eval(flav, eta, pt);
-    
+    if(flav == BTagEntry::FLAV_UDSG){
+      if(pt<20.)
+	pt_SF = 20.001;
+      else if(pt>1000.)
+	pt_SF = 999.999;
+    }
 
+    SF = m_readers[myFlavIndex][mySystIndex][myWPIndex] -> eval(flav, eta, pt_SF);
 
-
-    // double uncertainty up/down if out of some boundaries
-    // FIXME: this is wrong!! one should do : jet_scalefactor_up = 2*(jet_scalefactor_up - jet_scalefactor) + jet_scalefactor; 
-    // and not just double the scale
     if (syst != central)
     {
-        /*
+        
+      float SF_central = m_readers[myFlavIndex][(int)central][myWPIndex] -> eval(flav, eta, pt_SF);
+
         if (flav == BTagEntry::FLAV_B || flav == BTagEntry::FLAV_C)
         {
-            if (pt < 30.0 || pt > 670.0 ) SF *= 2.0;
+	  if (pt < 30.0 || pt > 670.0 ) SF = SF_central + 2*(SF-SF_central);
         }
         if (flav == BTagEntry::FLAV_UDSG)
         {
-            if (pt < 20.0 || pt > 1000.0 ) SF *= 2.0;
+	  if (pt < 20.0 || pt > 1000.0 ) SF = SF_central + 2*(SF-SF_central);
         }
-        */
-        SF *= 1.0;
+        
     }
 
     return SF;
@@ -216,7 +219,7 @@ float bTagSF::getEff (WP wpt, int jetFlavor, float pt, float eta)
 }
 
 // returns a collection of weights according to the tested WP
-float bTagSF::getEvtWeight (std::vector <float> CSVscore, std::vector<TLorentzVector> jets_tlv, std::vector<int> jets_HadronFlavour)
+float bTagSF::getEvtWeight (std::vector <float> CSVscore, std::vector<TLorentzVector> jets_tlv, std::vector<int> jets_HadronFlavour, SFsyst syst)
 {
 
   float P_MC = 1.0;
@@ -232,9 +235,9 @@ float bTagSF::getEvtWeight (std::vector <float> CSVscore, std::vector<TLorentzVe
       
       int flav = jets_HadronFlavour[ijet];
       float SF[3];
-      SF[0] = getSF (loose,  central, flav, max(vJet.Pt(),30.), vJet.Eta());
-      SF[1] = getSF (medium, central, flav, max(vJet.Pt(),30.), vJet.Eta());
-      SF[2] = getSF (tight,  central, flav, max(vJet.Pt(),30.), vJet.Eta());
+      SF[0] = getSF (loose,  syst, flav, vJet.Pt(), vJet.Eta());
+      SF[1] = getSF (medium, syst, flav, vJet.Pt(), vJet.Eta());
+      SF[2] = getSF (tight,  syst, flav, vJet.Pt(), vJet.Eta());
 
       float effBTag[3];
       effBTag[0] = getEff (static_cast<WP> (0), flav, vJet.Pt(), vJet.Eta()) ;
@@ -259,6 +262,7 @@ float bTagSF::getEvtWeight (std::vector <float> CSVscore, std::vector<TLorentzVe
 	P_MC *= (1-effBTag[0]);
 	P_Data *= (1-effBTag[0]*SF[0]);
       }
+
 
     }
 

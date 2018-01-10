@@ -1549,6 +1549,9 @@ void datacard_maker(TString var1, int nbin, float xmin, float xmax,
 			       Form("event_weight_ttH_v2*(category==%i && isTrig_v2 && recotauh_sel_byMediumIsolationMVArun2v1DBdR03oldDMwLT[0] && NBadMu==0 &&",cat_fakes[i_cat]) + cut_cat + ")",
 			       nbin,xmin,xmax);
 
+    cout<<"h_fakes->Integral()="<<h_fakes->Integral()<<endl;
+    cout<<"h_fakes->GetEntries()="<<h_fakes->GetEntries()<<endl;
+
     
     h_fakes->Scale(luminosity/35867.); //Data files for 35.9 fb-1
     //h_fakes->Add((TH1F*)f_new->Get("x_ttH_genmatch_fake_CR"),-1);

@@ -1,3 +1,7 @@
+#ifndef BTagCalibrationStandalone_cc
+#define BTagCalibrationStandalone_cc
+
+
 #include "BTagCalibrationStandalone.h"
 #include <iostream>
 #include <exception>
@@ -272,12 +276,12 @@ std::string BTagEntry::trimStr(std::string str) {
 
 
 
-BTagCalibration::BTagCalibration(const std::string &taggr):
+BTagCalibrationStandalone::BTagCalibrationStandalone(const std::string &taggr):
   tagger_(taggr)
 {}
 
-BTagCalibration::BTagCalibration(const std::string &taggr,
-                                 const std::string &filename):
+BTagCalibrationStandalone::BTagCalibrationStandalone(const std::string &taggr,
+						     const std::string &filename):
   tagger_(taggr)
 {
   std::ifstream ifs(filename);
@@ -285,12 +289,12 @@ BTagCalibration::BTagCalibration(const std::string &taggr,
   ifs.close();
 }
 
-void BTagCalibration::addEntry(const BTagEntry &entry)
+void BTagCalibrationStandalone::addEntry(const BTagEntry &entry)
 {
   data_[token(entry.params)].push_back(entry);
 }
 
-const std::vector<BTagEntry>& BTagCalibration::getEntries(
+const std::vector<BTagEntry>& BTagCalibrationStandalone::getEntries(
   const BTagEntry::Parameters &par) const
 {
   std::string tok = token(par);
@@ -303,13 +307,13 @@ throw std::exception();
   return data_.at(tok);
 }
 
-void BTagCalibration::readCSV(const std::string &s)
+void BTagCalibrationStandalone::readCSV(const std::string &s)
 {
   std::stringstream buff(s);
   readCSV(buff);
 }
 
-void BTagCalibration::readCSV(std::istream &s)
+void BTagCalibrationStandalone::readCSV(std::istream &s)
 {
   std::string line;
 
@@ -328,7 +332,7 @@ void BTagCalibration::readCSV(std::istream &s)
   }
 }
 
-void BTagCalibration::makeCSV(std::ostream &s) const
+void BTagCalibrationStandalone::makeCSV(std::ostream &s) const
 { 
   s << tagger_ << ";" << BTagEntry::makeCSVHeader();
   for (std::map<std::string, std::vector<BTagEntry> >::const_iterator i 
@@ -341,14 +345,14 @@ void BTagCalibration::makeCSV(std::ostream &s) const
   }
 }
 
-std::string BTagCalibration::makeCSV() const
+std::string BTagCalibrationStandalone::makeCSV() const
 {
   std::stringstream buff;
   makeCSV(buff);
   return buff.str();
 }
 
-std::string BTagCalibration::token(const BTagEntry::Parameters &par)
+std::string BTagCalibrationStandalone::token(const BTagEntry::Parameters &par)
 {
   std::stringstream buff;
   buff << par.operatingPoint << ", "
@@ -359,7 +363,7 @@ std::string BTagCalibration::token(const BTagEntry::Parameters &par)
 
 
 
-BTagCalibrationReader::BTagCalibrationReader(const BTagCalibration* c,
+BTagCalibrationReaderStandalone::BTagCalibrationReaderStandalone(const BTagCalibrationStandalone* c,
                                              BTagEntry::OperatingPoint op,
                                              std::string measurementType,
                                              std::string sysType):
@@ -369,7 +373,7 @@ BTagCalibrationReader::BTagCalibrationReader(const BTagCalibration* c,
   setupTmpData(c);
 }
 
-double BTagCalibrationReader::eval(BTagEntry::JetFlavor jf,
+double BTagCalibrationReaderStandalone::eval(BTagEntry::JetFlavor jf,
                                    float eta,
                                    float pt,
                                    float discr) const
@@ -384,7 +388,7 @@ double BTagCalibrationReader::eval(BTagEntry::JetFlavor jf,
   // future: find some clever data structure based on intervals
   const std::vector<TmpEntry> &entries = tmpData_.at(jf);
   for (unsigned i=0; i<entries.size(); ++i) {
-    const BTagCalibrationReader::TmpEntry &e = entries.at(i);
+    const BTagCalibrationReaderStandalone::TmpEntry &e = entries.at(i);
 
     if (
       e.etaMin <= eta && eta < e.etaMax                   // find eta
@@ -403,13 +407,13 @@ double BTagCalibrationReader::eval(BTagEntry::JetFlavor jf,
   return 0.;  // default value
 }
 
-void BTagCalibrationReader::setupTmpData(const BTagCalibration* c)
+void BTagCalibrationReaderStandalone::setupTmpData(const BTagCalibrationStandalone* c)
 {
   useAbsEta = std::vector<bool>(4, true);
   const std::vector<BTagEntry> &entries = c->getEntries(params);
   for (unsigned i=0; i<entries.size(); ++i) {
     const BTagEntry &be = entries[i];
-    BTagCalibrationReader::TmpEntry te;
+    BTagCalibrationReaderStandalone::TmpEntry te;
     te.etaMin = be.params.etaMin;
     te.etaMax = be.params.etaMax;
     te.ptMin = be.params.ptMin;
@@ -434,3 +438,4 @@ void BTagCalibrationReader::setupTmpData(const BTagCalibration* c)
 
 
 
+#endif
