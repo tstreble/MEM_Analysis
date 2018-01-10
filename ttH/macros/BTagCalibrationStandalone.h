@@ -81,8 +81,8 @@ public:
 #endif  // BTagEntry_H
 
 
-#ifndef BTagCalibration_H
-#define BTagCalibration_H
+#ifndef BTagCalibration_Standalone_H
+#define BTagCalibration_Standalone_H
 
 /**
  * BTagCalibration
@@ -105,13 +105,13 @@ public:
 #include <ostream>
 
 
-class BTagCalibration
+class BTagCalibrationStandalone
 {
 public:
-  BTagCalibration() {}
-  BTagCalibration(const std::string &tagger);
-  BTagCalibration(const std::string &tagger, const std::string &filename);
-  ~BTagCalibration() {}
+  BTagCalibrationStandalone() {}
+  BTagCalibrationStandalone(const std::string &tagger);
+  BTagCalibrationStandalone(const std::string &tagger, const std::string &filename);
+  ~BTagCalibrationStandalone() {}
 
   std::string tagger() const {return tagger_;}
 
@@ -131,7 +131,7 @@ protected:
 
 };
 
-#endif  // BTagCalibration_H
+#endif  // BTagCalibration_Standalone_H
 
 
 #ifndef BTagCalibrationReader_H
@@ -151,15 +151,15 @@ protected:
 #include <TF1.h>
 
 
-class BTagCalibrationReader
+class BTagCalibrationReaderStandalone
 {
 public:
-  BTagCalibrationReader() {}
-  BTagCalibrationReader(const BTagCalibration* c,
+  BTagCalibrationReaderStandalone() {}
+  BTagCalibrationReaderStandalone(const BTagCalibrationStandalone* c,
                         BTagEntry::OperatingPoint op,
                         std::string measurementType="comb",
                         std::string sysType="central");
-  ~BTagCalibrationReader() {}
+  ~BTagCalibrationReaderStandalone() {}
 
   double eval(BTagEntry::JetFlavor jf,
               float eta,
@@ -178,7 +178,7 @@ public:
 
 protected:
   
-  void setupTmpData(const BTagCalibration* c);
+  void setupTmpData(const BTagCalibrationStandalone* c);
 
   BTagEntry::Parameters params;
   std::map<BTagEntry::JetFlavor, std::vector<TmpEntry> > tmpData_;

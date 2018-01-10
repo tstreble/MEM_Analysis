@@ -4,11 +4,14 @@
 #include <string>
 #include <vector>
 #include <utility>
-#include "BTagCalibrationStandalone.h"
+#include "BTagCalibrationStandalone.cc"
 #include "TFile.h"
 #include "TH1F.h"
 #include "TLorentzVector.h"
 
+
+#ifndef BTagSF_H
+#define BTagSF_H
 
 class bTagSF
 {
@@ -21,29 +24,32 @@ class bTagSF
         float getSF (WP wpt, SFsyst syst, int jetFlavor, float pt, float eta);
         float getEff (WP wpt, int jetFlavor, float pt, float eta); // FIXME: to do: retrieve MC efficiency from a data format
    
-        float getEvtWeight (std::vector <float > CSVscore, std::vector<TLorentzVector> jets_tlv, std::vector<int> jets_HadronFlavour);
+        float getEvtWeight (std::vector <float > CSVscore, std::vector<TLorentzVector> jets_tlv, std::vector<int> jets_HadronFlavour, SFsyst syst = central);
     private:
         // related to scale factors
-        BTagCalibration m_calib;
+        BTagCalibrationStandalone m_calib;
 
         // for b jets
-        BTagCalibrationReader m_reader[3]; // 0: loose, 1: medium, 2: tight
-        BTagCalibrationReader m_reader_up[3]; // 0: loose, 1: medium, 2: tight
-        BTagCalibrationReader m_reader_do[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader_up[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader_do[3]; // 0: loose, 1: medium, 2: tight
 
         // for c jets
-        BTagCalibrationReader m_reader_c[3]; // 0: loose, 1: medium, 2: tight
-        BTagCalibrationReader m_reader_c_up[3]; // 0: loose, 1: medium, 2: tight
-        BTagCalibrationReader m_reader_c_do[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader_c[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader_c_up[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader_c_do[3]; // 0: loose, 1: medium, 2: tight
 
         // for udsg jets
-        BTagCalibrationReader m_reader_udsg[3]; // 0: loose, 1: medium, 2: tight
-        BTagCalibrationReader m_reader_udsg_up[3]; // 0: loose, 1: medium, 2: tight
-        BTagCalibrationReader m_reader_udsg_do[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader_udsg[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader_udsg_up[3]; // 0: loose, 1: medium, 2: tight
+        BTagCalibrationReaderStandalone m_reader_udsg_do[3]; // 0: loose, 1: medium, 2: tight
 
-        BTagCalibrationReader* m_readers [3][3][3]; // [b, c, udsg] [central, up, down] [loose, medium, tight] 
+        BTagCalibrationReaderStandalone* m_readers [3][3][3]; // [b, c, udsg] [central, up, down] [loose, medium, tight] 
 
         // related to b tag efficiency
         TFile* m_fileEff;
         TH1F* m_hEff [3][3]; // [0: loose, 1: medium, 2: tight] [0: b, 1: c 2: udsg]
 };
+
+
+#endif
